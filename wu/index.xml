@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:content="http://purl.org/rss/1.0/modules/content/">
+  <channel>
+    <title>Wus on Luhko</title>
+    <link>https://luhko.github.io/wu/</link>
+    <description>Recent content in Wus on Luhko</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-us</language>
+    <lastBuildDate>Sat, 11 Jun 2022 23:44:49 +0200</lastBuildDate><atom:link href="https://luhko.github.io/wu/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>404 CTF 2022</title>
+      <link>https://luhko.github.io/wu/404ctf/</link>
+      <pubDate>Sat, 11 Jun 2022 23:44:49 +0200</pubDate>
+      
+      <guid>https://luhko.github.io/wu/404ctf/</guid>
+      <description>Forensics Ransomware 1 We were given a big pcapng file. I struggled at the beggining because at first, I couldn’t see anything interessting:
+ There are only ARP (0.1%) and TCP (99.9%) packet Every TCP packet have the same size There are only 2 IP and 2 mac addresses TCP packet does not contains any payload  So I tried to look at the parameters of the TCP packet. Something caught my attention : there are way too much flags in the TCP packets !</description>
+    </item>
+    
+    <item>
+      <title>Hero CTF 2022</title>
+      <link>https://luhko.github.io/wu/heroctf2022/</link>
+      <pubDate>Sun, 29 May 2022 23:44:49 +0200</pubDate>
+      
+      <guid>https://luhko.github.io/wu/heroctf2022/</guid>
+      <description>OSINT HeroGuessr#1 We were given this panorama and we need to find the park next to it:
+Typing the name “Plage de Portissol” on Google Maps, we can see that there is only one park next the plage de Portissol : Victorin Blanc, which is the flag.
+HeroGuessr#2 We were given this panorama and we need to find the name of the city:
+Since Google Lens is pretty good to recognize monument, I tried it on the church.</description>
+    </item>
+    
+    <item>
+      <title>Cyber Apocalypse CTF 2022</title>
+      <link>https://luhko.github.io/wu/cyber2022/</link>
+      <pubDate>Thu, 19 May 2022 23:44:49 +0200</pubDate>
+      
+      <guid>https://luhko.github.io/wu/cyber2022/</guid>
+      <description>Forensics Pupeteer We have a bunch of log files. I tried to parse it using EvtxEcmd or Logviewplus but there was too much data. So I tried to focus on Powershell logs :
+ Powershell Powershell Operational Powershell Admin (empty)  In the powershell logs, there is nothing really interesting but a suspicious filename special_orders.ps1.
+In the Powershell Operational, we can find this suspicious script (regarding the variables name) :</description>
+    </item>
+    
+  </channel>
+</rss>

@@ -1,0 +1,14 @@
+<body>
+  <main>
+  <h1>Mon blog moche</h1>
+  {{ range .Data.Pages }}
+    <header>
+      <h2><a href="{{ .RelPermalink }}">{{ .Title }}</a></h2>
+    </header>
+    <article>
+      {{ .Summary }}
+    </article>
+  {{ end}}
+  </main>
+</body>
+</html>
