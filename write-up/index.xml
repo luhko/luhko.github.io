@@ -5,7 +5,17 @@
     <link>https://luhko.github.io/write-up/</link>
     <description>Recent content in Write-ups on Luhko</description>
     <generator>Hugo -- gohugo.io</generator>
-    <lastBuildDate>Sat, 11 Jun 2022 23:44:49 +0200</lastBuildDate><atom:link href="https://luhko.github.io/write-up/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Mon, 04 Jul 2022 23:44:49 +0200</lastBuildDate><atom:link href="https://luhko.github.io/write-up/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Pwnme CTF</title>
+      <link>https://luhko.github.io/write-up/pwnme/</link>
+      <pubDate>Mon, 04 Jul 2022 23:44:49 +0200</pubDate>
+      
+      <guid>https://luhko.github.io/write-up/pwnme/</guid>
+      <description>Geoint Les vacances au chateau We were given a castle image and we need to find its name. No data are inside the exif:
+$ exiftool FirstPart.png ExifTool Version Number : 11.88 File Name : FirstPart.png Directory : . File Size : 688 kB File Modification Date/Time : 2022:07:01 22:44:37+02:00 File Access Date/Time : 2022:07:01 23:26:07+02:00 File Inode Change Date/Time : 2022:07:01 23:28:22+02:00 File Permissions : rwxrwxrwx File Type : PNG File Type Extension : png MIME Type : image/png Image Width : 912 Image Height : 409 Bit Depth : 8 Gamma : 2.</description>
+    </item>
+    
     <item>
       <title>404 CTF 2022</title>
       <link>https://luhko.github.io/write-up/404ctf/</link>

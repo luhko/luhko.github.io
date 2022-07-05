@@ -1,0 +1,468 @@
+<!DOCTYPE html>
+<html lang="en" dir="auto">
+
+<head><meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<meta name="robots" content="index, follow">
+<title>Pwnme CTF | Luhko</title>
+<meta name="keywords" content="">
+<meta name="description" content="Geoint Les vacances au chateau We were given a castle image and we need to find its name. No data are inside the exif:
+$ exiftool FirstPart.png ExifTool Version Number : 11.88 File Name : FirstPart.png Directory : . File Size : 688 kB File Modification Date/Time : 2022:07:01 22:44:37&#43;02:00 File Access Date/Time : 2022:07:01 23:26:07&#43;02:00 File Inode Change Date/Time : 2022:07:01 23:28:22&#43;02:00 File Permissions : rwxrwxrwx File Type : PNG File Type Extension : png MIME Type : image/png Image Width : 912 Image Height : 409 Bit Depth : 8 Gamma : 2.">
+<meta name="author" content="">
+<link rel="canonical" href="https://luhko.github.io/write-up/pwnme/">
+<link crossorigin="anonymous" href="/assets/css/stylesheet.41f2d211c00e636a3c229c52ef2d4299a66891ae66771098993b13bca7972ae6.css" integrity="sha256-QfLSEcAOY2o8IpxS7y1CmaZoka5mdxCYmTsTvKeXKuY=" rel="preload stylesheet" as="style">
+<script defer crossorigin="anonymous" src="/assets/js/highlight.f413e19d0714851f6474e7ee9632408e58ac146fbdbe62747134bea2fa3415e0.js" integrity="sha256-9BPhnQcUhR9kdOfuljJAjlisFG&#43;9vmJ0cTS&#43;ovo0FeA="
+    onload="hljs.initHighlightingOnLoad();"></script>
+<link rel="icon" href="https://luhko.github.io/favicon.ico">
+<link rel="icon" type="image/png" sizes="16x16" href="https://luhko.github.io/favicon-16x16.png">
+<link rel="icon" type="image/png" sizes="32x32" href="https://luhko.github.io/favicon-32x32.png">
+<link rel="apple-touch-icon" href="https://luhko.github.io/apple-touch-icon.png">
+<link rel="mask-icon" href="https://luhko.github.io/safari-pinned-tab.svg">
+<meta name="theme-color" content="#2e2e33">
+<meta name="msapplication-TileColor" content="#2e2e33">
+<noscript>
+    <style>
+        #theme-toggle,
+        .top-link {
+            display: none;
+        }
+
+    </style>
+    <style>
+        @media (prefers-color-scheme: dark) {
+            :root {
+                --theme: rgb(29, 30, 32);
+                --entry: rgb(46, 46, 51);
+                --primary: rgb(218, 218, 219);
+                --secondary: rgb(155, 156, 157);
+                --tertiary: rgb(65, 66, 68);
+                --content: rgb(196, 196, 197);
+                --hljs-bg: rgb(46, 46, 51);
+                --code-bg: rgb(55, 56, 62);
+                --border: rgb(51, 51, 51);
+            }
+
+            .list {
+                background: var(--theme);
+            }
+
+            .list:not(.dark)::-webkit-scrollbar-track {
+                background: 0 0;
+            }
+
+            .list:not(.dark)::-webkit-scrollbar-thumb {
+                border-color: var(--theme);
+            }
+        }
+
+    </style>
+</noscript><meta property="og:title" content="Pwnme CTF" />
+<meta property="og:description" content="Geoint Les vacances au chateau We were given a castle image and we need to find its name. No data are inside the exif:
+$ exiftool FirstPart.png ExifTool Version Number : 11.88 File Name : FirstPart.png Directory : . File Size : 688 kB File Modification Date/Time : 2022:07:01 22:44:37&#43;02:00 File Access Date/Time : 2022:07:01 23:26:07&#43;02:00 File Inode Change Date/Time : 2022:07:01 23:28:22&#43;02:00 File Permissions : rwxrwxrwx File Type : PNG File Type Extension : png MIME Type : image/png Image Width : 912 Image Height : 409 Bit Depth : 8 Gamma : 2." />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://luhko.github.io/write-up/pwnme/" /><meta property="article:section" content="write-up" />
+<meta property="article:published_time" content="2022-07-04T23:44:49&#43;02:00" />
+<meta property="article:modified_time" content="2022-07-04T23:44:49&#43;02:00" />
+
+<meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="Pwnme CTF"/>
+<meta name="twitter:description" content="Geoint Les vacances au chateau We were given a castle image and we need to find its name. No data are inside the exif:
+$ exiftool FirstPart.png ExifTool Version Number : 11.88 File Name : FirstPart.png Directory : . File Size : 688 kB File Modification Date/Time : 2022:07:01 22:44:37&#43;02:00 File Access Date/Time : 2022:07:01 23:26:07&#43;02:00 File Inode Change Date/Time : 2022:07:01 23:28:22&#43;02:00 File Permissions : rwxrwxrwx File Type : PNG File Type Extension : png MIME Type : image/png Image Width : 912 Image Height : 409 Bit Depth : 8 Gamma : 2."/>
+
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [, 
+    {
+      "@type": "ListItem",
+      "position":  2 ,
+      "name": "Pwnme CTF",
+      "item": "https://luhko.github.io/write-up/pwnme/"
+    }
+  ]
+}
+</script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BlogPosting",
+  "headline": "Pwnme CTF",
+  "name": "Pwnme CTF",
+  "description": "Geoint Les vacances au chateau We were given a castle image and we need to find its name. No data are inside the exif:\n$ exiftool FirstPart.png ExifTool Version Number : 11.88 File Name : FirstPart.png Directory : . File Size : 688 kB File Modification Date/Time : 2022:07:01 22:44:37+02:00 File Access Date/Time : 2022:07:01 23:26:07+02:00 File Inode Change Date/Time : 2022:07:01 23:28:22+02:00 File Permissions : rwxrwxrwx File Type : PNG File Type Extension : png MIME Type : image/png Image Width : 912 Image Height : 409 Bit Depth : 8 Gamma : 2.",
+  "keywords": [
+    
+  ],
+  "articleBody": "Geoint Les vacances au chateau We were given a castle image and we need to find its name. No data are inside the exif:\n$ exiftool FirstPart.png ExifTool Version Number : 11.88 File Name : FirstPart.png Directory : . File Size : 688 kB File Modification Date/Time : 2022:07:01 22:44:37+02:00 File Access Date/Time : 2022:07:01 23:26:07+02:00 File Inode Change Date/Time : 2022:07:01 23:28:22+02:00 File Permissions : rwxrwxrwx File Type : PNG File Type Extension : png MIME Type : image/png Image Width : 912 Image Height : 409 Bit Depth : 8 Gamma : 2.2 Pixels Per Unit X : 4724 Pixels Per Unit Y : 4724 Pixel Units : meters Image Size : 912x409 Megapixels : 0.373 After submitting it to Yandex, we can find that the castle is named Chateau d’Ambroise:\nThe flag is PWNME{ambroise}\nAu bord de l’eau We were given a second image where we need to find the name of the road:\nAfter submitting it to Google Lens, we can find a city named Saint-Jorioz.\nThe city is near a lake, and after some researches, we can see the mountain on the given picture.\nNow that we have the town, we need to find the exact road. Looking at the angle of the photography, we can say easily determine a zone where the photo has been taken:\nIf we look on google maps, we can find “Le jardin de la plage”, with this picture:\nThe road is Digue à panade.\nFlag : PWNME{digue_à_panade}\nLa tête dans les nuages We were given another image which has been taken on a mountain. We only know that the location is near the last one. I tried to identify the mountain pattern thanks to Google Earth (it wasn’t easy!):\nI also tried find the valley pattern, represented by the green line bellow:\nThanks to those informations, I found out a mountain named Semnoz which was the flag!\nFlag : PWNME{Semnoz}\nForensics It’s not just a cat story We were given a file named Acquisition.e01:\n# file Acquisition.e01 Acquisition.e01: EWF/Expert Witness/EnCase image file format After some researches on the web, we can find some tools that can be used for EWF files:\n$ ewfinfo Acquisition.e01 ewfinfo 20140807 Acquiry information Case number: 2600 Description: We found this usb key during our search of the hacker's house Examiner name: Monsieur Nouille Evidence number: 5200 Acquisition date: Tue Jun 7 14:11:48 2022 System date: Tue Jun 7 14:11:48 2022 Password: N/A EWF information File format: EnCase 1 Sectors per chunk: 64 Compression method: deflate Compression level: no compression Media information Media type: removable disk Is physical: no Bytes per sector: 512 Number of sectors: 81920 Media size: 40 MiB (41943040 bytes) Digest hash information MD5: f3e2d3ad77b3f580aca312b994319e04 Then we can try to mount it and gather some informations :\n**$ mkdir tmpmnt $ ewfmount Acquisition.e01 tmpmnt $ ls -l tmpmnt/** total 0 -r--r--r-- 1 root root 41943040 Jul 2 14:03 ewf1 **$ file tmpmnt/ewf1** tmpmnt/ewf1: DOS/MBR boot sector **$ strings tmpmnt/ewf1** 3,4@ b0VIM 8.2 ... /media/usb-drive/Pain.txt U3210 #\"! Why Why are we still here? Just suffer ? **$ binwalk tmpmnt/ewf1** DECIMAL HEXADECIMAL DESCRIPTION -------------------------------------------------------------------------------- 2269184 0x22A000 JPEG image data, JFIF standard 1.01 2269214 0x22A01E TIFF image data, little-endian offset of first image directory: 8 We can see that there might be an image. After extracting it, we get a cat image, which is not giving us the flag:\nSo I tried to open the original file, Acquisition.e01, with Autopsy. We can find 3 carved files:\nAfter extracting those files, we have this image with the flag:\n",
+  "wordCount" : "592",
+  "inLanguage": "en",
+  "datePublished": "2022-07-04T23:44:49+02:00",
+  "dateModified": "2022-07-04T23:44:49+02:00",
+  "mainEntityOfPage": {
+    "@type": "WebPage",
+    "@id": "https://luhko.github.io/write-up/pwnme/"
+  },
+  "publisher": {
+    "@type": "Organization",
+    "name": "Luhko",
+    "logo": {
+      "@type": "ImageObject",
+      "url": "https://luhko.github.io/favicon.ico"
+    }
+  }
+}
+</script>
+</head>
+
+<body class="" id="top">
+<script>
+    if (localStorage.getItem("pref-theme") === "dark") {
+        document.body.classList.add('dark');
+    } else if (localStorage.getItem("pref-theme") === "light") {
+        document.body.classList.remove('dark')
+    } else if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
+        document.body.classList.add('dark');
+    }
+
+</script>
+
+<header class="header">
+    <nav class="nav">
+        <div class="logo">
+            <a href="https://luhko.github.io/" accesskey="h" title="Luhko (Alt + H)">Luhko</a>
+            <div class="logo-switches">
+                <button id="theme-toggle" accesskey="t" title="(Alt + T)">
+                    <svg id="moon" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
+                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round">
+                        <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+                    </svg>
+                    <svg id="sun" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
+                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round">
+                        <circle cx="12" cy="12" r="5"></circle>
+                        <line x1="12" y1="1" x2="12" y2="3"></line>
+                        <line x1="12" y1="21" x2="12" y2="23"></line>
+                        <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+                        <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+                        <line x1="1" y1="12" x2="3" y2="12"></line>
+                        <line x1="21" y1="12" x2="23" y2="12"></line>
+                        <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+                        <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+                    </svg>
+                </button>
+            </div>
+        </div>
+        <ul id="menu">
+            <li>
+                <a href="https://luhko.github.io/articles" title="Articles">
+                    <span>Articles</span>
+                </a>
+            </li>
+            <li>
+                <a href="https://luhko.github.io/write-up" title="Write-Up">
+                    <span>Write-Up</span>
+                </a>
+            </li>
+        </ul>
+    </nav>
+</header>
+<main class="main">
+
+<article class="post-single">
+  <header class="post-header">
+    <div class="breadcrumbs"><a href="https://luhko.github.io/">Home</a></div>
+    <h1 class="post-title">
+      Pwnme CTF
+    </h1>
+    <div class="post-meta"><span title='2022-07-04 23:44:49 +0200 CEST'>July 4, 2022</span>&nbsp;·&nbsp;3 min
+
+</div>
+  </header> <div class="toc">
+    <details >
+        <summary accesskey="c" title="(Alt + C)">
+            <span class="details">Table of Contents</span>
+        </summary>
+
+        <div class="inner"><ul>
+                <li>
+                    <a href="#geoint" aria-label="Geoint">Geoint</a><ul>
+                        
+                <li>
+                    <a href="#les-vacances-au-chateau" aria-label="Les vacances au chateau">Les vacances au chateau</a></li>
+                <li>
+                    <a href="#au-bord-de-leau" aria-label="Au bord de l’eau">Au bord de l’eau</a></li>
+                <li>
+                    <a href="#la-t%c3%aate-dans-les-nuages" aria-label="La tête dans les nuages">La tête dans les nuages</a></li></ul>
+                </li>
+                <li>
+                    <a href="#forensics" aria-label="Forensics">Forensics</a><ul>
+                        
+                <li>
+                    <a href="#its-not-just-a-cat-story" aria-label="It’s not just a cat story">It’s not just a cat story</a>
+                </li>
+            </ul>
+            </li>
+            </ul>
+        </div>
+    </details>
+</div>
+
+  <div class="post-content"><h1 id="geoint">Geoint<a hidden class="anchor" aria-hidden="true" href="#geoint">#</a></h1>
+<h2 id="les-vacances-au-chateau">Les vacances au chateau<a hidden class="anchor" aria-hidden="true" href="#les-vacances-au-chateau">#</a></h2>
+<p>We were given a castle image and we need to find its name. No data are inside the exif:</p>
+<div class="highlight"><pre class="chroma"><code class="language-bash" data-lang="bash">$ exiftool FirstPart.png
+ExifTool Version Number         : 11.88
+File Name                       : FirstPart.png
+Directory                       : .
+File Size                       : <span class="m">688</span> kB
+File Modification Date/Time     : 2022:07:01 22:44:37+02:00
+File Access Date/Time           : 2022:07:01 23:26:07+02:00
+File Inode Change Date/Time     : 2022:07:01 23:28:22+02:00
+File Permissions                : rwxrwxrwx
+File Type                       : PNG
+File Type Extension             : png
+MIME Type                       : image/png
+Image Width                     : <span class="m">912</span>
+Image Height                    : <span class="m">409</span>
+Bit Depth                       : <span class="m">8</span>
+Gamma                           : 2.2
+Pixels Per Unit X               : <span class="m">4724</span>
+Pixels Per Unit Y               : <span class="m">4724</span>
+Pixel Units                     : meters
+Image Size                      : 912x409
+Megapixels                      : 0.373
+</code></pre></div><p>After submitting it to Yandex, we can find that the castle is named <strong>Chateau d’Ambroise</strong>:</p>
+<p><img loading="lazy" src="/pwnme/0.png" alt="Untitled"  />
+</p>
+<p>The flag is <code>PWNME{ambroise}</code></p>
+<h2 id="au-bord-de-leau">Au bord de l’eau<a hidden class="anchor" aria-hidden="true" href="#au-bord-de-leau">#</a></h2>
+<p>We were given a second image where we need to find the name of the road:</p>
+<p><img loading="lazy" src="/pwnme/1.png" alt="Untitled"  />
+</p>
+<p>After submitting it to Google Lens, we can find a city named <strong>Saint-Jorioz</strong>.</p>
+<p><img loading="lazy" src="/pwnme/2.png" alt="Untitled"  />
+</p>
+<p>The city is near a lake, and after some researches, we can see the mountain on the given picture.</p>
+<p>Now that we have the town, we need to find the exact road. Looking at the angle of the photography, we can say easily determine a zone where the photo has been taken:</p>
+<p><img loading="lazy" src="/pwnme/3.png" alt="Untitled"  />
+</p>
+<p>If we look on google maps, we can find “Le jardin de la plage”, with this picture:</p>
+<p><img loading="lazy" src="/pwnme/4.png" alt="Untitled"  />
+</p>
+<p>The road is <strong>Digue à panade</strong>.</p>
+<p>Flag : <code>PWNME{digue_à_panade}</code></p>
+<h2 id="la-tête-dans-les-nuages">La tête dans les nuages<a hidden class="anchor" aria-hidden="true" href="#la-tête-dans-les-nuages">#</a></h2>
+<p>We were given another image which has been taken on a mountain. We only know that the location is near the last one. I tried to identify the mountain pattern thanks to Google Earth (it wasn’t easy!):</p>
+<p><img loading="lazy" src="/pwnme/5.png" alt="Untitled"  />
+</p>
+<p>I also tried find the valley pattern, represented by the green line bellow:</p>
+<p><img loading="lazy" src="/pwnme/6.png" alt="Untitled"  />
+</p>
+<p>Thanks to those informations, I found out a mountain named <strong>Semnoz</strong> which was the flag!</p>
+<p>Flag : <code>PWNME{Semnoz}</code></p>
+<h1 id="forensics">Forensics<a hidden class="anchor" aria-hidden="true" href="#forensics">#</a></h1>
+<h2 id="its-not-just-a-cat-story">It’s not just a cat story<a hidden class="anchor" aria-hidden="true" href="#its-not-just-a-cat-story">#</a></h2>
+<p>We were given a file named <code>Acquisition.e01</code>:</p>
+<div class="highlight"><pre class="chroma"><code class="language-bash" data-lang="bash"><span class="c1"># file Acquisition.e01</span>
+Acquisition.e01: EWF/Expert Witness/EnCase image file format
+</code></pre></div><p>After some researches on the web, we can find some tools that can be used for EWF files:</p>
+<div class="highlight"><pre class="chroma"><code class="language-bash" data-lang="bash">$ ewfinfo Acquisition.e01
+ewfinfo <span class="m">20140807</span>
+
+Acquiry information
+        Case number:            <span class="m">2600</span>
+        Description:            We found this usb key during our search of the hacker<span class="err">&#39;</span>s house
+        Examiner name:          Monsieur Nouille
+        Evidence number:        <span class="m">5200</span>
+        Acquisition date:       Tue Jun  <span class="m">7</span> 14:11:48 <span class="m">2022</span>
+        System date:            Tue Jun  <span class="m">7</span> 14:11:48 <span class="m">2022</span>
+        Password:               N/A
+
+EWF information
+        File format:            EnCase <span class="m">1</span>
+        Sectors per chunk:      <span class="m">64</span>
+        Compression method:     deflate
+        Compression level:      no compression
+
+Media information
+        Media type:             removable disk
+        Is physical:            no
+        Bytes per sector:       <span class="m">512</span>
+        Number of sectors:      <span class="m">81920</span>
+        Media size:             <span class="m">40</span> MiB <span class="o">(</span><span class="m">41943040</span> bytes<span class="o">)</span>
+
+Digest <span class="nb">hash</span> information
+        MD5:                    f3e2d3ad77b3f580aca312b994319e04
+</code></pre></div><p>Then we can try to mount it and gather some informations :</p>
+<div class="highlight"><pre class="chroma"><code class="language-bash" data-lang="bash">**$ mkdir tmpmnt 
+$ ewfmount Acquisition.e01 tmpmnt
+$ ls -l tmpmnt/**
+total <span class="m">0</span>
+-r--r--r-- <span class="m">1</span> root root <span class="m">41943040</span> Jul  <span class="m">2</span> 14:03 ewf1
+**$ file tmpmnt/ewf1**
+tmpmnt/ewf1: DOS/MBR boot sector
+
+**$ strings tmpmnt/ewf1**
+3,4@
+b0VIM 8.2
+...
+/media/usb-drive/Pain.txt
+U3210
+<span class="c1">#&#34;!</span>
+Why
+Why are we still here? Just suffer ?
+
+**$ binwalk tmpmnt/ewf1**
+DECIMAL       HEXADECIMAL     DESCRIPTION
+--------------------------------------------------------------------------------
+<span class="m">2269184</span>       0x22A000        JPEG image data, JFIF standard 1.01
+<span class="m">2269214</span>       0x22A01E        TIFF image data, little-endian offset of first image directory: <span class="m">8</span>
+</code></pre></div><p>We can see that there might be an image. After extracting it, we get a cat image, which is not giving us the flag:</p>
+<p><img loading="lazy" src="/pwnme/7.jpeg" alt="Untitled"  />
+</p>
+<p>So I tried to open the original file, <code>Acquisition.e01</code>, with Autopsy. We can find 3 carved files:</p>
+<p><img loading="lazy" src="/pwnme/8.png" alt="Untitled"  />
+</p>
+<p>After extracting those files, we have this image with the flag:</p>
+<p><img loading="lazy" src="/pwnme/9.png" alt="Untitled"  />
+</p>
+
+
+  </div>
+
+  <footer class="post-footer">
+    <ul class="post-tags">
+    </ul>
+<nav class="paginav">
+  <a class="next" href="https://luhko.github.io/write-up/404ctf/">
+    <span class="title">Next »</span>
+    <br>
+    <span>404 CTF 2022</span>
+  </a>
+</nav>
+
+  </footer>
+</article>
+    </main>
+    
+<footer class="footer">
+    <span>&copy; 2022 <a href="https://luhko.github.io/">Luhko</a></span>
+    <span>
+        Powered by
+        <a href="https://gohugo.io/" rel="noopener noreferrer" target="_blank">Hugo</a> &
+        <a href="https://github.com/adityatelange/hugo-PaperMod/" rel="noopener" target="_blank">PaperMod</a>
+    </span>
+</footer>
+<a href="#top" aria-label="go to top" title="Go to Top (Alt + G)" class="top-link" id="top-link" accesskey="g">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 12 6" fill="currentColor">
+        <path d="M12 6H0l6-6z" />
+    </svg>
+</a>
+
+<script>
+    let menu = document.getElementById('menu')
+    if (menu) {
+        menu.scrollLeft = localStorage.getItem("menu-scroll-position");
+        menu.onscroll = function () {
+            localStorage.setItem("menu-scroll-position", menu.scrollLeft);
+        }
+    }
+
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+        anchor.addEventListener("click", function (e) {
+            e.preventDefault();
+            var id = this.getAttribute("href").substr(1);
+            if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+                document.querySelector(`[id='${decodeURIComponent(id)}']`).scrollIntoView({
+                    behavior: "smooth"
+                });
+            } else {
+                document.querySelector(`[id='${decodeURIComponent(id)}']`).scrollIntoView();
+            }
+            if (id === "top") {
+                history.replaceState(null, null, " ");
+            } else {
+                history.pushState(null, null, `#${id}`);
+            }
+        });
+    });
+
+</script>
+<script>
+    var mybutton = document.getElementById("top-link");
+    window.onscroll = function () {
+        if (document.body.scrollTop > 800 || document.documentElement.scrollTop > 800) {
+            mybutton.style.visibility = "visible";
+            mybutton.style.opacity = "1";
+        } else {
+            mybutton.style.visibility = "hidden";
+            mybutton.style.opacity = "0";
+        }
+    };
+
+</script>
+<script>
+    document.getElementById("theme-toggle").addEventListener("click", () => {
+        if (document.body.className.includes("dark")) {
+            document.body.classList.remove('dark');
+            localStorage.setItem("pref-theme", 'light');
+        } else {
+            document.body.classList.add('dark');
+            localStorage.setItem("pref-theme", 'dark');
+        }
+    })
+
+</script>
+<script>
+    document.querySelectorAll('pre > code').forEach((codeblock) => {
+        const container = codeblock.parentNode.parentNode;
+
+        const copybutton = document.createElement('button');
+        copybutton.classList.add('copy-code');
+        copybutton.innerHTML = 'copy';
+
+        function copyingDone() {
+            copybutton.innerHTML = 'copied!';
+            setTimeout(() => {
+                copybutton.innerHTML = 'copy';
+            }, 2000);
+        }
+
+        copybutton.addEventListener('click', (cb) => {
+            if ('clipboard' in navigator) {
+                navigator.clipboard.writeText(codeblock.textContent);
+                copyingDone();
+                return;
+            }
+
+            const range = document.createRange();
+            range.selectNodeContents(codeblock);
+            const selection = window.getSelection();
+            selection.removeAllRanges();
+            selection.addRange(range);
+            try {
+                document.execCommand('copy');
+                copyingDone();
+            } catch (e) { };
+            selection.removeRange(range);
+        });
+
+        if (container.classList.contains("highlight")) {
+            container.appendChild(copybutton);
+        } else if (container.parentNode.firstChild == container) {
+            
+        } else if (codeblock.parentNode.parentNode.parentNode.parentNode.parentNode.nodeName == "TABLE") {
+            
+            codeblock.parentNode.parentNode.parentNode.parentNode.parentNode.appendChild(copybutton);
+        } else {
+            
+            codeblock.parentNode.appendChild(copybutton);
+        }
+    });
+</script>
+</body>
+
+</html>
