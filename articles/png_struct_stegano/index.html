@@ -1,0 +1,568 @@
+<!DOCTYPE html>
+<html lang="en" dir="auto">
+
+<head><meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<meta name="robots" content="index, follow">
+<title>PNG files : structure and Steganography | Luhko</title>
+<meta name="keywords" content="">
+<meta name="description" content="In this article, we will have a quick overview of the PNG file structure and some Steganography technics used. PNG Steganography is often used for CTF, so I hope this article will be helpful :)
+PNG file structure Chunks A PNG is composed of chunks. Each chunk contains four parts:
+ Length (4 bytes): indicate the number of bytes in the chunk’s data field (ignoring himself, chunk type and CRC) Chunk type (4 bytes): indicate the chunk type, limited to ASCII letters Chunk data (length depends of the chunk type): the size can be from 0 to (2^31)-1 bytes CRC(4 bytes): calculated using the chunk type and data.">
+<meta name="author" content="">
+<link rel="canonical" href="https://luhko.github.io/articles/png_struct_stegano/">
+<link crossorigin="anonymous" href="/assets/css/stylesheet.41f2d211c00e636a3c229c52ef2d4299a66891ae66771098993b13bca7972ae6.css" integrity="sha256-QfLSEcAOY2o8IpxS7y1CmaZoka5mdxCYmTsTvKeXKuY=" rel="preload stylesheet" as="style">
+<script defer crossorigin="anonymous" src="/assets/js/highlight.f413e19d0714851f6474e7ee9632408e58ac146fbdbe62747134bea2fa3415e0.js" integrity="sha256-9BPhnQcUhR9kdOfuljJAjlisFG&#43;9vmJ0cTS&#43;ovo0FeA="
+    onload="hljs.initHighlightingOnLoad();"></script>
+<link rel="icon" href="https://luhko.github.io/favicon.ico">
+<link rel="icon" type="image/png" sizes="16x16" href="https://luhko.github.io/favicon-16x16.png">
+<link rel="icon" type="image/png" sizes="32x32" href="https://luhko.github.io/favicon-32x32.png">
+<link rel="apple-touch-icon" href="https://luhko.github.io/apple-touch-icon.png">
+<link rel="mask-icon" href="https://luhko.github.io/safari-pinned-tab.svg">
+<meta name="theme-color" content="#2e2e33">
+<meta name="msapplication-TileColor" content="#2e2e33">
+<noscript>
+    <style>
+        #theme-toggle,
+        .top-link {
+            display: none;
+        }
+
+    </style>
+    <style>
+        @media (prefers-color-scheme: dark) {
+            :root {
+                --theme: rgb(29, 30, 32);
+                --entry: rgb(46, 46, 51);
+                --primary: rgb(218, 218, 219);
+                --secondary: rgb(155, 156, 157);
+                --tertiary: rgb(65, 66, 68);
+                --content: rgb(196, 196, 197);
+                --hljs-bg: rgb(46, 46, 51);
+                --code-bg: rgb(55, 56, 62);
+                --border: rgb(51, 51, 51);
+            }
+
+            .list {
+                background: var(--theme);
+            }
+
+            .list:not(.dark)::-webkit-scrollbar-track {
+                background: 0 0;
+            }
+
+            .list:not(.dark)::-webkit-scrollbar-thumb {
+                border-color: var(--theme);
+            }
+        }
+
+    </style>
+</noscript><meta property="og:title" content="PNG files : structure and Steganography" />
+<meta property="og:description" content="In this article, we will have a quick overview of the PNG file structure and some Steganography technics used. PNG Steganography is often used for CTF, so I hope this article will be helpful :)
+PNG file structure Chunks A PNG is composed of chunks. Each chunk contains four parts:
+ Length (4 bytes): indicate the number of bytes in the chunk’s data field (ignoring himself, chunk type and CRC) Chunk type (4 bytes): indicate the chunk type, limited to ASCII letters Chunk data (length depends of the chunk type): the size can be from 0 to (2^31)-1 bytes CRC(4 bytes): calculated using the chunk type and data." />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://luhko.github.io/articles/png_struct_stegano/" /><meta property="article:section" content="articles" />
+<meta property="article:published_time" content="2022-08-04T19:44:49&#43;02:00" />
+<meta property="article:modified_time" content="2022-08-04T19:44:49&#43;02:00" />
+
+<meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="PNG files : structure and Steganography"/>
+<meta name="twitter:description" content="In this article, we will have a quick overview of the PNG file structure and some Steganography technics used. PNG Steganography is often used for CTF, so I hope this article will be helpful :)
+PNG file structure Chunks A PNG is composed of chunks. Each chunk contains four parts:
+ Length (4 bytes): indicate the number of bytes in the chunk’s data field (ignoring himself, chunk type and CRC) Chunk type (4 bytes): indicate the chunk type, limited to ASCII letters Chunk data (length depends of the chunk type): the size can be from 0 to (2^31)-1 bytes CRC(4 bytes): calculated using the chunk type and data."/>
+
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [, 
+    {
+      "@type": "ListItem",
+      "position":  2 ,
+      "name": "PNG files : structure and Steganography",
+      "item": "https://luhko.github.io/articles/png_struct_stegano/"
+    }
+  ]
+}
+</script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BlogPosting",
+  "headline": "PNG files : structure and Steganography",
+  "name": "PNG files : structure and Steganography",
+  "description": "In this article, we will have a quick overview of the PNG file structure and some Steganography technics used. PNG Steganography is often used for CTF, so I hope this article will be helpful :)\nPNG file structure Chunks A PNG is composed of chunks. Each chunk contains four parts:\n Length (4 bytes): indicate the number of bytes in the chunk’s data field (ignoring himself, chunk type and CRC) Chunk type (4 bytes): indicate the chunk type, limited to ASCII letters Chunk data (length depends of the chunk type): the size can be from 0 to (2^31)-1 bytes CRC(4 bytes): calculated using the chunk type and data.",
+  "keywords": [
+    
+  ],
+  "articleBody": "In this article, we will have a quick overview of the PNG file structure and some Steganography technics used. PNG Steganography is often used for CTF, so I hope this article will be helpful :)\nPNG file structure Chunks A PNG is composed of chunks. Each chunk contains four parts:\n Length (4 bytes): indicate the number of bytes in the chunk’s data field (ignoring himself, chunk type and CRC) Chunk type (4 bytes): indicate the chunk type, limited to ASCII letters Chunk data (length depends of the chunk type): the size can be from 0 to (2^31)-1 bytes CRC(4 bytes): calculated using the chunk type and data. An incorrect CRC will result in an invalid PNG.  A PNG file is composed of a signature (magic bytes) and 3 critical chunks:\n   %PNG…. 89 50 4E 47 0D 0A 1A 0A     IHDR Contains informations about the image. It must be the first block. It contains : width (4 bytes) ; height (4 bytes) ; bit depth (1 byte) ; color type (1 byte), compression method (1 byte) ; filter method (1 byte); interlace method (1 byte)   IDAT Contains the image data. You can have as much block as you want resulting in the same image.   IEND Indicate that this is the end of the image.    Here is an example:\n Red: PNG header Green: Chunk length Yellow: Chunk type Blue: Chunk data Black: CRC  It can also contain some other chunks, but they are optional: PLTE, tIME, iTXt, tEXt, zTXt, sRGB, sPLT, sBIT, PHYs, tRNs, iCCP, hIST, gAMA, bKGD, cHRM.\nMore informations can be found here.\nPNG and Steganography It is impossible to cover all the Steganography technics used, but I will try to explain the most common.\nTools Here is a non-exhaustive list of tools that you can use:\n  Tweakpngis a tool that can check the validity of a PNG. It also allows you to edit the PNGstructure without editing the hex data manually (IHDR edition, IDAT fusion, CRC edition …)\n  HxDis an hexadecimal editor with a GUI and powerful capabilities\n  pngcheckis an executable that can check the validity of a png\n  Aperisolveis a website that embeds a lot of usefull tools. You just have to upload your image and it will perform various operations: binwalk, filters, foremost …\n  zstegis a tool that can be used to embed data in PNG\n  Stringswill allows you to see if the image contains printable text\n  exiftool can be used to see exif metadata\n  binwalkallows you to see if the png file contains another file\n  Embedded strings You can simply add textual data in the tEXtchunk:\nYou can also add some text directly at the end of the image. The image will still be valid because the text is after the IENDchunk:\n$ echo \"Insert flag here\"  cat.png $ strings cat.png | tail -n 10 [LAzph #Fm- mm;v pRr6 zb%x) 6} 7Ah\u0026 \"U5C IEND Insert flag here PNG fixing A very simple way to hide a PNG image is to edit a part of the magic bytes and removing the extension. For example, you can just edit the first byte from 89 to 88:\nThe image will appear as data:\n$ file what what: data You also won’t be able to open it with a regular image viewer. Anyway, it would be a very simple challenge since you can easily understand it is a PNG file with any hexadecimal editor or strings.\nAnother way would consist of altering data in a critical chunk. The image will be seen as a PNG file but if, for example, the IHDR chunk is broken, you won’t be able to open it.\nFor example, let’s break the IHDR chunk:\n Indicate a wrong chunk size Changing the CRC to a random one  You can also break it by editing the chunk name or the data inside. In our case, the original chunk is:\n00 00 00 0D | 49 48 44 52 | 00 00 01 3C 00 00 01 3C 08 06 00 00 00 | 5D 05 0D 06 Length Chunk name Data CRC If we want to corrupt it, for example:\nDE AD BE EF| 49 48 44 52 | 00 00 01 3C 00 00 01 3C 08 06 00 00 00 | FF FF FF FF If we check it, the image is now corrupted and you won’t be able to open it:\n$ pngcheck meme.png meme.png invalid chunk length (too large) ERROR: meme.png But now: how do we fix it?\nThe first thing to do is to repair the length. Since it is a known chunk type, we know exactly which size he’s supposed to be: 13 bytes (0x0D)\n00 00 00 0D | 49 48 44 52 | 00 00 01 3C 00 00 01 3C 08 06 00 00 00 | FF FF FF FF Now we need to fix the CRC. Tweakpng is very helpful on this point:\nYou just need to fix it and you’ll be able to open your image again!\nIHDR size attribute It is possible to hide data thanks to the IHDR size bytes. Take this image for example:\nThis image is perfectly valid if we check it with tweakpng or pngcheck:\n$ pngcheck catsteg.png OK: catsteg.png (476x471, 32-bit RGB+alpha, non-interlaced, 61.6%). But what happen if we try to extend the size in the IHDRchunk? If we set the height to 500px (don’t forget to fix the CRCwhich won’t be valid anymore if you edit the size):\nWe can see that our image contains blank content at the bottom. If we extend it again (550px height):\nIt is also important to note that if you try to extend the size of an image already at its maximum size, it may result in an unreadable or a corrupted image (although the image is still valid).\nEmbedding PNG in a PNG In this section, we will see how we can hide a PNG into another PNG:\n This won’t be flagged by binwalk or foremost The original image will be valid and you’ll be able to open it  But how do we proceed?\nLet’s say that we want to embed our meme image into our meme image. With HxD, we can take the whole content of our image (from magic bytes to IEND included) and copy all of it it before the size declaration of a chunk. We also need to:\n Modify the magic bytes of the embedded image Edit the chunk size so the parser will see our embedded image as a big chunk (from the first byte after our fake magic byte to the last D of IEND chunk). In our case, it’s 00 01 06 BB Edit the CRC (in our case, from AE 42 60 82 to 1F 8D B1 37) (optionnal, because a wrong CRC for our fake chunk won’t trigger an image viewer)  You can see above:\n Red: original image Green: embedded image  You can open it with a regular image viewer and it’s not flagged by binwalk/foremost :\n$ binwalk meme.png DECIMAL HEXADECIMAL DESCRIPTION -------------------------------------------------------------------------------- 0 0x0 PNG image, 316 x 316, 8-bit/color RGBA, non-interlaced 116 0x74 Zlib compressed data, best compression 67350 0x10716 Zlib compressed data, best compression $ foremost meme.png -v File: meme.png 1 FILES EXTRACTED png:= 1 But we can easily see that there is a problem by looking at the hex structure, or with tweakpng/pngcheck:\n$ pngcheck meme.png meme.png illegal (unless recently approved) unknown, public chunk NOPE ERROR: meme.png Now, if you want to extract the embedded image, you just have to:\n Extract the content from the fake magic bytes to IEND, CRC included Copy it into a file Correct the magic bytes Correct the CRC after IEND (if you edited it) Name it whatever.png  LSB This technic isn’t related to PNG structure and can be used on various files (including audio files), but it is very common for PNG.\nA pixel is composed of 3 bytes. Each byte represents a color (R,G,B).\nBinary : 11111111 00000010 11111110 Decimal : 255 2 254 But if you modify the LSB (Least Significant Bit) of each byte, it is almost impossible to identify it with your eyes. For example, if I want to encode 011the new pixel color will be:\nBinary : 11111110 00000011 11111111 Decimal : 254 3 255 If you want to decode it, you need to extract the LSB of each value for each pixel. For example, if LSB are stored on the first line of the image it can be easily done in python:\nfrom PIL import Image import sys im = Image.open(\"lsb.png\", 'r') pixels = im.load() width, height = im.size binary = '' for x in range(0,width): red = pixels[x, x][0] green = pixels[x, x][1] blue = pixels[x, x][2] binary += bin(red)[-1] + bin(green)[-1]+ bin(blue)[-1] print(binary) ",
+  "wordCount" : "1460",
+  "inLanguage": "en",
+  "datePublished": "2022-08-04T19:44:49+02:00",
+  "dateModified": "2022-08-04T19:44:49+02:00",
+  "mainEntityOfPage": {
+    "@type": "WebPage",
+    "@id": "https://luhko.github.io/articles/png_struct_stegano/"
+  },
+  "publisher": {
+    "@type": "Organization",
+    "name": "Luhko",
+    "logo": {
+      "@type": "ImageObject",
+      "url": "https://luhko.github.io/favicon.ico"
+    }
+  }
+}
+</script>
+</head>
+
+<body class="" id="top">
+<script>
+    if (localStorage.getItem("pref-theme") === "dark") {
+        document.body.classList.add('dark');
+    } else if (localStorage.getItem("pref-theme") === "light") {
+        document.body.classList.remove('dark')
+    } else if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
+        document.body.classList.add('dark');
+    }
+
+</script>
+
+<header class="header">
+    <nav class="nav">
+        <div class="logo">
+            <a href="https://luhko.github.io/" accesskey="h" title="Luhko (Alt + H)">Luhko</a>
+            <div class="logo-switches">
+                <button id="theme-toggle" accesskey="t" title="(Alt + T)">
+                    <svg id="moon" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
+                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round">
+                        <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+                    </svg>
+                    <svg id="sun" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
+                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round">
+                        <circle cx="12" cy="12" r="5"></circle>
+                        <line x1="12" y1="1" x2="12" y2="3"></line>
+                        <line x1="12" y1="21" x2="12" y2="23"></line>
+                        <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+                        <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+                        <line x1="1" y1="12" x2="3" y2="12"></line>
+                        <line x1="21" y1="12" x2="23" y2="12"></line>
+                        <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+                        <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+                    </svg>
+                </button>
+            </div>
+        </div>
+        <ul id="menu">
+            <li>
+                <a href="https://luhko.github.io/articles" title="Articles">
+                    <span>Articles</span>
+                </a>
+            </li>
+            <li>
+                <a href="https://luhko.github.io/write-up" title="Write-Up">
+                    <span>Write-Up</span>
+                </a>
+            </li>
+        </ul>
+    </nav>
+</header>
+<main class="main">
+
+<article class="post-single">
+  <header class="post-header">
+    <div class="breadcrumbs"><a href="https://luhko.github.io/">Home</a></div>
+    <h1 class="post-title">
+      PNG files : structure and Steganography
+    </h1>
+    <div class="post-meta"><span title='2022-08-04 19:44:49 +0200 CEST'>August 4, 2022</span>&nbsp;·&nbsp;7 min
+
+</div>
+  </header> <div class="toc">
+    <details >
+        <summary accesskey="c" title="(Alt + C)">
+            <span class="details">Table of Contents</span>
+        </summary>
+
+        <div class="inner"><ul>
+                <li>
+                    <a href="#png-file-structure" aria-label="PNG file structure">PNG file structure</a><ul>
+                        
+                <li>
+                    <a href="#chunks" aria-label="Chunks">Chunks</a></li></ul>
+                </li>
+                <li>
+                    <a href="#png-and-steganography" aria-label="PNG and Steganography">PNG and Steganography</a><ul>
+                        
+                <li>
+                    <a href="#tools" aria-label="Tools">Tools</a></li>
+                <li>
+                    <a href="#embedded-strings" aria-label="Embedded strings">Embedded strings</a></li>
+                <li>
+                    <a href="#png-fixing" aria-label="PNG fixing">PNG fixing</a></li>
+                <li>
+                    <a href="#ihdr-size-attribute" aria-label="IHDR size attribute">IHDR size attribute</a></li>
+                <li>
+                    <a href="#embedding-png-in-a-png" aria-label="Embedding PNG in a PNG">Embedding PNG in a PNG</a></li>
+                <li>
+                    <a href="#lsb" aria-label="LSB">LSB</a>
+                </li>
+            </ul>
+            </li>
+            </ul>
+        </div>
+    </details>
+</div>
+
+  <div class="post-content"><p>In this article, we will have a quick overview of the PNG file structure and some Steganography technics used. PNG Steganography is often used for CTF, so I hope this article will be helpful :)</p>
+<h1 id="png-file-structure">PNG file structure<a hidden class="anchor" aria-hidden="true" href="#png-file-structure">#</a></h1>
+<h2 id="chunks">Chunks<a hidden class="anchor" aria-hidden="true" href="#chunks">#</a></h2>
+<p>A PNG is composed of chunks. Each chunk contains four parts:</p>
+<ul>
+<li>Length (4 bytes): indicate the number of bytes in the chunk’s data field (ignoring himself, chunk type and <code>CRC</code>)</li>
+<li>Chunk type (4 bytes): indicate the chunk type, limited to ASCII letters</li>
+<li>Chunk data (length depends of the chunk type): the size can be from <code>0 to (2^31)-1 bytes</code></li>
+<li><code>CRC</code>(4 bytes): calculated using the chunk type and data. An incorrect CRC will result in an invalid PNG.</li>
+</ul>
+<p>A PNG file is composed of a signature (magic bytes) and 3 critical chunks:</p>
+<table>
+<thead>
+<tr>
+<th>%PNG….</th>
+<th>89 50 4E 47 0D 0A 1A 0A</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>IHDR</td>
+<td>Contains informations about the image. It must be the first block. It contains : width (4 bytes) ; height (4 bytes) ; bit depth (1 byte) ; color type (1 byte), compression method (1 byte) ; filter method (1 byte); interlace method (1 byte)</td>
+</tr>
+<tr>
+<td>IDAT</td>
+<td>Contains the image data. You can have as much block as you want resulting in the same image.</td>
+</tr>
+<tr>
+<td>IEND</td>
+<td>Indicate that this is the end of the image.</td>
+</tr>
+</tbody>
+</table>
+<p>Here is an example:</p>
+<p><img loading="lazy" src="/png_stega/Untitled.png" alt="Untitled"  />
+</p>
+<ul>
+<li><strong>Red:</strong> PNG header</li>
+<li><strong>Green</strong>: Chunk length</li>
+<li><strong>Yellow</strong>: Chunk type</li>
+<li><strong>Blue</strong>: Chunk data</li>
+<li><strong>Black</strong>: CRC</li>
+</ul>
+<p>It can also contain some other chunks, but they are optional: <code>PLTE</code>, <code>tIME</code>, <code>iTXt</code>, <code>tEXt</code>, <code>zTXt</code>, <code>sRGB</code>, <code>sPLT</code>, <code>sBIT</code>, <code>PHYs</code>, <code>tRNs</code>, <code>iCCP</code>, <code>hIST</code>, <code>gAMA</code>, <code>bKGD</code>, <code>cHRM</code>.</p>
+<p>More informations can be found <a href="https://datatracker.ietf.org/doc/html/rfc2083">here</a>.</p>
+<h1 id="png-and-steganography">PNG and Steganography<a hidden class="anchor" aria-hidden="true" href="#png-and-steganography">#</a></h1>
+<p>It is impossible to cover all the Steganography technics used, but I will try to explain the most common.</p>
+<h2 id="tools">Tools<a hidden class="anchor" aria-hidden="true" href="#tools">#</a></h2>
+<p>Here is a non-exhaustive list of tools that you can use:</p>
+<ul>
+<li>
+<p><code>Tweakpng</code>is a tool that can check the validity of a PNG. It also allows you to edit the PNGstructure without editing the hex data manually (IHDR edition, IDAT fusion, CRC edition …)</p>
+<p><img loading="lazy" src="/png_stega/Untitled%201.png" alt="Untitled"  />
+</p>
+</li>
+<li>
+<p><code>HxD</code>is an hexadecimal editor with a GUI and powerful capabilities</p>
+</li>
+<li>
+<p><code>pngcheck</code>is an executable that can check the validity of a png</p>
+</li>
+<li>
+<p><code>Aperisolve</code>is a website that embeds a lot of usefull tools. You just have to upload your image and it will perform various operations: binwalk, filters, foremost …</p>
+</li>
+<li>
+<p><code>zsteg</code>is a tool that can be used to embed data in PNG</p>
+</li>
+<li>
+<p><code>Strings</code>will allows you to see if the image contains printable text</p>
+</li>
+<li>
+<p><code>exiftool</code> can be used to see exif metadata</p>
+</li>
+<li>
+<p><code>binwalk</code>allows you to see if the png file contains another file</p>
+</li>
+</ul>
+<h2 id="embedded-strings">Embedded strings<a hidden class="anchor" aria-hidden="true" href="#embedded-strings">#</a></h2>
+<p>You can simply add textual data in the <code>tEXt</code>chunk:</p>
+<p><img loading="lazy" src="/png_stega/Untitled%202.png" alt="Untitled"  />
+</p>
+<p>You can also add some text directly at the end of the image. The image will still be valid because the text is after the <code>IEND</code>chunk:</p>
+<div class="highlight"><pre class="chroma"><code class="language-python" data-lang="python"><span class="err">$</span> <span class="n">echo</span> <span class="s2">&#34;Insert flag here&#34;</span> <span class="o">&gt;&gt;</span> <span class="n">cat</span><span class="o">.</span><span class="n">png</span>
+<span class="err">$</span> <span class="n">strings</span> <span class="n">cat</span><span class="o">.</span><span class="n">png</span> <span class="o">|</span> <span class="n">tail</span> <span class="o">-</span><span class="n">n</span> <span class="mi">10</span>
+<span class="p">[</span><span class="n">LAzph</span>
+<span class="c1">#Fm-</span>
+<span class="n">mm</span><span class="p">;</span><span class="n">v</span>
+<span class="n">pRr6</span>
+<span class="n">zb</span><span class="o">%</span><span class="n">x</span><span class="p">)</span>
+<span class="mi">6</span><span class="o">&lt;+</span><span class="p">}</span>
+<span class="mi">7</span><span class="n">Ah</span><span class="o">&amp;</span>
+<span class="s2">&#34;U5C</span>
+<span class="n">IEND</span>
+<span class="n">Insert</span> <span class="n">flag</span> <span class="n">here</span>
+</code></pre></div><h2 id="png-fixing">PNG fixing<a hidden class="anchor" aria-hidden="true" href="#png-fixing">#</a></h2>
+<p>A very simple way to hide a PNG image is to edit a part of the magic bytes and removing the extension. For example, you can just edit the first byte from 89 to 88:</p>
+<p><img loading="lazy" src="/png_stega/Untitled%203.png" alt="Untitled"  />
+</p>
+<p>The image will appear as data:</p>
+<div class="highlight"><pre class="chroma"><code class="language-python" data-lang="python"><span class="err">$</span> <span class="nb">file</span> <span class="n">what</span>
+<span class="n">what</span><span class="p">:</span> <span class="n">data</span>
+</code></pre></div><p>You also won’t be able to open it with a regular image viewer. Anyway, it would be a very simple challenge since you can easily understand it is a PNG file with any hexadecimal editor or strings.</p>
+<p>Another way would consist of altering data in a critical chunk. The image will be seen as a PNG file but if, for example, the <code>IHDR</code> chunk is broken, you won’t be able to open it.</p>
+<p>For example, let’s break the <code>IHDR</code> chunk:</p>
+<ul>
+<li>Indicate a wrong chunk size</li>
+<li>Changing the CRC to a random one</li>
+</ul>
+<p>You can also break it by editing the chunk name or the data inside. In our case, the original chunk is:</p>
+<div class="highlight"><pre class="chroma"><code class="language-python" data-lang="python"><span class="mo">00</span> <span class="mo">00</span> <span class="mo">00</span> <span class="mi">0</span><span class="n">D</span> <span class="o">|</span> <span class="mi">49</span> <span class="mi">48</span> <span class="mi">44</span> <span class="mi">52</span> <span class="o">|</span> <span class="mo">00</span> <span class="mo">00</span> <span class="mo">01</span> <span class="mi">3</span><span class="n">C</span> <span class="mo">00</span> <span class="mo">00</span> <span class="mo">01</span> <span class="mi">3</span><span class="n">C</span> <span class="mi">08</span> <span class="mo">06</span> <span class="mo">00</span> <span class="mo">00</span> <span class="mo">00</span> <span class="o">|</span> <span class="mi">5</span><span class="n">D</span> <span class="mo">05</span> <span class="mi">0</span><span class="n">D</span> <span class="mo">06</span>
+<span class="n">Length</span>        <span class="n">Chunk</span> <span class="n">name</span>       <span class="n">Data</span>                                   <span class="n">CRC</span>
+</code></pre></div><p>If we want to corrupt it, for example:</p>
+<div class="highlight"><pre class="chroma"><code class="language-python" data-lang="python"><span class="n">DE</span> <span class="n">AD</span> <span class="n">BE</span> <span class="n">EF</span><span class="o">|</span> <span class="mi">49</span> <span class="mi">48</span> <span class="mi">44</span> <span class="mi">52</span> <span class="o">|</span> <span class="mo">00</span> <span class="mo">00</span> <span class="mo">01</span> <span class="mi">3</span><span class="n">C</span> <span class="mo">00</span> <span class="mo">00</span> <span class="mo">01</span> <span class="mi">3</span><span class="n">C</span> <span class="mi">08</span> <span class="mo">06</span> <span class="mo">00</span> <span class="mo">00</span> <span class="mo">00</span> <span class="o">|</span> <span class="n">FF</span> <span class="n">FF</span> <span class="n">FF</span> <span class="n">FF</span>
+</code></pre></div><p>If we check it, the image is now corrupted and you won’t be able to open it:</p>
+<div class="highlight"><pre class="chroma"><code class="language-python" data-lang="python"><span class="err">$</span> <span class="n">pngcheck</span> <span class="n">meme</span><span class="o">.</span><span class="n">png</span>
+<span class="n">meme</span><span class="o">.</span><span class="n">png</span>  <span class="n">invalid</span> <span class="n">chunk</span> <span class="n">length</span> <span class="p">(</span><span class="n">too</span> <span class="n">large</span><span class="p">)</span>
+<span class="n">ERROR</span><span class="p">:</span> <span class="n">meme</span><span class="o">.</span><span class="n">png</span>
+</code></pre></div><p>But now: how do we fix it?</p>
+<p>The first thing to do is to repair the length. Since it is a known chunk type, we know exactly which size he’s supposed to be: 13 bytes (<code>0x0D</code>)</p>
+<div class="highlight"><pre class="chroma"><code class="language-python" data-lang="python"><span class="mo">00</span> <span class="mo">00</span> <span class="mo">00</span> <span class="mi">0</span><span class="n">D</span> <span class="o">|</span> <span class="mi">49</span> <span class="mi">48</span> <span class="mi">44</span> <span class="mi">52</span> <span class="o">|</span> <span class="mo">00</span> <span class="mo">00</span> <span class="mo">01</span> <span class="mi">3</span><span class="n">C</span> <span class="mo">00</span> <span class="mo">00</span> <span class="mo">01</span> <span class="mi">3</span><span class="n">C</span> <span class="mi">08</span> <span class="mo">06</span> <span class="mo">00</span> <span class="mo">00</span> <span class="mo">00</span> <span class="o">|</span> <span class="n">FF</span> <span class="n">FF</span> <span class="n">FF</span> <span class="n">FF</span>
+</code></pre></div><p>Now we need to fix the CRC. Tweakpng is very helpful on this point:</p>
+<p><img loading="lazy" src="/png_stega/Untitled%204.png" alt="Untitled"  />
+</p>
+<p>You just need to fix it and you’ll be able to open your image again!</p>
+<p><img loading="lazy" src="/png_stega/Untitled%205.png" alt="Untitled"  />
+</p>
+<h2 id="ihdr-size-attribute">IHDR size attribute<a hidden class="anchor" aria-hidden="true" href="#ihdr-size-attribute">#</a></h2>
+<p>It is possible to hide data thanks to the <code>IHDR</code> size bytes. Take this image for example:</p>
+<p><img loading="lazy" src="/png_stega/Untitled%206.png" alt="Untitled"  />
+</p>
+<p>This image is perfectly valid if we check it with <code>tweakpng</code> or <code>pngcheck</code>:</p>
+<div class="highlight"><pre class="chroma"><code class="language-python" data-lang="python"><span class="err">$</span> <span class="n">pngcheck</span> <span class="n">catsteg</span><span class="o">.</span><span class="n">png</span>
+<span class="n">OK</span><span class="p">:</span> <span class="n">catsteg</span><span class="o">.</span><span class="n">png</span> <span class="p">(</span><span class="mi">476</span><span class="n">x471</span><span class="p">,</span> <span class="mi">32</span><span class="o">-</span><span class="n">bit</span> <span class="n">RGB</span><span class="o">+</span><span class="n">alpha</span><span class="p">,</span> <span class="n">non</span><span class="o">-</span><span class="n">interlaced</span><span class="p">,</span> <span class="mf">61.6</span><span class="o">%</span><span class="p">)</span><span class="o">.</span>
+</code></pre></div><p>But what happen if we try to extend the size in the <code>IHDR</code>chunk? If we set the height to 500px (don’t forget to fix the <code>CRC</code>which won’t be valid anymore if you edit the size):</p>
+<p><img loading="lazy" src="/png_stega/Untitled%207.png" alt="Untitled"  />
+</p>
+<p><img loading="lazy" src="/png_stega/Untitled%208.png" alt="Untitled"  />
+</p>
+<p>We can see that our image contains blank content at the bottom. If we extend it again (550px height):</p>
+<p><img loading="lazy" src="/png_stega/Untitled%209.png" alt="Untitled"  />
+</p>
+<p>It is also important to note that if you try to extend the size of an image already at its maximum size, it may result in an unreadable or a corrupted image (although the image is still valid).</p>
+<h2 id="embedding-png-in-a-png">Embedding PNG in a PNG<a hidden class="anchor" aria-hidden="true" href="#embedding-png-in-a-png">#</a></h2>
+<p>In this section, we will see how we can hide a PNG into another PNG:</p>
+<ul>
+<li>This won’t be flagged by <code>binwalk</code> or <code>foremost</code></li>
+<li>The original image will be valid and you’ll be able to open it</li>
+</ul>
+<p>But how do we proceed?</p>
+<p>Let’s say that we want to embed our meme image into our meme image. With HxD, we can take the whole content of our image (from magic bytes to IEND included) and copy all of it it <strong>before</strong> the size declaration of a chunk. We also need to:</p>
+<ul>
+<li>Modify the magic bytes of the embedded image</li>
+<li>Edit the chunk size so the parser will see our embedded image as a big chunk (from the first byte after our fake magic byte to the last D of <code>IEND</code> chunk). In our case, it’s <code>00 01 06 BB</code></li>
+<li>Edit the <code>CRC</code> (in our case, from <code>AE 42 60 82</code> to <code>1F 8D B1 37</code>) (optionnal, because a wrong CRC for our fake chunk won’t trigger an image viewer)</li>
+</ul>
+<p><img loading="lazy" src="/png_stega/Untitled%2010.png" alt="Untitled"  />
+</p>
+<p>You can see above:</p>
+<ul>
+<li><strong>Red</strong>: original image</li>
+<li><strong>Green</strong>: embedded image</li>
+</ul>
+<p>You can open it with a regular image viewer and it’s not flagged by binwalk/foremost :</p>
+<div class="highlight"><pre class="chroma"><code class="language-python" data-lang="python"><span class="err">$</span> <span class="n">binwalk</span> <span class="n">meme</span><span class="o">.</span><span class="n">png</span>
+
+<span class="n">DECIMAL</span>       <span class="n">HEXADECIMAL</span>     <span class="n">DESCRIPTION</span>
+<span class="o">--------------------------------------------------------------------------------</span>
+<span class="mi">0</span>             <span class="mh">0x0</span>             <span class="n">PNG</span> <span class="n">image</span><span class="p">,</span> <span class="mi">316</span> <span class="n">x</span> <span class="mi">316</span><span class="p">,</span> <span class="mi">8</span><span class="o">-</span><span class="n">bit</span><span class="o">/</span><span class="n">color</span> <span class="n">RGBA</span><span class="p">,</span> <span class="n">non</span><span class="o">-</span><span class="n">interlaced</span>
+<span class="mi">116</span>           <span class="mh">0x74</span>            <span class="n">Zlib</span> <span class="n">compressed</span> <span class="n">data</span><span class="p">,</span> <span class="n">best</span> <span class="n">compression</span>
+<span class="mi">67350</span>         <span class="mh">0x10716</span>         <span class="n">Zlib</span> <span class="n">compressed</span> <span class="n">data</span><span class="p">,</span> <span class="n">best</span> <span class="n">compression</span>
+ 
+<span class="err">$</span> <span class="n">foremost</span> <span class="n">meme</span><span class="o">.</span><span class="n">png</span> <span class="o">-</span><span class="n">v</span>
+<span class="n">File</span><span class="p">:</span> <span class="n">meme</span><span class="o">.</span><span class="n">png</span>
+<span class="mi">1</span> <span class="n">FILES</span> <span class="n">EXTRACTED</span>
+<span class="n">png</span><span class="p">:</span><span class="o">=</span> <span class="mi">1</span>
+</code></pre></div><p>But we can easily see that there is a problem by looking at the hex structure, or with tweakpng/pngcheck:</p>
+<div class="highlight"><pre class="chroma"><code class="language-python" data-lang="python"><span class="err">$</span> <span class="n">pngcheck</span> <span class="n">meme</span><span class="o">.</span><span class="n">png</span>
+<span class="n">meme</span><span class="o">.</span><span class="n">png</span>  <span class="n">illegal</span> <span class="p">(</span><span class="n">unless</span> <span class="n">recently</span> <span class="n">approved</span><span class="p">)</span> <span class="n">unknown</span><span class="p">,</span> <span class="n">public</span> <span class="n">chunk</span> <span class="n">NOPE</span>
+<span class="n">ERROR</span><span class="p">:</span> <span class="n">meme</span><span class="o">.</span><span class="n">png</span>
+</code></pre></div><p><img loading="lazy" src="/png_stega/Untitled%2011.png" alt="Untitled"  />
+</p>
+<p>Now, if you want to extract the embedded image, you just have to:</p>
+<ul>
+<li>Extract the content from the fake magic bytes to <code>IEND</code>, <code>CRC</code> included</li>
+<li>Copy it into a file</li>
+<li>Correct the magic bytes</li>
+<li>Correct the <code>CRC</code> after <code>IEND</code> (if you edited it)</li>
+<li>Name it whatever.png</li>
+</ul>
+<h2 id="lsb">LSB<a hidden class="anchor" aria-hidden="true" href="#lsb">#</a></h2>
+<p>This technic isn’t related to PNG structure and can be used on various files (including audio files), but it is very common for PNG.</p>
+<p>A pixel is composed of 3 bytes. Each byte represents a color (R,G,B).</p>
+<div class="highlight"><pre class="chroma"><code class="language-python" data-lang="python"><span class="n">Binary</span> <span class="p">:</span> <span class="mi">11111111</span> <span class="mo">00000010</span> <span class="mi">11111110</span>
+<span class="n">Decimal</span> <span class="p">:</span> <span class="mi">255</span>      <span class="mi">2</span>        <span class="mi">254</span>
+</code></pre></div><p><img loading="lazy" src="/png_stega/Untitled%2012.png" alt="Untitled"  />
+</p>
+<p>But if you modify the LSB (Least Significant Bit) of each byte, it is almost impossible to identify it with your eyes. For example, if I want to encode <code>011</code>the new pixel color will be:</p>
+<div class="highlight"><pre class="chroma"><code class="language-python" data-lang="python"><span class="n">Binary</span> <span class="p">:</span> <span class="mi">11111110</span> <span class="mo">00000011</span> <span class="mi">11111111</span>
+<span class="n">Decimal</span> <span class="p">:</span> <span class="mi">254</span>       <span class="mi">3</span>         <span class="mi">255</span>
+</code></pre></div><p><img loading="lazy" src="/png_stega/Untitled%2013.png" alt="Untitled"  />
+</p>
+<p>If you want to decode it, you need to extract the LSB of each value for each pixel. For example, if LSB are stored on the first line of the image it can be easily done in python:</p>
+<div class="highlight"><pre class="chroma"><code class="language-python" data-lang="python"><span class="kn">from</span> <span class="nn">PIL</span> <span class="kn">import</span> <span class="n">Image</span>
+<span class="kn">import</span> <span class="nn">sys</span>
+ 
+<span class="n">im</span> <span class="o">=</span> <span class="n">Image</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="s2">&#34;lsb.png&#34;</span><span class="p">,</span> <span class="s1">&#39;r&#39;</span><span class="p">)</span>
+<span class="n">pixels</span> <span class="o">=</span> <span class="n">im</span><span class="o">.</span><span class="n">load</span><span class="p">()</span>
+<span class="n">width</span><span class="p">,</span> <span class="n">height</span> <span class="o">=</span> <span class="n">im</span><span class="o">.</span><span class="n">size</span>
+<span class="n">binary</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span>
+
+<span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="n">width</span><span class="p">):</span> 
+   <span class="n">red</span> <span class="o">=</span> <span class="n">pixels</span><span class="p">[</span><span class="n">x</span><span class="p">,</span> <span class="n">x</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span>
+   <span class="n">green</span> <span class="o">=</span> <span class="n">pixels</span><span class="p">[</span><span class="n">x</span><span class="p">,</span> <span class="n">x</span><span class="p">][</span><span class="mi">1</span><span class="p">]</span>
+   <span class="n">blue</span> <span class="o">=</span> <span class="n">pixels</span><span class="p">[</span><span class="n">x</span><span class="p">,</span> <span class="n">x</span><span class="p">][</span><span class="mi">2</span><span class="p">]</span>
+   <span class="n">binary</span> <span class="o">+=</span>  <span class="nb">bin</span><span class="p">(</span><span class="n">red</span><span class="p">)[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>  <span class="o">+</span>  <span class="nb">bin</span><span class="p">(</span><span class="n">green</span><span class="p">)[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">+</span> <span class="nb">bin</span><span class="p">(</span><span class="n">blue</span><span class="p">)[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+
+<span class="k">print</span><span class="p">(</span><span class="n">binary</span><span class="p">)</span>
+</code></pre></div>
+
+  </div>
+
+  <footer class="post-footer">
+    <ul class="post-tags">
+    </ul>
+
+  </footer>
+</article>
+    </main>
+    
+<footer class="footer">
+    <span>&copy; 2022 <a href="https://luhko.github.io/">Luhko</a></span>
+    <span>
+        Powered by
+        <a href="https://gohugo.io/" rel="noopener noreferrer" target="_blank">Hugo</a> &
+        <a href="https://github.com/adityatelange/hugo-PaperMod/" rel="noopener" target="_blank">PaperMod</a>
+    </span>
+</footer>
+<a href="#top" aria-label="go to top" title="Go to Top (Alt + G)" class="top-link" id="top-link" accesskey="g">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 12 6" fill="currentColor">
+        <path d="M12 6H0l6-6z" />
+    </svg>
+</a>
+
+<script>
+    let menu = document.getElementById('menu')
+    if (menu) {
+        menu.scrollLeft = localStorage.getItem("menu-scroll-position");
+        menu.onscroll = function () {
+            localStorage.setItem("menu-scroll-position", menu.scrollLeft);
+        }
+    }
+
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+        anchor.addEventListener("click", function (e) {
+            e.preventDefault();
+            var id = this.getAttribute("href").substr(1);
+            if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+                document.querySelector(`[id='${decodeURIComponent(id)}']`).scrollIntoView({
+                    behavior: "smooth"
+                });
+            } else {
+                document.querySelector(`[id='${decodeURIComponent(id)}']`).scrollIntoView();
+            }
+            if (id === "top") {
+                history.replaceState(null, null, " ");
+            } else {
+                history.pushState(null, null, `#${id}`);
+            }
+        });
+    });
+
+</script>
+<script>
+    var mybutton = document.getElementById("top-link");
+    window.onscroll = function () {
+        if (document.body.scrollTop > 800 || document.documentElement.scrollTop > 800) {
+            mybutton.style.visibility = "visible";
+            mybutton.style.opacity = "1";
+        } else {
+            mybutton.style.visibility = "hidden";
+            mybutton.style.opacity = "0";
+        }
+    };
+
+</script>
+<script>
+    document.getElementById("theme-toggle").addEventListener("click", () => {
+        if (document.body.className.includes("dark")) {
+            document.body.classList.remove('dark');
+            localStorage.setItem("pref-theme", 'light');
+        } else {
+            document.body.classList.add('dark');
+            localStorage.setItem("pref-theme", 'dark');
+        }
+    })
+
+</script>
+<script>
+    document.querySelectorAll('pre > code').forEach((codeblock) => {
+        const container = codeblock.parentNode.parentNode;
+
+        const copybutton = document.createElement('button');
+        copybutton.classList.add('copy-code');
+        copybutton.innerHTML = 'copy';
+
+        function copyingDone() {
+            copybutton.innerHTML = 'copied!';
+            setTimeout(() => {
+                copybutton.innerHTML = 'copy';
+            }, 2000);
+        }
+
+        copybutton.addEventListener('click', (cb) => {
+            if ('clipboard' in navigator) {
+                navigator.clipboard.writeText(codeblock.textContent);
+                copyingDone();
+                return;
+            }
+
+            const range = document.createRange();
+            range.selectNodeContents(codeblock);
+            const selection = window.getSelection();
+            selection.removeAllRanges();
+            selection.addRange(range);
+            try {
+                document.execCommand('copy');
+                copyingDone();
+            } catch (e) { };
+            selection.removeRange(range);
+        });
+
+        if (container.classList.contains("highlight")) {
+            container.appendChild(copybutton);
+        } else if (container.parentNode.firstChild == container) {
+            
+        } else if (codeblock.parentNode.parentNode.parentNode.parentNode.parentNode.nodeName == "TABLE") {
+            
+            codeblock.parentNode.parentNode.parentNode.parentNode.parentNode.appendChild(copybutton);
+        } else {
+            
+            codeblock.parentNode.appendChild(copybutton);
+        }
+    });
+</script>
+</body>
+
+</html>
