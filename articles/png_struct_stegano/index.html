@@ -421,9 +421,7 @@ PNG file structure Chunks A PNG is composed of chunks. Each chunk contains four 
 </code></pre></div><p><img loading="lazy" src="/png_stega/Untitled%2013.png" alt="Untitled"  />
 </p>
 <p>If you want to decode it, you need to extract the LSB of each value for each pixel. For example, if LSB are stored on the first line of the image it can be easily done in python:</p>
-<div class="highlight"><pre class="chroma"><code class="language-python" data-lang="python"><span class="kn">from</span> <span class="nn">PIL</span> <span class="kn">import</span> <span class="n">Image</span>
-<span class="kn">import</span> <span class="nn">sys</span>
- 
+<div class="highlight"><pre class="chroma"><code class="language-python" data-lang="python"><span class="kn">from</span> <span class="nn">PIL</span> <span class="kn">import</span> <span class="n">Image</span> 
 <span class="n">im</span> <span class="o">=</span> <span class="n">Image</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="s2">&#34;lsb.png&#34;</span><span class="p">,</span> <span class="s1">&#39;r&#39;</span><span class="p">)</span>
 <span class="n">pixels</span> <span class="o">=</span> <span class="n">im</span><span class="o">.</span><span class="n">load</span><span class="p">()</span>
 <span class="n">width</span><span class="p">,</span> <span class="n">height</span> <span class="o">=</span> <span class="n">im</span><span class="o">.</span><span class="n">size</span>
