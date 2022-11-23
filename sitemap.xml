@@ -3,12 +3,22 @@
   xmlns:xhtml="http://www.w3.org/1999/xhtml">
   
   <url>
-    <loc>https://luhko.github.io/articles/</loc>
-    <lastmod>2022-08-04T19:44:49+02:00</lastmod>
+    <loc>https://luhko.github.io/write-up/digitaloverdose/</loc>
+    <lastmod>2022-11-20T23:43:49+02:00</lastmod>
   </url>
   
   <url>
     <loc>https://luhko.github.io/</loc>
+    <lastmod>2022-11-20T23:43:49+02:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://luhko.github.io/write-up/</loc>
+    <lastmod>2022-11-20T23:43:49+02:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://luhko.github.io/articles/</loc>
     <lastmod>2022-08-04T19:44:49+02:00</lastmod>
   </url>
   
@@ -19,11 +29,6 @@
   
   <url>
     <loc>https://luhko.github.io/write-up/pwnme/</loc>
-    <lastmod>2022-07-04T23:44:49+02:00</lastmod>
-  </url>
-  
-  <url>
-    <loc>https://luhko.github.io/write-up/</loc>
     <lastmod>2022-07-04T23:44:49+02:00</lastmod>
   </url>
   

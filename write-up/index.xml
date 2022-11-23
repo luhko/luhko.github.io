@@ -5,7 +5,17 @@
     <link>https://luhko.github.io/write-up/</link>
     <description>Recent content in Write-ups on Luhko</description>
     <generator>Hugo -- gohugo.io</generator>
-    <lastBuildDate>Mon, 04 Jul 2022 23:44:49 +0200</lastBuildDate><atom:link href="https://luhko.github.io/write-up/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Sun, 20 Nov 2022 23:43:49 +0200</lastBuildDate><atom:link href="https://luhko.github.io/write-up/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Digital Overdose 2022 Automn CTF</title>
+      <link>https://luhko.github.io/write-up/digitaloverdose/</link>
+      <pubDate>Sun, 20 Nov 2022 23:43:49 +0200</pubDate>
+      
+      <guid>https://luhko.github.io/write-up/digitaloverdose/</guid>
+      <description>Cryptography Lightning Seeds We have this encryption script:
+#!/usr/bin/env python3 import random with open(&amp;#39;flag.txt&amp;#39;, &amp;#39;r&amp;#39;) as f: flag = f.read() seed = random.randint(0,999) random.seed(seed) encrypted = &amp;#39;&amp;#39;.join(f&amp;#39;{(ord(c) ^ random.randint(0,255)):02x}&amp;#39; for c in flag) with open(&amp;#39;out.txt&amp;#39;, &amp;#39;w&amp;#39;) as f: f.write(encrypted) # encrypted flag :4fcbac835550403f13c4cc337d8d8da48351921dfb7cd47d33857432c2ee665d821227 The problem here is the generation of the seed: only 1000 different values are possible. It will result in a weak encryption with only 1000 different keys:</description>
+    </item>
+    
     <item>
       <title>Pwnme CTF</title>
       <link>https://luhko.github.io/write-up/pwnme/</link>

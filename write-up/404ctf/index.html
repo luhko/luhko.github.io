@@ -234,9 +234,9 @@
 <li>TCP packet does not contains any payload</li>
 </ul>
 <p>So I tried to look at the parameters of the TCP packet. Something caught my attention : there are way too much flags in the TCP packets !</p>
-<p>At first, I extracted the flags value. I noticed that the first bytes were the magic bytes of a PDF file. Since it is about data exfiltration, I only extracted flags from the source, here is a one liner:</p>
+<p>At first, I extracted the flags value. I noticed that the first bytes were the magic bytes of a PDF file. Since it is about data exfiltration, I only extracted flags from the source, here is a one liner :</p>
 <div class="highlight"><pre class="chroma"><code class="language-powershell" data-lang="powershell"><span class="p">$</span> <span class="n">tshark</span> <span class="n">-r</span> <span class="n">ransomware1</span><span class="p">.</span><span class="n">pcapng</span> <span class="n">-T</span> <span class="n">fields</span> <span class="n">-Y</span> <span class="s2">&#34;tcp.srcport==20&#34;</span> <span class="n">-e</span> <span class="n">tcp</span><span class="p">.</span><span class="n">flags</span> <span class="p">|</span> <span class="n">cut</span> <span class="n">-c</span> <span class="n">9</span><span class="p">-</span> <span class="p">|</span> <span class="n">tr</span> <span class="n">-d</span> <span class="s1">&#39;\n&#39;</span> <span class="p">|</span> <span class="n">xxd</span> <span class="n">-r</span> <span class="n">-p</span> <span class="p">&gt;</span> <span class="n">out</span><span class="p">.</span><span class="n">pdf</span>
-</code></pre></div><p>And it gives us a valid PDF file containing the flag:</p>
+</code></pre></div><p>And it gives us a valid PDF file containing the file :</p>
 <p><img loading="lazy" src="/404CTF_data/Untitled.png" alt="Untitled"  />
 </p>
 <h2 id="ransomware-2">Ransomware 2<a hidden class="anchor" aria-hidden="true" href="#ransomware-2">#</a></h2>

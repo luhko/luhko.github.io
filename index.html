@@ -73,7 +73,7 @@
   "description": "",
   "thumbnailUrl": "https://luhko.github.io/favicon.ico",
   "sameAs": [
-      "https://github.com/luhko", "https://twitter.com/lukhooo"
+      "https://github.com/luhko", "https://twitter.com/lukhooo", "https://www.root-me.org/Luhko"
   ]
 }
 </script>
@@ -158,9 +158,29 @@
     </path>
 </svg>
     </a>
+    <a href="https://www.root-me.org/Luhko" target="_blank" rel="noopener noreferrer me" title="Root-Me">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+    stroke-linecap="round" stroke-linejoin="round">
+    <path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path>
+    <path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path>
+</svg>
+    </a>
 </div>
 
     </footer>
+</article>
+
+<article class="post-entry"> 
+  <header class="entry-header">
+    <h2>Digital Overdose 2022 Automn CTF
+    </h2>
+  </header>
+  <div class="entry-content">
+    <p>Cryptography Lightning Seeds We have this encryption script:
+#!/usr/bin/env python3 import random with open(&#39;flag.txt&#39;, &#39;r&#39;) as f: flag = f.read() seed = random.randint(0,999) random.seed(seed) encrypted = &#39;&#39;.join(f&#39;{(ord(c) ^ random.randint(0,255)):02x}&#39; for c in flag) with open(&#39;out.txt&#39;, &#39;w&#39;) as f: f.write(encrypted) # encrypted flag :4fcbac835550403f13c4cc337d8d8da48351921dfb7cd47d33857432c2ee665d821227 The problem here is the generation of the seed: only 1000 different values are possible. It will result in a weak encryption with only 1000 different keys:...</p>
+  </div>
+  <footer class="entry-footer"><span title='2022-11-20 23:43:49 +0200 +0200'>November 20, 2022</span>&nbsp;·&nbsp;6 min</footer>
+  <a class="entry-link" aria-label="post link to Digital Overdose 2022 Automn CTF" href="https://luhko.github.io/write-up/digitaloverdose/"></a>
 </article>
 
 <article class="post-entry"> 
