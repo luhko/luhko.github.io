@@ -7,7 +7,7 @@
     <generator>Hugo -- gohugo.io</generator>
     <lastBuildDate>Sun, 20 Nov 2022 23:43:49 +0200</lastBuildDate><atom:link href="https://luhko.github.io/write-up/index.xml" rel="self" type="application/rss+xml" />
     <item>
-      <title>Digital Overdose 2022 Automn CTF</title>
+      <title>Digital Overdose 2022 Autumn CTF</title>
       <link>https://luhko.github.io/write-up/digitaloverdose/</link>
       <pubDate>Sun, 20 Nov 2022 23:43:49 +0200</pubDate>
       
@@ -33,7 +33,7 @@ $ exiftool FirstPart.png ExifTool Version Number : 11.88 File Name : FirstPart.p
       
       <guid>https://luhko.github.io/write-up/404ctf/</guid>
       <description>Forensics Ransomware 1 We were given a big pcapng file. I struggled at the beggining because at first, I couldn’t see anything interessting:
- There are only ARP (0.1%) and TCP (99.9%) packet Every TCP packet have the same size There are only 2 IP and 2 mac addresses TCP packet does not contains any payload  So I tried to look at the parameters of the TCP packet. Something caught my attention : there are way too much flags in the TCP packets !</description>
+ There are only ARP (0.1%) and TCP (99.9%) packet Every TCP packet have the same size There are only 2 IP and 2 mac addresses TCP packet does not contains any payload  So I tried to look at the parameters of the TCP packet. Something caught my attention : there are way too much flags in the TCP packets!</description>
     </item>
     
     <item>

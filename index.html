@@ -172,7 +172,7 @@
 
 <article class="post-entry"> 
   <header class="entry-header">
-    <h2>Digital Overdose 2022 Automn CTF
+    <h2>Digital Overdose 2022 Autumn CTF
     </h2>
   </header>
   <div class="entry-content">
@@ -180,7 +180,7 @@
 #!/usr/bin/env python3 import random with open(&#39;flag.txt&#39;, &#39;r&#39;) as f: flag = f.read() seed = random.randint(0,999) random.seed(seed) encrypted = &#39;&#39;.join(f&#39;{(ord(c) ^ random.randint(0,255)):02x}&#39; for c in flag) with open(&#39;out.txt&#39;, &#39;w&#39;) as f: f.write(encrypted) # encrypted flag :4fcbac835550403f13c4cc337d8d8da48351921dfb7cd47d33857432c2ee665d821227 The problem here is the generation of the seed: only 1000 different values are possible. It will result in a weak encryption with only 1000 different keys:...</p>
   </div>
   <footer class="entry-footer"><span title='2022-11-20 23:43:49 +0200 +0200'>November 20, 2022</span>&nbsp;·&nbsp;6 min</footer>
-  <a class="entry-link" aria-label="post link to Digital Overdose 2022 Automn CTF" href="https://luhko.github.io/write-up/digitaloverdose/"></a>
+  <a class="entry-link" aria-label="post link to Digital Overdose 2022 Autumn CTF" href="https://luhko.github.io/write-up/digitaloverdose/"></a>
 </article>
 
 <article class="post-entry"> 
@@ -203,7 +203,7 @@ $ exiftool FirstPart.png ExifTool Version Number : 11.88 File Name : FirstPart.p
   </header>
   <div class="entry-content">
     <p>Forensics Ransomware 1 We were given a big pcapng file. I struggled at the beggining because at first, I couldn’t see anything interessting:
- There are only ARP (0.1%) and TCP (99.9%) packet Every TCP packet have the same size There are only 2 IP and 2 mac addresses TCP packet does not contains any payload  So I tried to look at the parameters of the TCP packet. Something caught my attention : there are way too much flags in the TCP packets !...</p>
+ There are only ARP (0.1%) and TCP (99.9%) packet Every TCP packet have the same size There are only 2 IP and 2 mac addresses TCP packet does not contains any payload  So I tried to look at the parameters of the TCP packet. Something caught my attention : there are way too much flags in the TCP packets!...</p>
   </div>
   <footer class="entry-footer"><span title='2022-06-11 23:44:49 +0200 CEST'>June 11, 2022</span>&nbsp;·&nbsp;6 min</footer>
   <a class="entry-link" aria-label="post link to 404 CTF 2022" href="https://luhko.github.io/write-up/404ctf/"></a>
