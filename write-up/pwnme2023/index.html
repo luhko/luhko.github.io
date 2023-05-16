@@ -1,0 +1,476 @@
+<!DOCTYPE html>
+<html lang="en" dir="auto">
+
+<head><meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<meta name="robots" content="index, follow">
+<title>Pwnme CTF 2023 | Luhko</title>
+<meta name="keywords" content="">
+<meta name="description" content="Pwnme - 2023 Forensics kNock kNock The challenge is about a compromised .deb file. We just need to extract it:
+$ file MalPack.deb MalPack.deb: Debian binary package (format 2.0), with control.tar.xz, data compression xz $ ar x MalPack.deb We have a file named data.tar.xz, which contains a script with the flag:
+#!/bin/bash echo &#34;PWNME{P4ck4g3_1s_g00d_ID}&#34; Silver The file was an iso flashdrive. The challenge anme is “Silver” which is reference to ‣, a C2 written in go (good point, the challenge is about a C2).">
+<meta name="author" content="">
+<link rel="canonical" href="https://luhko.github.io/write-up/pwnme2023/">
+<link crossorigin="anonymous" href="/assets/css/stylesheet.d7fb4cbf980fe688a21621b06a795933c4e6bb2d4070ec940667af1715d84af2.css" integrity="sha256-1/tMv5gP5oiiFiGwanlZM8Tmuy1AcOyUBmevFxXYSvI=" rel="preload stylesheet" as="style">
+<script defer crossorigin="anonymous" src="/assets/js/highlight.f413e19d0714851f6474e7ee9632408e58ac146fbdbe62747134bea2fa3415e0.js" integrity="sha256-9BPhnQcUhR9kdOfuljJAjlisFG&#43;9vmJ0cTS&#43;ovo0FeA="
+    onload="hljs.initHighlightingOnLoad();"></script>
+<link rel="icon" href="https://luhko.github.io/favicon.ico">
+<link rel="icon" type="image/png" sizes="16x16" href="https://luhko.github.io/favicon-16x16.png">
+<link rel="icon" type="image/png" sizes="32x32" href="https://luhko.github.io/favicon-32x32.png">
+<link rel="apple-touch-icon" href="https://luhko.github.io/apple-touch-icon.png">
+<link rel="mask-icon" href="https://luhko.github.io/safari-pinned-tab.svg">
+<meta name="theme-color" content="#2e2e33">
+<meta name="msapplication-TileColor" content="#2e2e33">
+<noscript>
+    <style>
+        #theme-toggle,
+        .top-link {
+            display: none;
+        }
+
+    </style>
+    <style>
+        @media (prefers-color-scheme: dark) {
+            :root {
+                --theme: rgb(29, 30, 32);
+                --entry: rgb(46, 46, 51);
+                --primary: rgb(218, 218, 219);
+                --secondary: rgb(155, 156, 157);
+                --tertiary: rgb(65, 66, 68);
+                --content: rgb(196, 196, 197);
+                --hljs-bg: rgb(46, 46, 51);
+                --code-bg: rgb(55, 56, 62);
+                --border: rgb(51, 51, 51);
+            }
+
+            .list {
+                background: var(--theme);
+            }
+
+            .list:not(.dark)::-webkit-scrollbar-track {
+                background: 0 0;
+            }
+
+            .list:not(.dark)::-webkit-scrollbar-thumb {
+                border-color: var(--theme);
+            }
+        }
+
+    </style>
+</noscript><meta property="og:title" content="Pwnme CTF 2023" />
+<meta property="og:description" content="Pwnme - 2023 Forensics kNock kNock The challenge is about a compromised .deb file. We just need to extract it:
+$ file MalPack.deb MalPack.deb: Debian binary package (format 2.0), with control.tar.xz, data compression xz $ ar x MalPack.deb We have a file named data.tar.xz, which contains a script with the flag:
+#!/bin/bash echo &#34;PWNME{P4ck4g3_1s_g00d_ID}&#34; Silver The file was an iso flashdrive. The challenge anme is “Silver” which is reference to ‣, a C2 written in go (good point, the challenge is about a C2)." />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://luhko.github.io/write-up/pwnme2023/" /><meta property="article:section" content="write-up" />
+<meta property="article:published_time" content="2023-05-13T23:44:49&#43;02:00" />
+<meta property="article:modified_time" content="2023-05-13T23:44:49&#43;02:00" />
+
+<meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="Pwnme CTF 2023"/>
+<meta name="twitter:description" content="Pwnme - 2023 Forensics kNock kNock The challenge is about a compromised .deb file. We just need to extract it:
+$ file MalPack.deb MalPack.deb: Debian binary package (format 2.0), with control.tar.xz, data compression xz $ ar x MalPack.deb We have a file named data.tar.xz, which contains a script with the flag:
+#!/bin/bash echo &#34;PWNME{P4ck4g3_1s_g00d_ID}&#34; Silver The file was an iso flashdrive. The challenge anme is “Silver” which is reference to ‣, a C2 written in go (good point, the challenge is about a C2)."/>
+
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [
+    {
+      "@type": "ListItem",
+      "position":  1 ,
+      "name": "Write-ups",
+      "item": "https://luhko.github.io/write-up/"
+    }, 
+    {
+      "@type": "ListItem",
+      "position":  2 ,
+      "name": "Pwnme CTF 2023",
+      "item": "https://luhko.github.io/write-up/pwnme2023/"
+    }
+  ]
+}
+</script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BlogPosting",
+  "headline": "Pwnme CTF 2023",
+  "name": "Pwnme CTF 2023",
+  "description": "Pwnme - 2023 Forensics kNock kNock The challenge is about a compromised .deb file. We just need to extract it:\n$ file MalPack.deb MalPack.deb: Debian binary package (format 2.0), with control.tar.xz, data compression xz $ ar x MalPack.deb We have a file named data.tar.xz, which contains a script with the flag:\n#!/bin/bash echo \u0026#34;PWNME{P4ck4g3_1s_g00d_ID}\u0026#34; Silver The file was an iso flashdrive. The challenge anme is “Silver” which is reference to ‣, a C2 written in go (good point, the challenge is about a C2).",
+  "keywords": [
+    
+  ],
+  "articleBody": "Pwnme - 2023 Forensics kNock kNock The challenge is about a compromised .deb file. We just need to extract it:\n$ file MalPack.deb MalPack.deb: Debian binary package (format 2.0), with control.tar.xz, data compression xz $ ar x MalPack.deb We have a file named data.tar.xz, which contains a script with the flag:\n#!/bin/bash echo \"PWNME{P4ck4g3_1s_g00d_ID}\" Silver The file was an iso flashdrive. The challenge anme is “Silver” which is reference to ‣, a C2 written in go (good point, the challenge is about a C2).\nLet’s open the iso file with Autopsy:\nWe have a script, an useless pdf file and an elf file named .firefox.elf (suspicious). The pdf is only there to “trick” the user, it’s useless for the challenge:\n#!/bin/bash echo -e \"# Launch the best browser\\n~/.firefox \u0026\"  ~/.bashrc  cp ./.firefox.elf ~/.firefox  source ~/.bashrc evince ./.important.pdf # rm -rf ./Important.pdf.desktop To dynamically analyze it, we launch .firefox.elf in a virtual machine with a listening Wireshark:\nThe HTTP traffic comming from 178.62.67.181:443 is interresting. If we access it, we can get the flag:\nFree flag The challenge is about data exfiltration. We had a big pcap file with a lots of packets (more than 20k). Lets open the conversation menu to identify the suspicious host/conversations:\nIf there is exfiltration, its maybe there, because our host is sending a lot of packets and data to 10.100.210.88. Lets look at the trafic:\nIts very strange, there are a lot of unuseful TCP flags and it is the only thing that seems to vary. Lets extract them:\n$ tshark -r ez.pcap -T fields -Y \"ip.src==192.168.157.195 \u0026\u0026 ip.dst==10.100.210.88 \" -e tcp.flags | cut -c 5- | xxd -r -p  out.bin $ binwalk out.bin DECIMAL HEXADECIMAL DESCRIPTION -------------------------------------------------------------------------------- 2 0x2 7-zip archive data, version 0.4 $ xxd out.bin | head -n 10 00000000: 0210 377a bcaf 271c 040e 3f6c b052 436a ..7z..'...?l.RCj ... $ xxd out.bin | tail -n 2 00004340: 6f68 6e44 5073 7963 686f 2e70 6466 1902 ohnDPsycho.pdf.. 00004350: 140a 011a 4a8d 4439 6fd9 0115 0601 20 ....J.D9o..... $ binwalk --dd=.* out.bin $ p7zip -d 2.7z $ file * JohnDPsycho.pdf: PDF document, version 1.4, 1 pages We open the pdffile and we can read the flag:\nOSINT Social Media Goes Brrrrr The first thing that we had to do is to try to find the social medial for a person named John Droper. Let’s try one of the biggest social media : Facebook. If we search for his name, we can find a profile with a profile picture generated by thispersondoesnotexist. If we navigate through his (minimalist) profile, we can find the flag:\nNewBie Dev We now have to find the website of John Droper. Thanks to Facebook informations, we have his username jdthetraveller. We also know that he registered his website to the AFNIC, using his username as the domain name:\nSo we can try https://jdthetraveller.fr/ :\nHe’s a bad develloper, so we can try to see if there is a .git folder left (there is nothing interesting in the source):\nLet’s dump it and analyse it:\n$ git-dumper https://jdthetraveller.fr/.git/ ./dump/ $ git log commit 82a509883e0961c418caafed1ca897efb0806528 (HEAD - main, origin/main, origin/HEAD) Author: droperkingjohn 131888528+droperkingjohn@users.noreply.github.com Date: Wed Apr 26 16:26:54 2023 +0200 Ahaha deleting that Is there really someone who respect this... We now have his github username, so we can find his website repository:\nhttps://github.com/droperkingjohn/myOwnWebsite\nIn the commit we can get his mail johndroperdroperjohn@gmail.com and the flag:\nFrench Dream For this challenge, we need to find: where he lives, his girlfriend username, and his ex birthname.\nUsing his github username, we can find one of his twitter account:\nAnd in his followers, there is his girlfriend:\nUsing his first username, we can find a twitter (which is usefull for the next challenge) and an instagram).\nThere is a ticket with with information about where he lives “It’s good to make a barbecue at home with friends” (I was stuck here because for an unknown reason the picture was cropped by instagram):\nIn the last stories, we can find this:\nOnce decoded it says ““Direction nord le long de la rivière premier bar”. The next pictures gives us the base adress: Quai de l’adour, Tarbes\nIf we look for the first bar at the north, we find Bar le Landais:\nWe also know that his ex girlfriend is the boss of the bar:\nWe can then find the owner on internet using public datas (i’m not gonna go further for obvious reason).\n",
+  "wordCount" : "741",
+  "inLanguage": "en",
+  "datePublished": "2023-05-13T23:44:49+02:00",
+  "dateModified": "2023-05-13T23:44:49+02:00",
+  "mainEntityOfPage": {
+    "@type": "WebPage",
+    "@id": "https://luhko.github.io/write-up/pwnme2023/"
+  },
+  "publisher": {
+    "@type": "Organization",
+    "name": "Luhko",
+    "logo": {
+      "@type": "ImageObject",
+      "url": "https://luhko.github.io/favicon.ico"
+    }
+  }
+}
+</script>
+</head>
+
+<body class="" id="top">
+<script>
+    if (localStorage.getItem("pref-theme") === "dark") {
+        document.body.classList.add('dark');
+    } else if (localStorage.getItem("pref-theme") === "light") {
+        document.body.classList.remove('dark')
+    } else if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
+        document.body.classList.add('dark');
+    }
+
+</script>
+
+<header class="header">
+    <nav class="nav">
+        <div class="logo">
+            <a href="https://luhko.github.io/" accesskey="h" title="Luhko (Alt + H)">Luhko</a>
+            <div class="logo-switches">
+                <button id="theme-toggle" accesskey="t" title="(Alt + T)">
+                    <svg id="moon" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
+                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round">
+                        <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+                    </svg>
+                    <svg id="sun" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
+                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round">
+                        <circle cx="12" cy="12" r="5"></circle>
+                        <line x1="12" y1="1" x2="12" y2="3"></line>
+                        <line x1="12" y1="21" x2="12" y2="23"></line>
+                        <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+                        <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+                        <line x1="1" y1="12" x2="3" y2="12"></line>
+                        <line x1="21" y1="12" x2="23" y2="12"></line>
+                        <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+                        <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+                    </svg>
+                </button>
+            </div>
+        </div>
+        <ul id="menu">
+            <li>
+                <a href="https://luhko.github.io/articles" title="Articles">
+                    <span>Articles</span>
+                </a>
+            </li>
+            <li>
+                <a href="https://luhko.github.io/write-up" title="Write-Up">
+                    <span>Write-Up</span>
+                </a>
+            </li>
+        </ul>
+    </nav>
+</header>
+<main class="main">
+
+<article class="post-single">
+  <header class="post-header">
+    <div class="breadcrumbs"><a href="https://luhko.github.io/">Home</a>&nbsp;»&nbsp;<a href="https://luhko.github.io/write-up/">Write-ups</a></div>
+    <h1 class="post-title">
+      Pwnme CTF 2023
+    </h1>
+    <div class="post-meta"><span title='2023-05-13 23:44:49 +0200 CEST'>May 13, 2023</span>&nbsp;·&nbsp;4 min
+
+</div>
+  </header> <div class="toc">
+    <details >
+        <summary accesskey="c" title="(Alt + C)">
+            <span class="details">Table of Contents</span>
+        </summary>
+
+        <div class="inner"><ul>
+                <li>
+                    <a href="#pwnme---2023" aria-label="Pwnme - 2023">Pwnme - 2023</a></li>
+                <li>
+                    <a href="#forensics" aria-label="Forensics">Forensics</a><ul>
+                        
+                <li>
+                    <a href="#knock-knock" aria-label="kNock kNock">kNock kNock</a></li>
+                <li>
+                    <a href="#silver" aria-label="Silver">Silver</a></li>
+                <li>
+                    <a href="#free-flag" aria-label="Free flag">Free flag</a></li></ul>
+                </li>
+                <li>
+                    <a href="#osint" aria-label="OSINT">OSINT</a><ul>
+                        
+                <li>
+                    <a href="#social-media-goes-brrrrr" aria-label="Social Media Goes Brrrrr">Social Media Goes Brrrrr</a></li>
+                <li>
+                    <a href="#newbie-dev" aria-label="NewBie Dev">NewBie Dev</a></li>
+                <li>
+                    <a href="#french-dream" aria-label="French Dream">French Dream</a>
+                </li>
+            </ul>
+            </li>
+            </ul>
+        </div>
+    </details>
+</div>
+
+  <div class="post-content"><h1 id="pwnme---2023">Pwnme - 2023<a hidden class="anchor" aria-hidden="true" href="#pwnme---2023">#</a></h1>
+<h1 id="forensics">Forensics<a hidden class="anchor" aria-hidden="true" href="#forensics">#</a></h1>
+<h2 id="knock-knock">kNock kNock<a hidden class="anchor" aria-hidden="true" href="#knock-knock">#</a></h2>
+<p>The challenge is about a compromised <code>.deb</code> file. We just need to extract it:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-jsx" data-lang="jsx"><span class="nx">$</span> <span class="nx">file</span> <span class="nx">MalPack</span><span class="p">.</span><span class="nx">deb</span>
+<span class="nx">MalPack</span><span class="p">.</span><span class="nx">deb</span><span class="o">:</span> <span class="nx">Debian</span> <span class="nx">binary</span> <span class="kr">package</span> <span class="p">(</span><span class="nx">format</span> <span class="mf">2.0</span><span class="p">),</span> <span class="kd">with</span> <span class="nx">control</span><span class="p">.</span><span class="nx">tar</span><span class="p">.</span><span class="nx">xz</span><span class="p">,</span> <span class="nx">data</span> <span class="nx">compression</span> <span class="nx">xz</span>
+<span class="nx">$</span> <span class="nx">ar</span> <span class="nx">x</span> <span class="nx">MalPack</span><span class="p">.</span><span class="nx">deb</span>
+</code></pre></div><p>We have a file named <code>data.tar.xz</code>, which contains a script with the flag:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-jsx" data-lang="jsx"><span class="ch">#!/bin/bash
+</span><span class="ch"></span><span class="nx">echo</span> <span class="s2">&#34;PWNME{P4ck4g3_1s_g00d_ID}&#34;</span>
+</code></pre></div><h2 id="silver">Silver<a hidden class="anchor" aria-hidden="true" href="#silver">#</a></h2>
+<p>The file was an iso flashdrive. The challenge anme is “Silver” which is reference to ‣, a C2 written in go (good point, the challenge is about a C2).</p>
+<p>Let’s open the iso file with Autopsy:</p>
+<p><img loading="lazy" src="/pwnme_2023_data/0.png" alt="Untitled"  />
+</p>
+<p>We have a script, an useless <code>pdf</code> file and an <code>elf</code> file named <code>.firefox.elf</code> (suspicious). The pdf is only there to “trick” the user, it’s useless for the challenge:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-jsx" data-lang="jsx"><span class="ch">#!/bin/bash
+</span><span class="ch"></span><span class="nx">echo</span> <span class="o">-</span><span class="nx">e</span> <span class="s2">&#34;# Launch the best browser\n~/.firefox &amp;&#34;</span> <span class="o">&gt;&gt;</span> <span class="o">~</span><span class="err">/.bashrc </span>
+<span class="nx">cp</span> <span class="p">.</span><span class="o">/</span><span class="p">.</span><span class="nx">firefox</span><span class="p">.</span><span class="nx">elf</span> <span class="o">~</span><span class="err">/.firefox </span>
+<span class="nx">source</span> <span class="o">~</span><span class="err">/.bashrc</span>
+<span class="nx">evince</span> <span class="p">.</span><span class="o">/</span><span class="p">.</span><span class="nx">important</span><span class="p">.</span><span class="nx">pdf</span> 
+<span class="err">#</span> <span class="nx">rm</span> <span class="o">-</span><span class="nx">rf</span> <span class="p">.</span><span class="o">/</span><span class="nx">Important</span><span class="p">.</span><span class="nx">pdf</span><span class="p">.</span><span class="nx">desktop</span>
+</code></pre></div><p>To dynamically analyze it, we launch <code>.firefox.elf</code> in a virtual machine with a listening Wireshark:</p>
+<p><img loading="lazy" src="/pwnme_2023_data/1.png" alt="Untitled"  />
+</p>
+<p>The HTTP traffic comming from <code>178.62.67.181:443</code> is interresting. If we access it, we can get the flag:</p>
+<p><img loading="lazy" src="/pwnme_2023_data/2.png" alt="Untitled"  />
+</p>
+<h2 id="free-flag">Free flag<a hidden class="anchor" aria-hidden="true" href="#free-flag">#</a></h2>
+<p>The challenge is about data exfiltration. We had a big <code>pcap</code> file with a lots of packets (more than 20k). Lets open the conversation menu to identify the suspicious host/conversations:</p>
+<p><img loading="lazy" src="/pwnme_2023_data/3.png" alt="Untitled"  />
+</p>
+<p>If there is exfiltration, its maybe there, because our host is sending a lot of packets and data to <code>10.100.210.88</code>. Lets look at the trafic:</p>
+<p><img loading="lazy" src="/pwnme_2023_data/4.png" alt="Untitled"  />
+</p>
+<p>Its very strange, there are a lot of unuseful TCP flags and it is the only thing that seems to vary. Lets extract them:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-jsx" data-lang="jsx"><span class="nx">$</span> <span class="nx">tshark</span> <span class="o">-</span><span class="nx">r</span> <span class="nx">ez</span><span class="p">.</span><span class="nx">pcap</span> <span class="o">-</span><span class="nx">T</span> <span class="nx">fields</span> <span class="o">-</span><span class="nx">Y</span> <span class="s2">&#34;ip.src==192.168.157.195 &amp;&amp; ip.dst==10.100.210.88
+</span><span class="s2">&#34;</span> <span class="o">-</span><span class="nx">e</span> <span class="nx">tcp</span><span class="p">.</span><span class="nx">flags</span> <span class="o">|</span> <span class="nx">cut</span> <span class="o">-</span><span class="nx">c</span> <span class="mi">5</span><span class="o">-</span> <span class="o">|</span> <span class="nx">xxd</span> <span class="o">-</span><span class="nx">r</span> <span class="o">-</span><span class="nx">p</span> <span class="o">&gt;</span> <span class="nx">out</span><span class="p">.</span><span class="nx">bin</span>
+<span class="nx">$</span> <span class="nx">binwalk</span> <span class="nx">out</span><span class="p">.</span><span class="nx">bin</span>
+
+<span class="nx">DECIMAL</span>       <span class="nx">HEXADECIMAL</span>     <span class="nx">DESCRIPTION</span>
+<span class="o">--------------------------------------------------------------------------------</span>
+<span class="mi">2</span>             <span class="mh">0x2</span>             <span class="mi">7</span><span class="o">-</span><span class="nx">zip</span> <span class="nx">archive</span> <span class="nx">data</span><span class="p">,</span> <span class="nx">version</span> <span class="mf">0.4</span>
+<span class="nx">$</span> <span class="nx">xxd</span> <span class="nx">out</span><span class="p">.</span><span class="nx">bin</span> <span class="o">|</span> <span class="nx">head</span> <span class="o">-</span><span class="nx">n</span> <span class="mi">10</span>
+<span class="mi">00000000</span><span class="o">:</span> <span class="mi">0210</span> <span class="mi">377</span><span class="nx">a</span> <span class="nx">bcaf</span> <span class="mi">271</span><span class="nx">c</span> <span class="mi">040</span><span class="nx">e</span> <span class="mi">3</span><span class="nx">f6c</span> <span class="nx">b052</span> <span class="mi">436</span><span class="nx">a</span>  <span class="p">.</span><span class="mf">.7</span><span class="nx">z</span><span class="p">..</span><span class="err">&#39;</span><span class="p">...</span><span class="o">?</span><span class="nx">l</span><span class="p">.</span><span class="nx">RCj</span>
+<span class="p">...</span>
+<span class="nx">$</span> <span class="nx">xxd</span> <span class="nx">out</span><span class="p">.</span><span class="nx">bin</span> <span class="o">|</span> <span class="nx">tail</span> <span class="o">-</span><span class="nx">n</span> <span class="mi">2</span>
+<span class="mi">00004340</span><span class="o">:</span> <span class="mi">6</span><span class="nx">f68</span> <span class="mi">6</span><span class="nx">e44</span> <span class="mi">5073</span> <span class="mi">7963</span> <span class="mi">686</span><span class="nx">f</span> <span class="mi">2</span><span class="nx">e70</span> <span class="mi">6466</span> <span class="mi">1902</span>  <span class="nx">ohnDPsycho</span><span class="p">.</span><span class="nx">pdf</span><span class="p">..</span>
+<span class="mi">00004350</span><span class="o">:</span> <span class="mi">140</span><span class="nx">a</span> <span class="mi">011</span><span class="nx">a</span> <span class="mi">4</span><span class="nx">a8d</span> <span class="mi">4439</span> <span class="mi">6</span><span class="nx">fd9</span> <span class="mi">0115</span> <span class="mi">0601</span> <span class="mi">20</span>    <span class="p">....</span><span class="nx">J</span><span class="p">.</span><span class="nx">D9o</span><span class="p">.....</span>
+
+<span class="nx">$</span> <span class="nx">binwalk</span> <span class="o">--</span><span class="nx">dd</span><span class="o">=</span><span class="p">.</span><span class="o">*</span> <span class="nx">out</span><span class="p">.</span><span class="nx">bin</span>
+<span class="nx">$</span> <span class="nx">p7zip</span> <span class="o">-</span><span class="nx">d</span> <span class="mf">2.7</span><span class="nx">z</span>
+<span class="nx">$</span> <span class="nx">file</span> <span class="o">*</span>
+<span class="nx">JohnDPsycho</span><span class="p">.</span><span class="nx">pdf</span><span class="o">:</span> <span class="nx">PDF</span> <span class="nb">document</span><span class="p">,</span> <span class="nx">version</span> <span class="mf">1.4</span><span class="p">,</span> <span class="mi">1</span> <span class="nx">pages</span>
+</code></pre></div><p>We open the <code>pdf</code>file and we can read the flag:</p>
+<p><img loading="lazy" src="/pwnme_2023_data/5.png" alt="Untitled"  />
+</p>
+<h1 id="osint">OSINT<a hidden class="anchor" aria-hidden="true" href="#osint">#</a></h1>
+<h2 id="social-media-goes-brrrrr">Social Media Goes Brrrrr<a hidden class="anchor" aria-hidden="true" href="#social-media-goes-brrrrr">#</a></h2>
+<p>The first thing that we had to do is to try to find the social medial for a person named <em>John Droper</em>. Let’s try one of the biggest social media : Facebook. If we search for his name, we can find a <a href="https://www.facebook.com/profile.php?id=100091409530073&amp;sk=about_details">profile</a> with a profile picture generated by <strong>thispersondoesnotexist</strong>. If we navigate through his (minimalist) profile, we can find the flag:</p>
+<p><img loading="lazy" src="/pwnme_2023_data/6.png" alt="Untitled"  />
+</p>
+<h2 id="newbie-dev">NewBie Dev<a hidden class="anchor" aria-hidden="true" href="#newbie-dev">#</a></h2>
+<p>We now have to find the website of <em>John Droper</em>. Thanks to Facebook informations, we have his username <strong>jdthetraveller.</strong> We also know that he registered his website to the AFNIC, using his username as the domain name:</p>
+<p><img loading="lazy" src="/pwnme_2023_data/7.png" alt="Untitled"  />
+</p>
+<p>So we can try <a href="https://jdthetraveller.fr/">https://jdthetraveller.fr/</a> :</p>
+<p><img loading="lazy" src="/pwnme_2023_data/8.png" alt="Untitled"  />
+</p>
+<p>He’s a bad develloper, so we can try to see if there is a <code>.git</code> folder left (there is nothing interesting in the source):</p>
+<p><img loading="lazy" src="/pwnme_2023_data/9.png" alt="Untitled"  />
+</p>
+<p>Let’s dump it and analyse it:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-jsx" data-lang="jsx"><span class="nx">$</span> <span class="nx">git</span><span class="o">-</span><span class="nx">dumper</span> <span class="nx">https</span><span class="o">:</span><span class="c1">//jdthetraveller.fr/.git/ ./dump/
+</span><span class="c1"></span><span class="nx">$</span> <span class="nx">git</span> <span class="nx">log</span>
+<span class="nx">commit</span> <span class="mi">82</span><span class="nx">a509883e0961c418caafed1ca897efb0806528</span> <span class="p">(</span><span class="nx">HEAD</span> <span class="o">-&gt;</span> <span class="nx">main</span><span class="p">,</span> <span class="nx">origin</span><span class="o">/</span><span class="nx">main</span><span class="p">,</span> <span class="nx">origin</span><span class="o">/</span><span class="nx">HEAD</span><span class="p">)</span>
+<span class="nx">Author</span><span class="o">:</span> <span class="nx">droperkingjohn</span> <span class="p">&lt;</span><span class="nt">131888528</span><span class="err">+</span><span class="na">droperkingjohn</span><span class="err">@</span><span class="na">users.noreply.github.com</span><span class="p">&gt;</span>
+<span class="nb">Date</span><span class="o">:</span>   <span class="nx">Wed</span> <span class="nx">Apr</span> <span class="mi">26</span> <span class="mi">16</span><span class="o">:</span><span class="mi">26</span><span class="o">:</span><span class="mi">54</span> <span class="mi">2023</span> <span class="o">+</span><span class="mi">0200</span>
+
+    <span class="nx">Ahaha</span> <span class="nx">deleting</span> <span class="nx">that</span>
+
+    <span class="nx">Is</span> <span class="nx">there</span> <span class="nx">really</span> <span class="nx">someone</span> <span class="nx">who</span> <span class="nx">respect</span> <span class="k">this</span><span class="p">...</span>
+</code></pre></div><p>We now have his github username, so we can find his website repository:</p>
+<p><a href="https://github.com/droperkingjohn/myOwnWebsite">https://github.com/droperkingjohn/myOwnWebsite</a></p>
+<p>In the commit we can get his mail <a href="mailto:johndroperdroperjohn@gmail.com">johndroperdroperjohn@gmail.com</a> and the flag:</p>
+<p><img loading="lazy" src="/pwnme_2023_data/10.png" alt="Untitled"  />
+</p>
+<h2 id="french-dream">French Dream<a hidden class="anchor" aria-hidden="true" href="#french-dream">#</a></h2>
+<p>For this challenge, we need to find: where he lives, his girlfriend username, and his ex birthname.</p>
+<p>Using his github username, we can find one of his twitter <a href="https://www.instagram.com/droperkingjohn/">account</a>:</p>
+<p><img loading="lazy" src="/pwnme_2023_data/11.png" alt="Untitled"  />
+</p>
+<p>And in his followers, there is his girlfriend:</p>
+<p><img loading="lazy" src="/pwnme_2023_data/12.png" alt="Untitled"  />
+</p>
+<p>Using his first username, we can find a twitter (which is usefull for the next challenge) and an instagram).</p>
+<p>There is a ticket with with information about where he lives “It’s good to make a barbecue at home with friends” (I was stuck here because for an unknown reason the picture was cropped by instagram):</p>
+<p><img loading="lazy" src="/pwnme_2023_data/13.png" alt="Untitled"  />
+
+In the last stories, we can find this:</p>
+<p><img loading="lazy" src="/pwnme_2023_data/14.png" alt="Untitled"  />
+
+Once decoded it says “&ldquo;Direction nord le long de la rivière premier bar”. The next pictures gives us the base adress: <strong>Quai de l’adour, Tarbes</strong></p>
+<p><img loading="lazy" src="/pwnme_2023_data/15.png" alt="Untitled"  />
+
+If we look for the first bar at the north, we find <em>Bar le Landais</em>:</p>
+<p><img loading="lazy" src="/pwnme_2023_data/16.png" alt="Untitled"  />
+
+We also know that his ex girlfriend is the boss of the bar:</p>
+<p><img loading="lazy" src="/pwnme_2023_data/17.png" alt="Untitled"  />
+</p>
+<p>We can then find the owner on internet using public datas (i’m not gonna go further for obvious reason).</p>
+
+
+  </div>
+
+  <footer class="post-footer">
+    <ul class="post-tags">
+    </ul>
+<nav class="paginav">
+  <a class="next" href="https://luhko.github.io/write-up/digitaloverdose/">
+    <span class="title">Next »</span>
+    <br>
+    <span>Digital Overdose 2022 Autumn CTF</span>
+  </a>
+</nav>
+
+  </footer>
+</article>
+    </main>
+    
+<footer class="footer">
+    <span>&copy; 2023 <a href="https://luhko.github.io/">Luhko</a></span>
+    <span>
+        Powered by
+        <a href="https://gohugo.io/" rel="noopener noreferrer" target="_blank">Hugo</a> &
+        <a href="https://github.com/adityatelange/hugo-PaperMod/" rel="noopener" target="_blank">PaperMod</a>
+    </span>
+</footer>
+<a href="#top" aria-label="go to top" title="Go to Top (Alt + G)" class="top-link" id="top-link" accesskey="g">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 12 6" fill="currentColor">
+        <path d="M12 6H0l6-6z" />
+    </svg>
+</a>
+
+<script>
+    let menu = document.getElementById('menu')
+    if (menu) {
+        menu.scrollLeft = localStorage.getItem("menu-scroll-position");
+        menu.onscroll = function () {
+            localStorage.setItem("menu-scroll-position", menu.scrollLeft);
+        }
+    }
+
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+        anchor.addEventListener("click", function (e) {
+            e.preventDefault();
+            var id = this.getAttribute("href").substr(1);
+            if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+                document.querySelector(`[id='${decodeURIComponent(id)}']`).scrollIntoView({
+                    behavior: "smooth"
+                });
+            } else {
+                document.querySelector(`[id='${decodeURIComponent(id)}']`).scrollIntoView();
+            }
+            if (id === "top") {
+                history.replaceState(null, null, " ");
+            } else {
+                history.pushState(null, null, `#${id}`);
+            }
+        });
+    });
+
+</script>
+<script>
+    var mybutton = document.getElementById("top-link");
+    window.onscroll = function () {
+        if (document.body.scrollTop > 800 || document.documentElement.scrollTop > 800) {
+            mybutton.style.visibility = "visible";
+            mybutton.style.opacity = "1";
+        } else {
+            mybutton.style.visibility = "hidden";
+            mybutton.style.opacity = "0";
+        }
+    };
+
+</script>
+<script>
+    document.getElementById("theme-toggle").addEventListener("click", () => {
+        if (document.body.className.includes("dark")) {
+            document.body.classList.remove('dark');
+            localStorage.setItem("pref-theme", 'light');
+        } else {
+            document.body.classList.add('dark');
+            localStorage.setItem("pref-theme", 'dark');
+        }
+    })
+
+</script>
+<script>
+    document.querySelectorAll('pre > code').forEach((codeblock) => {
+        const container = codeblock.parentNode.parentNode;
+
+        const copybutton = document.createElement('button');
+        copybutton.classList.add('copy-code');
+        copybutton.innerHTML = 'copy';
+
+        function copyingDone() {
+            copybutton.innerHTML = 'copied!';
+            setTimeout(() => {
+                copybutton.innerHTML = 'copy';
+            }, 2000);
+        }
+
+        copybutton.addEventListener('click', (cb) => {
+            if ('clipboard' in navigator) {
+                navigator.clipboard.writeText(codeblock.textContent);
+                copyingDone();
+                return;
+            }
+
+            const range = document.createRange();
+            range.selectNodeContents(codeblock);
+            const selection = window.getSelection();
+            selection.removeAllRanges();
+            selection.addRange(range);
+            try {
+                document.execCommand('copy');
+                copyingDone();
+            } catch (e) { };
+            selection.removeRange(range);
+        });
+
+        if (container.classList.contains("highlight")) {
+            container.appendChild(copybutton);
+        } else if (container.parentNode.firstChild == container) {
+            
+        } else if (codeblock.parentNode.parentNode.parentNode.parentNode.parentNode.nodeName == "TABLE") {
+            
+            codeblock.parentNode.parentNode.parentNode.parentNode.parentNode.appendChild(copybutton);
+        } else {
+            
+            codeblock.parentNode.appendChild(copybutton);
+        }
+    });
+</script>
+</body>
+
+</html>

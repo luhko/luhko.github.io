@@ -5,7 +5,18 @@
     <link>https://luhko.github.io/write-up/</link>
     <description>Recent content in Write-ups on Luhko</description>
     <generator>Hugo -- gohugo.io</generator>
-    <lastBuildDate>Sun, 20 Nov 2022 23:43:49 +0200</lastBuildDate><atom:link href="https://luhko.github.io/write-up/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Sat, 13 May 2023 23:44:49 +0200</lastBuildDate><atom:link href="https://luhko.github.io/write-up/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Pwnme CTF 2023</title>
+      <link>https://luhko.github.io/write-up/pwnme2023/</link>
+      <pubDate>Sat, 13 May 2023 23:44:49 +0200</pubDate>
+      
+      <guid>https://luhko.github.io/write-up/pwnme2023/</guid>
+      <description>Pwnme - 2023 Forensics kNock kNock The challenge is about a compromised .deb file. We just need to extract it:
+$ file MalPack.deb MalPack.deb: Debian binary package (format 2.0), with control.tar.xz, data compression xz $ ar x MalPack.deb We have a file named data.tar.xz, which contains a script with the flag:
+#!/bin/bash echo &amp;#34;PWNME{P4ck4g3_1s_g00d_ID}&amp;#34; Silver The file was an iso flashdrive. The challenge anme is “Silver” which is reference to ‣, a C2 written in go (good point, the challenge is about a C2).</description>
+    </item>
+    
     <item>
       <title>Digital Overdose 2022 Autumn CTF</title>
       <link>https://luhko.github.io/write-up/digitaloverdose/</link>
@@ -34,18 +45,6 @@ $ exiftool FirstPart.png ExifTool Version Number : 11.88 File Name : FirstPart.p
       <guid>https://luhko.github.io/write-up/404ctf/</guid>
       <description>Forensics Ransomware 1 We were given a big pcapng file. I struggled at the beggining because at first, I couldn’t see anything interessting:
  There are only ARP (0.1%) and TCP (99.9%) packet Every TCP packet have the same size There are only 2 IP and 2 mac addresses TCP packet does not contains any payload  So I tried to look at the parameters of the TCP packet. Something caught my attention : there are way too much flags in the TCP packets!</description>
-    </item>
-    
-    <item>
-      <title>Hero CTF 2022</title>
-      <link>https://luhko.github.io/write-up/heroctf2022/</link>
-      <pubDate>Sun, 29 May 2022 23:44:49 +0200</pubDate>
-      
-      <guid>https://luhko.github.io/write-up/heroctf2022/</guid>
-      <description>OSINT HeroGuessr#1 We were given this panorama and we need to find the park next to it:
-Typing the name “Plage de Portissol” on Google Maps, we can see that there is only one park next the plage de Portissol : Victorin Blanc, which is the flag.
-HeroGuessr#2 We were given this panorama and we need to find the name of the city:
-Since Google Lens is pretty good to recognize monument, I tried it on the church.</description>
     </item>
     
     <item>
