@@ -12,7 +12,7 @@
       <pubDate>Sat, 13 May 2023 23:44:49 +0200</pubDate>
       
       <guid>https://luhko.github.io/write-up/pwnme2023/</guid>
-      <description>Pwnme - 2023 Forensics kNock kNock The challenge is about a compromised .deb file. We just need to extract it:
+      <description>Forensics kNock kNock The challenge is about a compromised .deb file. We just need to extract it:
 $ file MalPack.deb MalPack.deb: Debian binary package (format 2.0), with control.tar.xz, data compression xz $ ar x MalPack.deb We have a file named data.tar.xz, which contains a script with the flag:
 #!/bin/bash echo &amp;#34;PWNME{P4ck4g3_1s_g00d_ID}&amp;#34; Silver The file was an iso flashdrive. The challenge anme is “Silver” which is reference to ‣, a C2 written in go (good point, the challenge is about a C2).</description>
     </item>
