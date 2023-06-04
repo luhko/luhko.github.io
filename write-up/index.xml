@@ -5,7 +5,19 @@
     <link>https://luhko.github.io/write-up/</link>
     <description>Recent content in Write-ups on Luhko</description>
     <generator>Hugo -- gohugo.io</generator>
-    <lastBuildDate>Sat, 13 May 2023 23:44:49 +0200</lastBuildDate><atom:link href="https://luhko.github.io/write-up/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Sun, 04 Jun 2023 21:44:49 +0200</lastBuildDate><atom:link href="https://luhko.github.io/write-up/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>404 CTF 2023</title>
+      <link>https://luhko.github.io/write-up/404ctf2023/</link>
+      <pubDate>Sun, 04 Jun 2023 21:44:49 +0200</pubDate>
+      
+      <guid>https://luhko.github.io/write-up/404ctf2023/</guid>
+      <description>Pwn La cohue Let’s perform a checksec on the binary:
+$ checksec la_cohue [*] &amp;#39;./la_cohue&amp;#39; Arch: amd64-64-little RELRO: Full RELRO Stack: Canary found NX: NX enabled **PIE: No PIE (0x400000)** We can see that a canary is set, but no PIE.
+Looking at the decompiled code below, we can identify that:
+ Once we have used option 1, we cannot use it anymore (no more user input, because of a boolean flag set to true) Once we have used option 2, we cannot use it anymore (no more user input, because of a boolean flag set to true)  Our goal is to call the function canary() which is unreachable to get the flag.</description>
+    </item>
+    
     <item>
       <title>Pwnme CTF 2023</title>
       <link>https://luhko.github.io/write-up/pwnme2023/</link>

