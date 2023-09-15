@@ -1,0 +1,440 @@
+<!DOCTYPE html>
+<html lang="en" dir="auto">
+
+<head><meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<meta name="robots" content="index, follow">
+<title>Surreaction - StarHackademINT 2023 | Luhko</title>
+<meta name="keywords" content="">
+<meta name="description" content="Introduction This post is about an interesting forensic challenge that I solved during the StarHackademINT 2023 CTF. We were given a Quarantine folder coming from Windows Defender, and we had to find back the original filename on the internet.
+The structure of the given folder looks like this:
+Quarantine ├── Entries │ └── {80059732-0000-0000-6667-EF3396D235E7} ├── ResourceData │ └── 9F │ └── 9F598F562DDCFB69FA21A077BAD87F01A3F6258E └── Resources └── 9F └── 9F598F562DDCFB69FA21A077BAD87F01A3F6258E If we look on the internet, we can find some blog post that gives a lot of useful information on how to get the original files back.">
+<meta name="author" content="">
+<link rel="canonical" href="https://luhko.github.io/write-up/surreaction/">
+<link crossorigin="anonymous" href="/assets/css/stylesheet.d7fb4cbf980fe688a21621b06a795933c4e6bb2d4070ec940667af1715d84af2.css" integrity="sha256-1/tMv5gP5oiiFiGwanlZM8Tmuy1AcOyUBmevFxXYSvI=" rel="preload stylesheet" as="style">
+<script defer crossorigin="anonymous" src="/assets/js/highlight.f413e19d0714851f6474e7ee9632408e58ac146fbdbe62747134bea2fa3415e0.js" integrity="sha256-9BPhnQcUhR9kdOfuljJAjlisFG&#43;9vmJ0cTS&#43;ovo0FeA="
+    onload="hljs.initHighlightingOnLoad();"></script>
+<link rel="icon" href="https://luhko.github.io/favicon.ico">
+<link rel="icon" type="image/png" sizes="16x16" href="https://luhko.github.io/favicon-16x16.png">
+<link rel="icon" type="image/png" sizes="32x32" href="https://luhko.github.io/favicon-32x32.png">
+<link rel="apple-touch-icon" href="https://luhko.github.io/apple-touch-icon.png">
+<link rel="mask-icon" href="https://luhko.github.io/safari-pinned-tab.svg">
+<meta name="theme-color" content="#2e2e33">
+<meta name="msapplication-TileColor" content="#2e2e33">
+<noscript>
+    <style>
+        #theme-toggle,
+        .top-link {
+            display: none;
+        }
+
+    </style>
+    <style>
+        @media (prefers-color-scheme: dark) {
+            :root {
+                --theme: rgb(29, 30, 32);
+                --entry: rgb(46, 46, 51);
+                --primary: rgb(218, 218, 219);
+                --secondary: rgb(155, 156, 157);
+                --tertiary: rgb(65, 66, 68);
+                --content: rgb(196, 196, 197);
+                --hljs-bg: rgb(46, 46, 51);
+                --code-bg: rgb(55, 56, 62);
+                --border: rgb(51, 51, 51);
+            }
+
+            .list {
+                background: var(--theme);
+            }
+
+            .list:not(.dark)::-webkit-scrollbar-track {
+                background: 0 0;
+            }
+
+            .list:not(.dark)::-webkit-scrollbar-thumb {
+                border-color: var(--theme);
+            }
+        }
+
+    </style>
+</noscript><meta property="og:title" content="Surreaction - StarHackademINT 2023" />
+<meta property="og:description" content="Introduction This post is about an interesting forensic challenge that I solved during the StarHackademINT 2023 CTF. We were given a Quarantine folder coming from Windows Defender, and we had to find back the original filename on the internet.
+The structure of the given folder looks like this:
+Quarantine ├── Entries │ └── {80059732-0000-0000-6667-EF3396D235E7} ├── ResourceData │ └── 9F │ └── 9F598F562DDCFB69FA21A077BAD87F01A3F6258E └── Resources └── 9F └── 9F598F562DDCFB69FA21A077BAD87F01A3F6258E If we look on the internet, we can find some blog post that gives a lot of useful information on how to get the original files back." />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://luhko.github.io/write-up/surreaction/" /><meta property="article:section" content="write-up" />
+<meta property="article:published_time" content="2023-09-14T23:44:49&#43;02:00" />
+<meta property="article:modified_time" content="2023-09-14T23:44:49&#43;02:00" />
+
+<meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="Surreaction - StarHackademINT 2023"/>
+<meta name="twitter:description" content="Introduction This post is about an interesting forensic challenge that I solved during the StarHackademINT 2023 CTF. We were given a Quarantine folder coming from Windows Defender, and we had to find back the original filename on the internet.
+The structure of the given folder looks like this:
+Quarantine ├── Entries │ └── {80059732-0000-0000-6667-EF3396D235E7} ├── ResourceData │ └── 9F │ └── 9F598F562DDCFB69FA21A077BAD87F01A3F6258E └── Resources └── 9F └── 9F598F562DDCFB69FA21A077BAD87F01A3F6258E If we look on the internet, we can find some blog post that gives a lot of useful information on how to get the original files back."/>
+
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [
+    {
+      "@type": "ListItem",
+      "position":  1 ,
+      "name": "Write-ups",
+      "item": "https://luhko.github.io/write-up/"
+    }, 
+    {
+      "@type": "ListItem",
+      "position":  2 ,
+      "name": "Surreaction - StarHackademINT 2023",
+      "item": "https://luhko.github.io/write-up/surreaction/"
+    }
+  ]
+}
+</script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BlogPosting",
+  "headline": "Surreaction - StarHackademINT 2023",
+  "name": "Surreaction - StarHackademINT 2023",
+  "description": "Introduction This post is about an interesting forensic challenge that I solved during the StarHackademINT 2023 CTF. We were given a Quarantine folder coming from Windows Defender, and we had to find back the original filename on the internet.\nThe structure of the given folder looks like this:\nQuarantine ├── Entries │ └── {80059732-0000-0000-6667-EF3396D235E7} ├── ResourceData │ └── 9F │ └── 9F598F562DDCFB69FA21A077BAD87F01A3F6258E └── Resources └── 9F └── 9F598F562DDCFB69FA21A077BAD87F01A3F6258E If we look on the internet, we can find some blog post that gives a lot of useful information on how to get the original files back.",
+  "keywords": [
+    
+  ],
+  "articleBody": "Introduction This post is about an interesting forensic challenge that I solved during the StarHackademINT 2023 CTF. We were given a Quarantine folder coming from Windows Defender, and we had to find back the original filename on the internet.\nThe structure of the given folder looks like this:\nQuarantine ├── Entries │ └── {80059732-0000-0000-6667-EF3396D235E7} ├── ResourceData │ └── 9F │ └── 9F598F562DDCFB69FA21A077BAD87F01A3F6258E └── Resources └── 9F └── 9F598F562DDCFB69FA21A077BAD87F01A3F6258E If we look on the internet, we can find some blog post that gives a lot of useful information on how to get the original files back. We can find the Quarantine directory structure:\n The Entries folder contains information about the quarantined files, such as the reason of the quarantine, the original full path, timestamp, etc. The files are encrypted in a particular way that we will see later. The ResourceData folder contains the encrypted original binary. The Resources folder won’t be used here, but it contains information such as a GUID and a hash used to link the Entries and the ResourceData folder.  We can also find the hardcoded RC4 key used to encrypt the files (it is common for AV vendors to have a single RC4/XOR hardcoded key) used for the quarantine process. So we can use this small python script in order to decrypt the files:\nfrom Crypto.Cipher import ARC4 import sys with open(sys.argv[1], \"rb\") as encrypted_file: print(f\"Reading {sys.argv[1]}\") data = encrypted_file.read() key = b\"\\x1E\\x87\\x78\\x1B\\x8D\\xBA\\xA8\\x44\\xCE\\x69\\x70\\x2C\\x0C\\x78\\xB7\\x86\\xA3\\xF6\\x23\\xB7\\x38\\xF5\\xED\\xF9\\xAF\\x83\\x53\\x0F\\xB3\\xFC\\x54\\xFA\\xA2\\x1E\\xB9\\xCF\\x13\\x31\\xFD\\x0F\\x0D\\xA9\\x54\\xF6\\x87\\xCB\\x9E\\x18\\x27\\x96\\x97\\x90\\x0E\\x53\\xFB\\x31\\x7C\\x9C\\xBC\\xE4\\x8E\\x23\\xD0\\x53\\x71\\xEC\\xC1\\x59\\x51\\xB8\\xF3\\x64\\x9D\\x7C\\xA3\\x3E\\xD6\\x8D\\xC9\\x04\\x7E\\x82\\xC9\\xBA\\xAD\\x97\\x99\\xD0\\xD4\\x58\\xCB\\x84\\x7C\\xA9\\xFF\\xBE\\x3C\\x8A\\x77\\x52\\x33\\x55\\x7D\\xDE\\x13\\xA8\\xB1\\x40\\x87\\xCC\\x1B\\xC8\\xF1\\x0F\\x6E\\xCD\\xD0\\x83\\xA9\\x59\\xCF\\xF8\\x4A\\x9D\\x1D\\x50\\x75\\x5E\\x3E\\x19\\x18\\x18\\xAF\\x23\\xE2\\x29\\x35\\x58\\x76\\x6D\\x2C\\x07\\xE2\\x57\\x12\\xB2\\xCA\\x0B\\x53\\x5E\\xD8\\xF6\\xC5\\x6C\\xE7\\x3D\\x24\\xBD\\xD0\\x29\\x17\\x71\\x86\\x1A\\x54\\xB4\\xC2\\x85\\xA9\\xA3\\xDB\\x7A\\xCA\\x6D\\x22\\x4A\\xEA\\xCD\\x62\\x1D\\xB9\\xF2\\xA2\\x2E\\xD1\\xE9\\xE1\\x1D\\x75\\xBE\\xD7\\xDC\\x0E\\xCB\\x0A\\x8E\\x68\\xA2\\xFF\\x12\\x63\\x40\\x8D\\xC8\\x08\\xDF\\xFD\\x16\\x4B\\x11\\x67\\x74\\xCD\\x0B\\x9B\\x8D\\x05\\x41\\x1E\\xD6\\x26\\x2E\\x42\\x9B\\xA4\\x95\\x67\\x6B\\x83\\x98\\xDB\\x2F\\x35\\xD3\\xC1\\xB9\\xCE\\xD5\\x26\\x36\\xF2\\x76\\x5E\\x1A\\x95\\xCB\\x7C\\xA4\\xC3\\xDD\\xAB\\xDD\\xBF\\xF3\\x82\\x53\" cipher = ARC4.new(key) decrypted = cipher.decrypt(data) with open(sys.argv[1]+\".decrypted\", \"wb\") as dec: print(f\"Writing decrypted file to {sys.argv[1]}.decrypted\") dec.write(decrypted) Many scripts are avaibles on the internet, but they were not working properly for me.\nEntries folder The first thing that I wanted to do was to decrypt the file in the Entries folder. The main issue is that the file is separated in 3 chunks, encrypted separately using the RC4 key.\nIf we take a look at this document, we can see that the first chunk has a fixed size:\nSo we can just truncate the first chunk (I used HxD in order to display the data efficiently, but you can do it with python), and decrypt it using our script. We get the following data:\nWe have our magic bytes, 0x18 null bytes, 2 sizes (4 bytes each), and then 0x0C bytes:\nWe got the two chunks size (big endian, then we have 0x55 and 0x101), so let’s truncate ([0x3C:0x3C+0x55] and [0x3C+0x56:END]), and decrypt them:\nWell, this is interesting but Star{virus.exe} is not the flag… So we will have to decrypt the original malware file.\nResourceData folder Luckily for us, the malware file is encrypted in one chunk. Some metadata are added at the beginning, and then we have our malware file:\nrc4encrypted: seq: **- id: fixed contents: [0x03, 0, 0, 0, 0x02, 0, 0, 0] size: 8** - id: length type: u4 - id: padding size: 0x08 - id: binarysd size: length - id: unknown1 size: 0x08 **- id: len_malfile type: u8** - id: unknown2 size: 0x04 - id: mal_file size: len_malfile If we decrypt it, we can see the PE magic bytes (in green) as well as the This program cannot be run in DOS mode. Everything before is our metadatas. If we look at the metadata structure, we can see that the malfile size is 8 bytes long (in red). So we have a malfile size of 1A00 (6656) bytes:\nAt first, I truncated from the MZ bytes to the end and sent it to Virustotal. The file was flagged as malicious by ~50 AV vendors, but I couldn’t find any original name for the file.\nSo I ended up truncating 6656 bytes from the MZ bytes. If we take a look at the end of the file, there seems to have appended data (after the highlighted part). Thoses data looks like a Mark of the web, but I don’t really know why it is here:\nIf we submit our new file to VT, it is still widely detected as malicious:\nIn the details section, we can see the name with which this files has been submitted or seen in the wild:\nSo the flag is Star{hrtc_false_positive.exe} !\nSources https://static.ernw.de/whitepaper/ERNW-Whitepaper-71_AV_Quarantine_signed.pdf\nhttps://reversingfun.com/posts/how-to-extract-quarantine-files-from-windows-defender/\nhttps://www.virustotal.com/gui/file/664397d3ae27f83308ac7360308d4b113d925dc769b4e4914fe596b6f06c947a/details\n",
+  "wordCount" : "690",
+  "inLanguage": "en",
+  "datePublished": "2023-09-14T23:44:49+02:00",
+  "dateModified": "2023-09-14T23:44:49+02:00",
+  "mainEntityOfPage": {
+    "@type": "WebPage",
+    "@id": "https://luhko.github.io/write-up/surreaction/"
+  },
+  "publisher": {
+    "@type": "Organization",
+    "name": "Luhko",
+    "logo": {
+      "@type": "ImageObject",
+      "url": "https://luhko.github.io/favicon.ico"
+    }
+  }
+}
+</script>
+</head>
+
+<body class="" id="top">
+<script>
+    if (localStorage.getItem("pref-theme") === "dark") {
+        document.body.classList.add('dark');
+    } else if (localStorage.getItem("pref-theme") === "light") {
+        document.body.classList.remove('dark')
+    } else if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
+        document.body.classList.add('dark');
+    }
+
+</script>
+
+<header class="header">
+    <nav class="nav">
+        <div class="logo">
+            <a href="https://luhko.github.io/" accesskey="h" title="Luhko (Alt + H)">Luhko</a>
+            <div class="logo-switches">
+                <button id="theme-toggle" accesskey="t" title="(Alt + T)">
+                    <svg id="moon" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
+                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round">
+                        <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+                    </svg>
+                    <svg id="sun" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
+                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round">
+                        <circle cx="12" cy="12" r="5"></circle>
+                        <line x1="12" y1="1" x2="12" y2="3"></line>
+                        <line x1="12" y1="21" x2="12" y2="23"></line>
+                        <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+                        <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+                        <line x1="1" y1="12" x2="3" y2="12"></line>
+                        <line x1="21" y1="12" x2="23" y2="12"></line>
+                        <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+                        <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+                    </svg>
+                </button>
+            </div>
+        </div>
+        <ul id="menu">
+            <li>
+                <a href="https://luhko.github.io/articles" title="Articles">
+                    <span>Articles</span>
+                </a>
+            </li>
+            <li>
+                <a href="https://luhko.github.io/write-up" title="Write-Up">
+                    <span>Write-Up</span>
+                </a>
+            </li>
+        </ul>
+    </nav>
+</header>
+<main class="main">
+
+<article class="post-single">
+  <header class="post-header">
+    <div class="breadcrumbs"><a href="https://luhko.github.io/">Home</a>&nbsp;»&nbsp;<a href="https://luhko.github.io/write-up/">Write-ups</a></div>
+    <h1 class="post-title">
+      Surreaction - StarHackademINT 2023
+    </h1>
+    <div class="post-meta"><span title='2023-09-14 23:44:49 +0200 CEST'>September 14, 2023</span>&nbsp;·&nbsp;4 min
+
+</div>
+  </header> <div class="toc">
+    <details >
+        <summary accesskey="c" title="(Alt + C)">
+            <span class="details">Table of Contents</span>
+        </summary>
+
+        <div class="inner"><ul>
+                <li>
+                    <a href="#introduction" aria-label="Introduction">Introduction</a></li>
+                <li>
+                    <a href="#entries-folder" aria-label="Entries folder">Entries folder</a></li>
+                <li>
+                    <a href="#resourcedata-folder" aria-label="ResourceData folder">ResourceData folder</a></li>
+                <li>
+                    <a href="#sources" aria-label="Sources">Sources</a>
+                </li>
+            </ul>
+        </div>
+    </details>
+</div>
+
+  <div class="post-content"><h1 id="introduction">Introduction<a hidden class="anchor" aria-hidden="true" href="#introduction">#</a></h1>
+<p>This post is about an interesting forensic challenge that I solved during the StarHackademINT 2023 CTF. We were given a <code>Quarantine</code> folder coming from Windows Defender, and we had to find back the original filename on the internet.</p>
+<p>The structure of the given folder looks like this:</p>
+<pre tabindex="0"><code>Quarantine
+├── Entries
+│   └── {80059732-0000-0000-6667-EF3396D235E7}
+├── ResourceData
+│   └── 9F
+│       └── 9F598F562DDCFB69FA21A077BAD87F01A3F6258E
+└── Resources
+    └── 9F
+        └── 9F598F562DDCFB69FA21A077BAD87F01A3F6258E
+</code></pre><p>If we look on the internet, we can find some blog post that gives a lot of useful information on how to get the original files back. We can find the <code>Quarantine</code> directory structure:</p>
+<ul>
+<li>The <code>Entries</code> folder contains information about the quarantined files, such as the reason of the quarantine, the original full path, timestamp, etc. The files are encrypted in a particular way that we will see later.</li>
+<li>The <code>ResourceData</code> folder contains the encrypted original binary.</li>
+<li>The <code>Resources</code> folder won’t be used here, but it contains information such as a GUID and a hash used to link the <code>Entries</code> and the <code>ResourceData</code> folder.</li>
+</ul>
+<p>We can also find the hardcoded RC4 key used to encrypt the files (it is common for AV vendors to have a single  RC4/XOR hardcoded key) used for the quarantine process. So we can use this small python script in order to decrypt the files:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-python" data-lang="python"><span class="kn">from</span> <span class="nn">Crypto.Cipher</span> <span class="kn">import</span> <span class="n">ARC4</span>
+<span class="kn">import</span> <span class="nn">sys</span>
+
+<span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">sys</span><span class="o">.</span><span class="n">argv</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="s2">&#34;rb&#34;</span><span class="p">)</span> <span class="k">as</span> <span class="n">encrypted_file</span><span class="p">:</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&#34;Reading </span><span class="si">{</span><span class="n">sys</span><span class="o">.</span><span class="n">argv</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="si">}</span><span class="s2">&#34;</span><span class="p">)</span>
+    <span class="n">data</span> <span class="o">=</span> <span class="n">encrypted_file</span><span class="o">.</span><span class="n">read</span><span class="p">()</span>
+
+<span class="n">key</span> <span class="o">=</span> <span class="sa">b</span><span class="s2">&#34;</span><span class="se">\x1E\x87\x78\x1B\x8D\xBA\xA8\x44\xCE\x69\x70\x2C\x0C\x78\xB7\x86\xA3\xF6\x23\xB7\x38\xF5\xED\xF9\xAF\x83\x53\x0F\xB3\xFC\x54\xFA\xA2\x1E\xB9\xCF\x13\x31\xFD\x0F\x0D\xA9\x54\xF6\x87\xCB\x9E\x18\x27\x96\x97\x90\x0E\x53\xFB\x31\x7C\x9C\xBC\xE4\x8E\x23\xD0\x53\x71\xEC\xC1\x59\x51\xB8\xF3\x64\x9D\x7C\xA3\x3E\xD6\x8D\xC9\x04\x7E\x82\xC9\xBA\xAD\x97\x99\xD0\xD4\x58\xCB\x84\x7C\xA9\xFF\xBE\x3C\x8A\x77\x52\x33\x55\x7D\xDE\x13\xA8\xB1\x40\x87\xCC\x1B\xC8\xF1\x0F\x6E\xCD\xD0\x83\xA9\x59\xCF\xF8\x4A\x9D\x1D\x50\x75\x5E\x3E\x19\x18\x18\xAF\x23\xE2\x29\x35\x58\x76\x6D\x2C\x07\xE2\x57\x12\xB2\xCA\x0B\x53\x5E\xD8\xF6\xC5\x6C\xE7\x3D\x24\xBD\xD0\x29\x17\x71\x86\x1A\x54\xB4\xC2\x85\xA9\xA3\xDB\x7A\xCA\x6D\x22\x4A\xEA\xCD\x62\x1D\xB9\xF2\xA2\x2E\xD1\xE9\xE1\x1D\x75\xBE\xD7\xDC\x0E\xCB\x0A\x8E\x68\xA2\xFF\x12\x63\x40\x8D\xC8\x08\xDF\xFD\x16\x4B\x11\x67\x74\xCD\x0B\x9B\x8D\x05\x41\x1E\xD6\x26\x2E\x42\x9B\xA4\x95\x67\x6B\x83\x98\xDB\x2F\x35\xD3\xC1\xB9\xCE\xD5\x26\x36\xF2\x76\x5E\x1A\x95\xCB\x7C\xA4\xC3\xDD\xAB\xDD\xBF\xF3\x82\x53</span><span class="s2">&#34;</span>
+
+<span class="n">cipher</span> <span class="o">=</span> <span class="n">ARC4</span><span class="o">.</span><span class="n">new</span><span class="p">(</span><span class="n">key</span><span class="p">)</span>
+<span class="n">decrypted</span> <span class="o">=</span> <span class="n">cipher</span><span class="o">.</span><span class="n">decrypt</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+
+<span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">sys</span><span class="o">.</span><span class="n">argv</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">+</span><span class="s2">&#34;.decrypted&#34;</span><span class="p">,</span> <span class="s2">&#34;wb&#34;</span><span class="p">)</span> <span class="k">as</span> <span class="n">dec</span><span class="p">:</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&#34;Writing decrypted file to </span><span class="si">{</span><span class="n">sys</span><span class="o">.</span><span class="n">argv</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="si">}</span><span class="s2">.decrypted&#34;</span><span class="p">)</span>
+    <span class="n">dec</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">decrypted</span><span class="p">)</span>
+</code></pre></div><p>Many scripts are avaibles on the internet, but they were not working properly for me.</p>
+<h1 id="entries-folder">Entries folder<a hidden class="anchor" aria-hidden="true" href="#entries-folder">#</a></h1>
+<p>The first thing that I wanted to do was to decrypt the file in the <code>Entries</code> folder. The main issue is that the file is separated in 3 chunks, encrypted separately using the RC4 key.</p>
+<p>If we take a look at <a href="https://static.ernw.de/whitepaper/ERNW-Whitepaper-71_AV_Quarantine_signed.pdf">this document</a>, we can see that the first chunk has a fixed size:</p>
+<p><img loading="lazy" src="/surreaction_data/Untitled.png" alt="Untitled"  />
+</p>
+<p>So we can just truncate the first chunk (I used HxD in order to display the data efficiently, but you can do it with python), and decrypt it using our script. We get the following data:</p>
+<p><img loading="lazy" src="/surreaction_data/Untitled%201.png" alt="Untitled"  />
+</p>
+<p>We have our magic bytes, <code>0x18</code> null bytes, 2 sizes (4 bytes each), and then <code>0x0C</code> bytes:</p>
+<p><img loading="lazy" src="/surreaction_data/Untitled%202.png" alt="Untitled"  />
+</p>
+<p>We got the two chunks size (big endian, then we have <code>0x55</code> and <code>0x101</code>), so let’s truncate (<strong>[0x3C:0x3C+0x55]</strong> and [<strong>0x3C+0x56:END]</strong>), and decrypt them:</p>
+<p><img loading="lazy" src="/surreaction_data/Untitled%203.png" alt="Untitled"  />
+</p>
+<p><img loading="lazy" src="/surreaction_data/Untitled%204.png" alt="Untitled"  />
+</p>
+<p>Well, this is interesting but <code>Star{virus.exe}</code> is not the flag… So we will have to decrypt the original malware file.</p>
+<h1 id="resourcedata-folder">ResourceData folder<a hidden class="anchor" aria-hidden="true" href="#resourcedata-folder">#</a></h1>
+<p>Luckily for us, the malware file is encrypted in one chunk. Some metadata are added at the beginning, and then we have our malware file:</p>
+<pre tabindex="0"><code>rc4encrypted:
+	seq:
+	**- id: fixed
+	contents: [0x03, 0, 0, 0, 0x02, 0, 0, 0]
+	size: 8**
+	- id: length
+	type: u4
+	- id: padding
+	size: 0x08
+	- id: binarysd
+	size: length
+	- id: unknown1
+	size: 0x08
+	**- id: len_malfile
+	type: u8**
+	- id: unknown2
+	size: 0x04
+	- id: mal_file
+	size: len_malfile
+</code></pre><p>If we decrypt it, we can see the PE magic bytes (in green) as well as the <em>This program cannot be run in DOS mode.</em> Everything before is our metadatas. If we look at the metadata structure, we can see that the malfile size is 8 bytes long (in red). So we have a malfile size of <code>1A00</code> (6656) bytes:</p>
+<p><img loading="lazy" src="/surreaction_data/Untitled%205.png" alt="Untitled"  />
+</p>
+<p>At first, I truncated from the MZ bytes to the end and sent it to Virustotal. The file was flagged as malicious by ~50 AV vendors, but I couldn’t find any original name for the file.</p>
+<p>So I ended up truncating 6656 bytes from the MZ bytes. If we take a look at the end of the file, there seems to have appended data (after the highlighted part). Thoses data looks like a Mark of the web, but I don’t really know why it is here:</p>
+<p><img loading="lazy" src="/surreaction_data/Untitled%206.png" alt="Untitled"  />
+</p>
+<p>If we submit our new file to VT, it is still widely detected as malicious:</p>
+<p><img loading="lazy" src="/surreaction_data/Untitled%207.png" alt="Untitled"  />
+</p>
+<p>In the details section, we can see the name with which this files has been submitted or seen in the wild:</p>
+<p><img loading="lazy" src="/surreaction_data/Untitled%208.png" alt="Untitled"  />
+</p>
+<p>So the flag is <code>Star{hrtc_false_positive.exe}</code> !</p>
+<h1 id="sources">Sources<a hidden class="anchor" aria-hidden="true" href="#sources">#</a></h1>
+<p><a href="https://static.ernw.de/whitepaper/ERNW-Whitepaper-71_AV_Quarantine_signed.pdf">https://static.ernw.de/whitepaper/ERNW-Whitepaper-71_AV_Quarantine_signed.pdf</a></p>
+<p><a href="https://reversingfun.com/posts/how-to-extract-quarantine-files-from-windows-defender/">https://reversingfun.com/posts/how-to-extract-quarantine-files-from-windows-defender/</a></p>
+<p><a href="https://www.virustotal.com/gui/file/664397d3ae27f83308ac7360308d4b113d925dc769b4e4914fe596b6f06c947a/details">https://www.virustotal.com/gui/file/664397d3ae27f83308ac7360308d4b113d925dc769b4e4914fe596b6f06c947a/details</a></p>
+
+
+  </div>
+
+  <footer class="post-footer">
+    <ul class="post-tags">
+    </ul>
+<nav class="paginav">
+  <a class="next" href="https://luhko.github.io/write-up/404ctf2023/">
+    <span class="title">Next »</span>
+    <br>
+    <span>404 CTF 2023</span>
+  </a>
+</nav>
+
+  </footer>
+</article>
+    </main>
+    
+<footer class="footer">
+    <span>&copy; 2023 <a href="https://luhko.github.io/">Luhko</a></span>
+    <span>
+        Powered by
+        <a href="https://gohugo.io/" rel="noopener noreferrer" target="_blank">Hugo</a> &
+        <a href="https://github.com/adityatelange/hugo-PaperMod/" rel="noopener" target="_blank">PaperMod</a>
+    </span>
+</footer>
+<a href="#top" aria-label="go to top" title="Go to Top (Alt + G)" class="top-link" id="top-link" accesskey="g">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 12 6" fill="currentColor">
+        <path d="M12 6H0l6-6z" />
+    </svg>
+</a>
+
+<script>
+    let menu = document.getElementById('menu')
+    if (menu) {
+        menu.scrollLeft = localStorage.getItem("menu-scroll-position");
+        menu.onscroll = function () {
+            localStorage.setItem("menu-scroll-position", menu.scrollLeft);
+        }
+    }
+
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+        anchor.addEventListener("click", function (e) {
+            e.preventDefault();
+            var id = this.getAttribute("href").substr(1);
+            if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+                document.querySelector(`[id='${decodeURIComponent(id)}']`).scrollIntoView({
+                    behavior: "smooth"
+                });
+            } else {
+                document.querySelector(`[id='${decodeURIComponent(id)}']`).scrollIntoView();
+            }
+            if (id === "top") {
+                history.replaceState(null, null, " ");
+            } else {
+                history.pushState(null, null, `#${id}`);
+            }
+        });
+    });
+
+</script>
+<script>
+    var mybutton = document.getElementById("top-link");
+    window.onscroll = function () {
+        if (document.body.scrollTop > 800 || document.documentElement.scrollTop > 800) {
+            mybutton.style.visibility = "visible";
+            mybutton.style.opacity = "1";
+        } else {
+            mybutton.style.visibility = "hidden";
+            mybutton.style.opacity = "0";
+        }
+    };
+
+</script>
+<script>
+    document.getElementById("theme-toggle").addEventListener("click", () => {
+        if (document.body.className.includes("dark")) {
+            document.body.classList.remove('dark');
+            localStorage.setItem("pref-theme", 'light');
+        } else {
+            document.body.classList.add('dark');
+            localStorage.setItem("pref-theme", 'dark');
+        }
+    })
+
+</script>
+<script>
+    document.querySelectorAll('pre > code').forEach((codeblock) => {
+        const container = codeblock.parentNode.parentNode;
+
+        const copybutton = document.createElement('button');
+        copybutton.classList.add('copy-code');
+        copybutton.innerHTML = 'copy';
+
+        function copyingDone() {
+            copybutton.innerHTML = 'copied!';
+            setTimeout(() => {
+                copybutton.innerHTML = 'copy';
+            }, 2000);
+        }
+
+        copybutton.addEventListener('click', (cb) => {
+            if ('clipboard' in navigator) {
+                navigator.clipboard.writeText(codeblock.textContent);
+                copyingDone();
+                return;
+            }
+
+            const range = document.createRange();
+            range.selectNodeContents(codeblock);
+            const selection = window.getSelection();
+            selection.removeAllRanges();
+            selection.addRange(range);
+            try {
+                document.execCommand('copy');
+                copyingDone();
+            } catch (e) { };
+            selection.removeRange(range);
+        });
+
+        if (container.classList.contains("highlight")) {
+            container.appendChild(copybutton);
+        } else if (container.parentNode.firstChild == container) {
+            
+        } else if (codeblock.parentNode.parentNode.parentNode.parentNode.parentNode.nodeName == "TABLE") {
+            
+            codeblock.parentNode.parentNode.parentNode.parentNode.parentNode.appendChild(copybutton);
+        } else {
+            
+            codeblock.parentNode.appendChild(copybutton);
+        }
+    });
+</script>
+</body>
+
+</html>
