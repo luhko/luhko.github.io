@@ -2,8 +2,14 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
   xmlns:xhtml="http://www.w3.org/1999/xhtml">
   <url>
+    <loc>https://luhko.github.io/articles/</loc>
+    <lastmod>2023-12-17T21:44:49+02:00</lastmod>
+  </url><url>
+    <loc>https://luhko.github.io/articles/dynamic_analysis_malwares_api_monitor/</loc>
+    <lastmod>2023-12-17T21:44:49+02:00</lastmod>
+  </url><url>
     <loc>https://luhko.github.io/</loc>
-    <lastmod>2023-09-14T23:44:49+02:00</lastmod>
+    <lastmod>2023-12-17T21:44:49+02:00</lastmod>
   </url><url>
     <loc>https://luhko.github.io/write-up/surreaction/</loc>
     <lastmod>2023-09-14T23:44:49+02:00</lastmod>
@@ -19,9 +25,6 @@
   </url><url>
     <loc>https://luhko.github.io/write-up/digitaloverdose/</loc>
     <lastmod>2022-11-20T23:43:49+02:00</lastmod>
-  </url><url>
-    <loc>https://luhko.github.io/articles/</loc>
-    <lastmod>2022-08-04T19:44:49+02:00</lastmod>
   </url><url>
     <loc>https://luhko.github.io/articles/png_struct_stegano/</loc>
     <lastmod>2022-08-04T19:44:49+02:00</lastmod>
